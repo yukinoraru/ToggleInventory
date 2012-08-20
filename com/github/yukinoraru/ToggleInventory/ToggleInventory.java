@@ -105,8 +105,6 @@ public class ToggleInventory extends JavaPlugin {
 
         	String start = "item" + Integer.toString(i);
 
-        	getLogger().info("start =" + start);
-
             // get/set basic info for item
             pInv.set(start + ".id", item.getTypeId());
             pInv.set(start + ".amount", item.getAmount());
@@ -148,10 +146,8 @@ public class ToggleInventory extends JavaPlugin {
         File inventoryFile = getInventoryFile(player.getName(), inventoryIndex);
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
         
-    	getLogger().info("load from:" + inventoryFile.getName() + " , keys =");
         Set<String> item_keys = pInv.getKeys(false);
         for (String key: item_keys) {
-        	getLogger().info(key);
         	
         	int index        = Integer.parseInt(key.substring(4)) - 1;
         	int id           = pInv.getInt(key + ".id");
