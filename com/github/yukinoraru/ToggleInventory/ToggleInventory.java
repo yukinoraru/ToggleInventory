@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,11 +30,9 @@ public class ToggleInventory extends JavaPlugin {
 	private static final int    CONFIG_INVENTORY_MAX_INDEX_DEFAULT      = 4;	
 	
 	public void onEnable(){
-		getLogger().info("Your plugin has been enabled!");
 	}
  
 	public void onDisable(){
-		getLogger().info("Your plugin has been disabled.");
 	}
 	
 	// load from yml
@@ -56,14 +55,20 @@ public class ToggleInventory extends JavaPlugin {
         return invCurrentIndex;
 	}
 	
-	private int setNextInventoryIndex(String playerName, int nextInvIndex){
+	private int setNextInventoryIndex(String playerName, int nextInvIndex) throws IndexOutOfBoundsException{
         File configFile         = getPlayerConfigFile(playerName);
         FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
+
+        int invCurrentIndex = pConf.getInt(CONFIG_INVENTORY_CURRENT_INDEX, CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT);		
+        int maxIndex = pConf.getInt(CONFIG_INVENTORY_MAX_INDEX, CONFIG_INVENTORY_MAX_INDEX_DEFAULT);
+        pConf.set(CONFIG_INVENTORY_MAX_INDEX, maxIndex); //TODO: this is not the best timing.
         
         if(nextInvIndex < 0){
-            int invCurrentIndex = pConf.getInt(CONFIG_INVENTORY_CURRENT_INDEX, CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT);		
-            int maxIndex = pConf.getInt(CONFIG_INVENTORY_MAX_INDEX, CONFIG_INVENTORY_MAX_INDEX_DEFAULT);
             nextInvIndex = (invCurrentIndex+1 > maxIndex) ? 1 : invCurrentIndex+1;
+        }
+        else if(nextInvIndex > maxIndex){
+        	//throw new IndexOutOfBoundsException("nextInvIndex must be less than maxIndex.");
+        	throw new IndexOutOfBoundsException("[ERROR] Max inventory index is " + ChatColor.RED+Integer.toString(maxIndex)); 
         }
         pConf.set(CONFIG_INVENTORY_CURRENT_INDEX, nextInvIndex);
        
@@ -86,6 +91,7 @@ public class ToggleInventory extends JavaPlugin {
 
         // load saved currentInventory 
         File inventoryFile      = getInventoryFile(player.getName(), invCurrentIndex);
+        
         inventoryFile.delete(); // before save, file must be filled with empty
                                 // TODO: deleting file is not suitable solution
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
@@ -171,17 +177,48 @@ public class ToggleInventory extends JavaPlugin {
         
 		return ;
 	}
+	
+	// [1 2 3 4]
+	private String makeInventoryMessage(String playerName){
+		String msg = ChatColor.GRAY+"[";
+        File configFile         = getPlayerConfigFile(playerName);
+        FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
+
+        int invCurrentIndex = pConf.getInt(CONFIG_INVENTORY_CURRENT_INDEX, CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT);		
+        int maxIndex = pConf.getInt(CONFIG_INVENTORY_MAX_INDEX, CONFIG_INVENTORY_MAX_INDEX_DEFAULT);
+		
+        for(int i=1; i <= maxIndex; i++){
+        	if(i == invCurrentIndex){
+            	msg += ChatColor.WHITE+Integer.toString(i);        		
+        	}
+        	else{
+            	msg += ChatColor.GRAY+Integer.toString(i);        		
+        	}
+        	msg += ChatColor.RESET+" ";
+        }
+        
+        return msg + ChatColor.GRAY+"] ";
+	}
 		
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-	    if(cmd.getName().equalsIgnoreCase("togglei")){	    	
+	    if(cmd.getName().equalsIgnoreCase("togglei")){
+	    	if(!sender.hasPermission("toggle_inventory.toggle")){
+            	sender.sendMessage("You don't have permission to toggle inventory.");	    		
+	    		return true;
+	    	}
 	    	int index = -1;	    	
 	    	// toggle to same inventory is prohibit
 	    	if(args.length >= 1 && args[0].length() > 0){
-	    		index = Integer.parseInt(args[0]);
+	    		try{
+	    			index = Integer.parseInt(args[0]);
+	    		}
+	    		catch(Exception e){
+	            	sender.sendMessage("Inventory index is wrong.");
+	    			return true;
+	    		}
 	            int invCurrentIndex = getCurrentInventoryIndex(sender.getName());
 	    		if(index == invCurrentIndex){
-		    		// TODO: add index number to show
-	            	sender.sendMessage("It's your current inventory index.");
+	            	sender.sendMessage(makeInventoryMessage(sender.getName()) + "It's your current inventory index.");
 	    			return true;
 	    		}
 	    	}
@@ -192,8 +229,13 @@ public class ToggleInventory extends JavaPlugin {
     		int nextInvIndex;
 	    	if(index > 0){
 		    	// set next inventory
-	    		// TODO: check index range
-	    		nextInvIndex = setNextInventoryIndex(sender.getName(), index);	    		
+	    		try{
+	    			nextInvIndex = setNextInventoryIndex(sender.getName(), index);	
+	    		}
+	    		catch(Exception e){
+	            	sender.sendMessage(e.getMessage()); // out of bounds exception
+	    			return true;	    			
+	    		}
 	    	}
 	    	else{
 		    	// toggle inventory circularity
@@ -204,8 +246,8 @@ public class ToggleInventory extends JavaPlugin {
 	    	loadInventory(sender, nextInvIndex);
 
 	    	// TOOD: message to player
-	    	/*
-        	player.sendMessage("current inventory = " + invNextIndex);
+	    	//*
+        	sender.sendMessage(makeInventoryMessage(sender.getName()) + "inventory toggled.");
 	        //*/
 
 	        return true;

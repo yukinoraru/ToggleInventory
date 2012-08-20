@@ -11,3 +11,10 @@ commands:
       /<command> [0-n]
       Example: /<command> - toggle inventory circular
       Example: /<command> 1 - toggle inventory index 1
+permissions:
+  toggle_inventory.*:
+    description: gives all permissions of the ToggleInventory
+    default: op
+    children:
+      toggle_inventory.toggle:
+        description: gives permission to toggle inventory
