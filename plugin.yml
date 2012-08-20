@@ -1,0 +1,13 @@
+name: ToggleInventory
+main: com.github.yukinoraru.ToggleInventory.ToggleInventory
+version: 0.0.1
+author: yukinoraru
+description: toggling inventory command for op.
+commands:
+  togglei:
+    description: toggle inventory
+    aliases: [ti, it]
+    usage: |
+      /<command> [0-n]
+      Example: /<command> - toggle inventory circular
+      Example: /<command> 1 - toggle inventory index 1
