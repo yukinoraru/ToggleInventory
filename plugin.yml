@@ -1,8 +1,8 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 0.0.1
+version: 0.0.2
 author: yukinoraru
-description: toggling inventory command for op.
+description: toggling inventory command.
 commands:
   togglei:
     description: toggle inventory
@@ -17,4 +17,4 @@ permissions:
     default: op
     children:
       toggle_inventory.toggle:
-        description: gives permission to toggle inventory
+        description: gives permission to ToggleInventory
