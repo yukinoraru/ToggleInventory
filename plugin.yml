@@ -1,6 +1,6 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 0.0.2
+version: 0.0.3
 author: yukinoraru
 description: toggling inventory command.
 commands:
@@ -9,12 +9,100 @@ commands:
     aliases: [ti, it]
     usage: |
       /<command> [0-n]
-      Example: /<command> - toggle inventory circular
+      Example: /<command> - toggle inventory like a ring
       Example: /<command> 1 - toggle inventory index 1
 permissions:
   toggle_inventory.*:
     description: gives all permissions of the ToggleInventory
+
+  toggle_inventory.toggle:
     default: op
-    children:
-      toggle_inventory.toggle:
-        description: gives permission to ToggleInventory
+    description: gives permission to /togglei command
+
+  toggle_inventory.2:
+    default: false
+    description: max amounts of inventories is 2
+  toggle_inventory.3:
+    default: false
+    description: max amounts of inventories is 3
+  toggle_inventory.4:
+    default: false
+    description: max amounts of inventories is 4
+  toggle_inventory.5:
+    default: false
+    description: max amounts of inventories is 5
+  toggle_inventory.6:
+    default: false
+    description: max amounts of inventories is 6
+  toggle_inventory.7:
+    default: false
+    description: max amounts of inventories is 7
+  toggle_inventory.8:
+    default: false
+    description: max amounts of inventories is 8
+  toggle_inventory.9:
+    default: false
+    description: max amounts of inventories is 9
+  toggle_inventory.10:
+    default: false
+    description: max amounts of inventories is 10
+  toggle_inventory.11:
+    default: false
+    description: max amounts of inventories is 11
+  toggle_inventory.12:
+    default: false
+    description: max amounts of inventories is 12
+  toggle_inventory.13:
+    default: false
+    description: max amounts of inventories is 13
+  toggle_inventory.14:
+    default: false
+    description: max amounts of inventories is 14
+  toggle_inventory.15:
+    default: false
+    description: max amounts of inventories is 15
+  toggle_inventory.16:
+    default: false
+    description: max amounts of inventories is 16
+  toggle_inventory.17:
+    default: false
+    description: max amounts of inventories is 17
+  toggle_inventory.18:
+    default: false
+    description: max amounts of inventories is 18
+  toggle_inventory.19:
+    default: false
+    description: max amounts of inventories is 19
+  toggle_inventory.20:
+    default: false
+    description: max amounts of inventories is 20
+  toggle_inventory.21:
+    default: false
+    description: max amounts of inventories is 21
+  toggle_inventory.22:
+    default: false
+    description: max amounts of inventories is 22
+  toggle_inventory.23:
+    default: false
+    description: max amounts of inventories is 23
+  toggle_inventory.24:
+    default: false
+    description: max amounts of inventories is 24
+  toggle_inventory.25:
+    default: false
+    description: max amounts of inventories is 25
+  toggle_inventory.26:
+    default: false
+    description: max amounts of inventories is 26
+  toggle_inventory.27:
+    default: false
+    description: max amounts of inventories is 27
+  toggle_inventory.28:
+    default: false
+    description: max amounts of inventories is 28
+  toggle_inventory.29:
+    default: false
+    description: max amounts of inventories is 29
+  toggle_inventory.30:
+    default: false
+    description: max amounts of inventories is 30
