@@ -51,7 +51,7 @@ public class ToggleInventory extends JavaPlugin {
                 max = i;
             }
         }
-        getLogger().info("sender has toggle_inventory." + Integer.toString(max) + " permission.");
+        //getLogger().info("sender has toggle_inventory." + Integer.toString(max) + " permission.");
         return (max <= 1) ? CONFIG_INVENTORY_MAX_INDEX_DEFAULT : max;
     }
 
@@ -101,6 +101,26 @@ public class ToggleInventory extends JavaPlugin {
         return nextInvIndex;
     }
 
+    private String []getEnchantmentsString(ItemStack item){
+
+        Map<Enchantment,Integer> enchantments = item.getEnchantments();
+        Iterator<Entry<Enchantment,Integer>> iter = enchantments.entrySet().iterator();
+        ArrayList<String> listOfEnchantment      = new ArrayList<String>();
+        while(iter.hasNext()){
+            Entry<Enchantment,Integer> entry = iter.next();
+            String enchantmentName = entry.getKey().getName();
+            int    echantmentLevel = entry.getValue();
+            listOfEnchantment.add(enchantmentName + "," + echantmentLevel);
+        }
+
+        if(listOfEnchantment.size() > 0){
+            String [] arrayOfEnchantment = listOfEnchantment.toArray(new String[listOfEnchantment.size()]);
+            return arrayOfEnchantment;
+        }
+
+        return null;
+    }
+
     private void saveInventory(CommandSender sender){
 
         Player player = (Player)sender;
@@ -132,18 +152,8 @@ public class ToggleInventory extends JavaPlugin {
             pInv.set(start + ".durability", item.getDurability());
 
             // enchantment
-            Map<Enchantment,Integer> enchantments = item.getEnchantments();
-            Iterator<Entry<Enchantment,Integer>> iter = enchantments.entrySet().iterator();
-            ArrayList<String> listOfEnchantment      = new ArrayList<String>();
-            while(iter.hasNext()){
-                Entry<Enchantment,Integer> entry = iter.next();
-                String enchantmentName = entry.getKey().getName();
-                int    echantmentLevel = entry.getValue();
-                listOfEnchantment.add(enchantmentName + "," + echantmentLevel);
-                //listOfEnchantment.add("raw = " + entry.toString() + " , getID = " + entry.getKey().getId() + " , getName = " + entry.getKey().getName());
-            }
-            if(listOfEnchantment.size() > 0){
-                String [] arrayOfEnchantment = listOfEnchantment.toArray(new String[listOfEnchantment.size()]);
+            String [] arrayOfEnchantment = getEnchantmentsString(item);
+            if(arrayOfEnchantment != null){
                 pInv.set(start + ".enchantment", Arrays.asList(arrayOfEnchantment));
             }
 
@@ -154,6 +164,28 @@ public class ToggleInventory extends JavaPlugin {
                 pInv.set(start + ".book" + ".title", book.getTitle());
                 pInv.set(start + ".book" + ".author", book.getAuthor());
                 pInv.set(start + ".book" + ".pages", Arrays.asList(book.getPages()));
+            }
+        }
+
+
+        // save armor
+        i = 0;
+        for (ItemStack item : inventory.getArmorContents()) {
+            i++;
+            if(item == null){
+                continue;
+            }
+            String start = "armor" + Integer.toString(i);
+
+            // get/set basic info for item
+            int itemID = item.getTypeId();
+            pInv.set(start + ".id", itemID);
+            pInv.set(start + ".durability", item.getDurability());
+
+            // enchantment
+            String [] arrayOfEnchantment = getEnchantmentsString(item);
+            if(arrayOfEnchantment != null){
+                pInv.set(start + ".enchantment", Arrays.asList(arrayOfEnchantment));
             }
         }
 
@@ -176,16 +208,18 @@ public class ToggleInventory extends JavaPlugin {
         File inventoryFile = getInventoryFile(player.getName(), inventoryIndex);
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
 
+        int armorIndex = 0;
+        ItemStack[] armorContents = new ItemStack[4];
+
         Set<String> item_keys = pInv.getKeys(false);
         for (String key: item_keys) {
 
-            int index        = Integer.parseInt(key.substring(4)) - 1;
+            int index        = (key.startsWith("item")) ? Integer.parseInt(key.substring("item".length())) - 1 : Integer.parseInt(key.substring("armor".length())) - 1 ;
             int itemID       = pInv.getInt(key + ".id");
             int amount       = pInv.getInt(key + ".amount");
             short durability = (short)pInv.getInt(key + ".durability");
 
             ItemStack item = new ItemStack(itemID);
-            item.setAmount(amount);
             item.setDurability(durability);
 
             List<String> enchantments = pInv.getStringList(key + ".enchantment");
@@ -210,8 +244,16 @@ public class ToggleInventory extends JavaPlugin {
                 item = book.generateItemStack();
             }
 
-            inventory.setItem(index, item);
+            if(key.startsWith("item")){
+                item.setAmount(amount);
+                inventory.setItem(index, item);
+            }
+            else if(key.startsWith("armor")){
+                armorContents[armorIndex++] = item;
+            }
         }
+
+        inventory.setArmorContents(armorContents);
 
         return ;
     }
