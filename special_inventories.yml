@@ -1,0 +1,1938 @@
+develop:
+  item1:
+    id: 278
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,3
+    - LOOT_BONUS_BLOCKS,3
+    - DIG_SPEED,4
+  item2:
+    id: 331
+    amount: 64
+    durability: 0
+  item3:
+    id: 76
+    amount: 64
+    durability: 0
+  item4:
+    id: 356
+    amount: 64
+    durability: 0
+  item5:
+    id: 69
+    amount: 64
+    durability: 0
+  item6:
+    id: 35
+    amount: 64
+    durability: 0
+  item7:
+    id: 35
+    amount: 64
+    durability: 1
+  item8:
+    id: 50
+    amount: 64
+    durability: 0
+  item9:
+    id: 364
+    amount: 64
+    durability: 0
+  item10:
+    id: 131
+    amount: 64
+    durability: 0
+  item11:
+    id: 287
+    amount: 64
+    durability: 0
+  item14:
+    id: 20
+    amount: 64
+    durability: 0
+  item15:
+    id: 25
+    amount: 64
+    durability: 0
+  item16:
+    id: 324
+    amount: 1
+    durability: 0
+  item17:
+    id: 324
+    amount: 1
+    durability: 0
+  item18:
+    id: 327
+    amount: 1
+    durability: 0
+  item19:
+    id: 77
+    amount: 15
+    durability: 0
+  item20:
+    id: 70
+    amount: 16
+    durability: 0
+  item23:
+    id: 123
+    amount: 64
+    durability: 0
+  item24:
+    id: 23
+    amount: 64
+    durability: 0
+  item25:
+    id: 330
+    amount: 1
+    durability: 0
+  item26:
+    id: 330
+    amount: 1
+    durability: 0
+  item27:
+    id: 326
+    amount: 1
+    durability: 0
+  item32:
+    id: 29
+    amount: 64
+    durability: 7
+  item33:
+    id: 33
+    amount: 64
+    durability: 7
+  item34:
+    id: 96
+    amount: 16
+    durability: 0
+  item35:
+    id: 107
+    amount: 16
+    durability: 0
+  item36:
+    id: 325
+    amount: 16
+    durability: 0
+  armor1:
+    id: 0
+    durability: -1
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 0
+    durability: -1
+
+miner:
+  item1:
+    id: 278
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,5
+    - DIG_SPEED,5
+    - LOOT_BONUS_BLOCKS,3
+  item2:
+    id: 277
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,5
+    - DIG_SPEED,5
+    - LOOT_BONUS_BLOCKS,3
+  item3:
+    id: 276
+    amount: 1
+    durability: 0
+    enchantment:
+    - LOOT_BONUS_MOBS,3
+  item4:
+    id: 261
+    amount: 1
+    durability: 0
+    enchantment:
+    - ARROW_INFINITE,1
+  item5:
+    id: 364
+    amount: 64
+    durability: 0
+  item6:
+    id: 323
+    amount: 16
+    durability: 0
+  item7:
+    id: 50
+    amount: 64
+    durability: 0
+  item8:
+    id: 347
+    amount: 1
+    durability: 0
+  item9:
+    id: 345
+    amount: 1
+    durability: 0
+  item10:
+    id: 89
+    amount: 64
+    durability: 0
+  item11:
+    id: 91
+    amount: 64
+    durability: 0
+  item12:
+    id: 67
+    amount: 64
+    durability: 0
+  item17:
+    id: 130
+    amount: 2
+    durability: 0
+  item18:
+    id: 54
+    amount: 2
+    durability: 0
+  item19:
+    id: 17
+    amount: 64
+    durability: 0
+  item20:
+    id: 5
+    amount: 64
+    durability: 0
+  item21:
+    id: 263
+    amount: 64
+    durability: 0
+  item26:
+    id: 262
+    amount: 64
+    durability: 0
+  item27:
+    id: 262
+    amount: 64
+    durability: 0
+  item28:
+    id: 355
+    amount: 1
+    durability: 0
+  item29:
+    id: 58
+    amount: 1
+    durability: 0
+  item30:
+    id: 61
+    amount: 1
+    durability: 0
+  item32:
+    id: 278
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,5
+    - LOOT_BONUS_BLOCKS,3
+    - DIG_SPEED,5
+    - SILK_TOUCH,1
+  item33:
+    id: 277
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,5
+    - LOOT_BONUS_BLOCKS,3
+    - DIG_SPEED,5
+    - SILK_TOUCH,1
+  item35:
+    id: 50
+    amount: 64
+    durability: 0
+  item36:
+    id: 50
+    amount: 64
+    durability: 0
+  armor1:
+    id: 0
+    durability: -1
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 310
+    durability: 0
+    enchantment:
+    - WATER_WORKER,4
+    - PROTECTION_EXPLOSIONS,4
+
+killer:
+  item1:
+    id: 276
+    amount: 1
+    durability: 0
+    enchantment:
+    - DAMAGE_ALL,5
+    - DAMAGE_ARTHROPODS,5
+    - DAMAGE_UNDEAD,5
+    - FIRE_ASPECT,2
+    - KNOCKBACK,2
+    - LOOT_BONUS_MOBS,3
+  item2:
+    id: 261
+    amount: 1
+    durability: 0
+    enchantment:
+    - ARROW_FIRE,1
+    - ARROW_DAMAGE,5
+    - ARROW_KNOCKBACK,2
+    - ARROW_INFINITE,1
+  item3:
+    id: 364
+    amount: 64
+    durability: 0
+  item4:
+    id: 50
+    amount: 64
+    durability: 0
+  item5:
+    id: 373
+    amount: 1
+    durability: 16377
+  item6:
+    id: 373
+    amount: 1
+    durability: 16371
+  item7:
+    id: 373
+    amount: 1
+    durability: 16345
+  item8:
+    id: 373
+    amount: 1
+    durability: 16370
+  item9:
+    id: 355
+    amount: 1
+    durability: 0
+  item10:
+    id: 54
+    amount: 2
+    durability: 0
+  item19:
+    id: 262
+    amount: 64
+    durability: 0
+  armor1:
+    id: 313
+    durability: 0
+    enchantment:
+    - PROTECTION_ENVIRONMENTAL,4
+    - PROTECTION_FALL,4
+    - PROTECTION_FIRE,4
+    - PROTECTION_EXPLOSIONS,4
+    - PROTECTION_PROJECTILE,4
+    - OXYGEN,3
+  armor2:
+    id: 312
+    durability: 0
+    enchantment:
+    - PROTECTION_ENVIRONMENTAL,4
+    - PROTECTION_FIRE,4
+    - PROTECTION_EXPLOSIONS,4
+    - PROTECTION_PROJECTILE,4
+    - OXYGEN,3
+  armor3:
+    id: 311
+    durability: 0
+    enchantment:
+    - PROTECTION_ENVIRONMENTAL,4
+    - PROTECTION_FIRE,4
+    - PROTECTION_EXPLOSIONS,4
+    - PROTECTION_PROJECTILE,4
+    - OXYGEN,3
+  armor4:
+    id: 310
+    durability: 0
+    enchantment:
+    - PROTECTION_ENVIRONMENTAL,4
+    - PROTECTION_FIRE,4
+    - PROTECTION_EXPLOSIONS,4
+    - PROTECTION_PROJECTILE,4
+    - OXYGEN,3
+    - WATER_WORKER,1
+
+woodman:
+  item1:
+    id: 279
+    amount: 1
+    durability: 0
+    enchantment:
+    - LOOT_BONUS_BLOCKS,3
+    - DURABILITY,5
+    - DIG_SPEED,5
+  item2:
+    id: 279
+    amount: 1
+    durability: 0
+    enchantment:
+    - LOOT_BONUS_BLOCKS,3
+    - DURABILITY,5
+    - DIG_SPEED,5
+    - SILK_TOUCH,1
+  item3:
+    id: 297
+    amount: 64
+    durability: 0
+  item4:
+    id: 65
+    amount: 64
+    durability: 0
+  item5:
+    id: 50
+    amount: 64
+    durability: 0
+  item6:
+    id: 54
+    amount: 2
+    durability: 0
+  item7:
+    id: 345
+    amount: 1
+    durability: 0
+  item8:
+    id: 359
+    amount: 1
+    durability: 0
+  item9:
+    id: 259
+    amount: 1
+    durability: 0
+  item36:
+    id: 355
+    amount: 1
+    durability: 0
+  armor1:
+    id: 313
+    durability: 0
+    enchantment:
+    - PROTECTION_FALL,4
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 0
+    durability: -1
+
+spawn:
+  item1:
+    id: 383
+    amount: 64
+    durability: 50
+  item2:
+    id: 383
+    amount: 64
+    durability: 51
+  item3:
+    id: 383
+    amount: 64
+    durability: 52
+  item4:
+    id: 383
+    amount: 64
+    durability: 54
+  item5:
+    id: 383
+    amount: 64
+    durability: 55
+  item6:
+    id: 383
+    amount: 64
+    durability: 56
+  item7:
+    id: 383
+    amount: 64
+    durability: 57
+  item8:
+    id: 383
+    amount: 64
+    durability: 58
+  item9:
+    id: 52
+    amount: 64
+    durability: 0
+  item10:
+    id: 383
+    amount: 64
+    durability: 92
+  item11:
+    id: 383
+    amount: 64
+    durability: 91
+  item12:
+    id: 383
+    amount: 64
+    durability: 96
+  item13:
+    id: 383
+    amount: 64
+    durability: 62
+  item14:
+    id: 383
+    amount: 64
+    durability: 94
+  item15:
+    id: 383
+    amount: 64
+    durability: 95
+  item16:
+    id: 383
+    amount: 64
+    durability: 61
+  item17:
+    id: 383
+    amount: 64
+    durability: 90
+  item18:
+    id: 383
+    amount: 64
+    durability: 120
+  item19:
+    id: 383
+    amount: 64
+    durability: 98
+  item20:
+    id: 383
+    amount: 64
+    durability: 93
+  item21:
+    id: 383
+    amount: 64
+    durability: 60
+  item22:
+    id: 97
+    amount: 64
+    durability: 0
+  item23:
+    id: 97
+    amount: 64
+    durability: 1
+  item24:
+    id: 97
+    amount: 64
+    durability: 2
+  item25:
+    id: 349
+    amount: 64
+    durability: 0
+  item26:
+    id: 352
+    amount: 64
+    durability: 0
+  item27:
+    id: 344
+    amount: 16
+    durability: 0
+  item28:
+    id: 383
+    amount: 64
+    durability: 59
+
+brew:
+  item1:
+    id: 379
+    amount: 64
+    durability: 0
+  item2:
+    id: 374
+    amount: 64
+    durability: 0
+  item3:
+    id: 54
+    amount: 6
+    durability: 0
+  item4:
+    id: 373
+    amount: 1
+    durability: 0
+  item5:
+    id: 373
+    amount: 1
+    durability: 0
+  item6:
+    id: 373
+    amount: 1
+    durability: 0
+  item7:
+    id: 373
+    amount: 1
+    durability: 0
+  item8:
+    id: 326
+    amount: 1
+    durability: 0
+  item9:
+    id: 326
+    amount: 1
+    durability: 0
+  item10:
+    id: 322
+    amount: 3
+    durability: 1
+  item11:
+    id: 378
+    amount: 64
+    durability: 0
+  item12:
+    id: 378
+    amount: 64
+    durability: 0
+  item13:
+    id: 372
+    amount: 64
+    durability: 0
+  item14:
+    id: 372
+    amount: 64
+    durability: 0
+  item15:
+    id: 348
+    amount: 64
+    durability: 0
+  item16:
+    id: 348
+    amount: 64
+    durability: 0
+  item17:
+    id: 374
+    amount: 64
+    durability: 0
+  item18:
+    id: 325
+    amount: 16
+    durability: 0
+  item19:
+    id: 376
+    amount: 64
+    durability: 0
+  item20:
+    id: 353
+    amount: 64
+    durability: 0
+  item21:
+    id: 353
+    amount: 64
+    durability: 0
+  item22:
+    id: 377
+    amount: 64
+    durability: 0
+  item23:
+    id: 377
+    amount: 64
+    durability: 0
+  item24:
+    id: 289
+    amount: 64
+    durability: 0
+  item25:
+    id: 289
+    amount: 64
+    durability: 0
+  item26:
+    id: 326
+    amount: 1
+    durability: 0
+  item27:
+    id: 380
+    amount: 64
+    durability: 0
+  item28:
+    id: 376
+    amount: 64
+    durability: 0
+  item29:
+    id: 331
+    amount: 64
+    durability: 0
+  item30:
+    id: 331
+    amount: 64
+    durability: 0
+  item31:
+    id: 370
+    amount: 64
+    durability: 0
+  item32:
+    id: 370
+    amount: 64
+    durability: 0
+  item33:
+    id: 382
+    amount: 64
+    durability: 0
+  item34:
+    id: 382
+    amount: 64
+    durability: 0
+  item35:
+    id: 326
+    amount: 1
+    durability: 0
+  item36:
+    id: 326
+    amount: 1
+    durability: 0
+  armor1:
+    id: 0
+    durability: -1
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 0
+    durability: -1
+
+richman:
+  item1:
+    id: 264
+    amount: 64
+    durability: 0
+  item2:
+    id: 388
+    amount: 64
+    durability: 0
+  item3:
+    id: 266
+    amount: 64
+    durability: 0
+  item4:
+    id: 265
+    amount: 64
+    durability: 0
+  item6:
+    id: 286
+    amount: 1
+    durability: 0
+  item7:
+    id: 285
+    amount: 1
+    durability: 0
+  item8:
+    id: 284
+    amount: 1
+    durability: 0
+  item9:
+    id: 283
+    amount: 1
+    durability: 0
+  item12:
+    id: 388
+    amount: 64
+    durability: 0
+  item14:
+    id: 57
+    amount: 64
+    durability: 0
+  item16:
+    id: 388
+    amount: 64
+    durability: 0
+  item20:
+    id: 371
+    amount: 64
+    durability: 0
+  item22:
+    id: 42
+    amount: 64
+    durability: 0
+  item24:
+    id: 41
+    amount: 64
+    durability: 0
+  item26:
+    id: 371
+    amount: 64
+    durability: 0
+  item30:
+    id: 388
+    amount: 64
+    durability: 0
+  item32:
+    id: 133
+    amount: 64
+    durability: 0
+  item34:
+    id: 388
+    amount: 64
+    durability: 0
+  armor1:
+    id: 317
+    durability: 0
+  armor2:
+    id: 316
+    durability: 0
+  armor3:
+    id: 315
+    durability: 0
+  armor4:
+    id: 314
+    durability: 0
+
+nature:
+  item1:
+    id: 279
+    amount: 1
+    durability: 0
+    enchantment:
+    - DURABILITY,5
+    - DIG_SPEED,5
+    - SILK_TOUCH,1
+  item2:
+    id: 293
+    amount: 1
+    durability: 0
+  item3:
+    id: 351
+    amount: 64
+    durability: 15
+  item4:
+    id: 260
+    amount: 64
+    durability: 0
+  item5:
+    id: 110
+    amount: 64
+    durability: 0
+  item6:
+    id: 40
+    amount: 64
+    durability: 0
+  item7:
+    id: 39
+    amount: 64
+    durability: 0
+  item8:
+    id: 6
+    amount: 64
+    durability: 0
+  item9:
+    id: 362
+    amount: 64
+    durability: 0
+  item10:
+    id: 6
+    amount: 64
+    durability: 2
+  item11:
+    id: 6
+    amount: 64
+    durability: 3
+  item15:
+    id: 31
+    amount: 64
+    durability: 1
+  item16:
+    id: 111
+    amount: 64
+    durability: 0
+  item17:
+    id: 361
+    amount: 64
+    durability: 0
+  item18:
+    id: 6
+    amount: 64
+    durability: 1
+  item19:
+    id: 103
+    amount: 64
+    durability: 0
+  item20:
+    id: 86
+    amount: 64
+    durability: 0
+  item21:
+    id: 338
+    amount: 64
+    durability: 0
+  item22:
+    id: 351
+    amount: 64
+    durability: 15
+  item23:
+    id: 351
+    amount: 64
+    durability: 15
+  item24:
+    id: 31
+    amount: 64
+    durability: 2
+  item25:
+    id: 106
+    amount: 64
+    durability: 0
+  item26:
+    id: 351
+    amount: 64
+    durability: 3
+  item27:
+    id: 295
+    amount: 64
+    durability: 0
+  item28:
+    id: 18
+    amount: 64
+    durability: 6
+  item29:
+    id: 18
+    amount: 64
+    durability: 5
+  item30:
+    id: 18
+    amount: 64
+    durability: 4
+  item31:
+    id: 17
+    amount: 64
+    durability: 1
+  item32:
+    id: 17
+    amount: 64
+    durability: 2
+  item33:
+    id: 17
+    amount: 64
+    durability: 0
+  item34:
+    id: 17
+    amount: 64
+    durability: 3
+  item35:
+    id: 38
+    amount: 64
+    durability: 0
+  item36:
+    id: 37
+    amount: 64
+    durability: 0
+
+rail:
+  item1:
+    id: 278
+    amount: 1
+    durability: 0
+    enchantment:
+      - DURABILITY,5
+      - DIG_SPEED,5
+  item2:
+    id: 277
+    amount: 1
+    durability: 0
+    enchantment:
+      - DURABILITY,5
+      - DIG_SPEED,5
+  item3:
+    id: 66
+    amount: 64
+    durability: 0
+  item4:
+    id: 27
+    amount: 64
+    durability: 0
+  item5:
+    id: 4
+    amount: 64
+    durability: 0
+  item6:
+    id: 364
+    amount: 64
+    durability: 0
+  item7:
+    id: 69
+    amount: 64
+    durability: 0
+  item8:
+    id: 76
+    amount: 64
+    durability: 0
+  item9:
+    id: 331
+    amount: 64
+    durability: 0
+  item10:
+    id: 4
+    amount: 64
+    durability: 0
+  item11:
+    id: 4
+    amount: 64
+    durability: 0
+  item12:
+    id: 4
+    amount: 64
+    durability: 0
+  item13:
+    id: 4
+    amount: 64
+    durability: 0
+  item16:
+    id: 77
+    amount: 10
+    durability: 0
+  item17:
+    id: 23
+    amount: 1
+    durability: 0
+  item18:
+    id: 333
+    amount: 1
+    durability: 0
+  item19:
+    id: 27
+    amount: 64
+    durability: 0
+  item20:
+    id: 27
+    amount: 64
+    durability: 0
+  item21:
+    id: 27
+    amount: 64
+    durability: 0
+  item22:
+    id: 27
+    amount: 64
+    durability: 0
+  item24:
+    id: 28
+    amount: 64
+    durability: 0
+  item25:
+    id: 76
+    amount: 64
+    durability: 0
+  item26:
+    id: 342
+    amount: 1
+    durability: 0
+  item27:
+    id: 343
+    amount: 1
+    durability: 0
+  item28:
+    id: 66
+    amount: 64
+    durability: 0
+  item29:
+    id: 66
+    amount: 64
+    durability: 0
+  item30:
+    id: 66
+    amount: 64
+    durability: 0
+  item31:
+    id: 66
+    amount: 64
+    durability: 0
+  item33:
+    id: 28
+    amount: 64
+    durability: 0
+  item34:
+    id: 331
+    amount: 64
+    durability: 0
+  item35:
+    id: 328
+    amount: 1
+    durability: 0
+  item36:
+    id: 328
+    amount: 1
+    durability: 0
+
+volt:
+  item1:
+    id: 373
+    amount: 1
+    durability: 16370
+  item2:
+    id: 373
+    amount: 1
+    durability: 16370
+  item3:
+    id: 373
+    amount: 1
+    durability: 16370
+  item4:
+    id: 373
+    amount: 1
+    durability: 16370
+  item5:
+    id: 373
+    amount: 1
+    durability: 16370
+  item6:
+    id: 373
+    amount: 1
+    durability: 16370
+  item7:
+    id: 373
+    amount: 1
+    durability: 16370
+  item8:
+    id: 373
+    amount: 1
+    durability: 16370
+  item9:
+    id: 364
+    amount: 64
+    durability: 0
+  armor1:
+    id: 317
+    durability: 0
+    enchantment:
+      - PROTECTION_FALL,4
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 0
+    durability: -1
+
+blacks:
+  item1:
+    id: 267
+    amount: 1
+    durability: 0
+  item2:
+    id: 283
+    amount: 1
+    durability: 0
+  item3:
+    id: 276
+    amount: 1
+    durability: 0
+  item4:
+    id: 257
+    amount: 1
+    durability: 0
+  item5:
+    id: 285
+    amount: 1
+    durability: 0
+  item6:
+    id: 278
+    amount: 1
+    durability: 0
+  item7:
+    id: 259
+    amount: 1
+    durability: 0
+  item8:
+    id: 359
+    amount: 1
+    durability: 0
+  item9:
+    id: 346
+    amount: 1
+    durability: 0
+  item10:
+    id: 306
+    amount: 1
+    durability: 0
+  item11:
+    id: 307
+    amount: 1
+    durability: 0
+  item12:
+    id: 308
+    amount: 1
+    durability: 0
+  item13:
+    id: 309
+    amount: 1
+    durability: 0
+  item14:
+    id: 314
+    amount: 1
+    durability: 0
+  item15:
+    id: 315
+    amount: 1
+    durability: 0
+  item16:
+    id: 316
+    amount: 1
+    durability: 0
+  item17:
+    id: 317
+    amount: 1
+    durability: 0
+  item18:
+    id: 262
+    amount: 64
+    durability: 0
+  item19:
+    id: 298
+    amount: 1
+    durability: 0
+  item20:
+    id: 299
+    amount: 1
+    durability: 0
+  item21:
+    id: 300
+    amount: 1
+    durability: 0
+  item22:
+    id: 301
+    amount: 1
+    durability: 0
+  item23:
+    id: 310
+    amount: 1
+    durability: 0
+  item24:
+    id: 311
+    amount: 1
+    durability: 0
+  item25:
+    id: 312
+    amount: 1
+    durability: 0
+  item26:
+    id: 313
+    amount: 1
+    durability: 0
+  item27:
+    id: 261
+    amount: 1
+    durability: 0
+  item28:
+    id: 286
+    amount: 1
+    durability: 0
+  item29:
+    id: 279
+    amount: 1
+    durability: 0
+  item30:
+    id: 258
+    amount: 1
+    durability: 0
+  item31:
+    id: 256
+    amount: 1
+    durability: 0
+  item32:
+    id: 284
+    amount: 1
+    durability: 0
+  item33:
+    id: 277
+    amount: 1
+    durability: 0
+  item34:
+    id: 292
+    amount: 1
+    durability: 0
+  item35:
+    id: 294
+    amount: 1
+    durability: 0
+  item36:
+    id: 293
+    amount: 1
+    durability: 0
+  armor1:
+    id: 305
+    durability: 0
+  armor2:
+    id: 304
+    durability: 0
+  armor3:
+    id: 303
+    durability: 0
+  armor4:
+    id: 302
+    durability: 0
+
+library:
+  item1:
+    id: 47
+    amount: 64
+    durability: 0
+  item2:
+    id: 321
+    amount: 64
+    durability: 0
+  item3:
+    id: 5
+    amount: 64
+    durability: 0
+  item4:
+    id: 116
+    amount: 1
+    durability: 0
+  item6:
+    id: 386
+    amount: 1
+    durability: 0
+  item7:
+    id: 386
+    amount: 1
+    durability: 0
+  item8:
+    id: 386
+    amount: 1
+    durability: 0
+  item9:
+    id: 387
+    amount: 1
+    durability: 0
+    book:
+      title: Thanks!
+      author: mirumiruz
+      pages:
+      - "Thank you for using\nToggleInventory.\n\n\n\n\n\n\n\n \nYou can save written\
+        \ books too."
+  item10:
+    id: 5
+    amount: 64
+    durability: 1
+  item11:
+    id: 5
+    amount: 64
+    durability: 2
+  item12:
+    id: 5
+    amount: 64
+    durability: 3
+  item13:
+    id: 49
+    amount: 8
+    durability: 0
+  item14:
+    id: 264
+    amount: 2
+    durability: 0
+  item16:
+    id: 340
+    amount: 64
+    durability: 0
+  item17:
+    id: 47
+    amount: 64
+    durability: 0
+  item18:
+    id: 386
+    amount: 1
+    durability: 0
+  item19:
+    id: 339
+    amount: 64
+    durability: 0
+  item20:
+    id: 339
+    amount: 64
+    durability: 0
+  item22:
+    id: 288
+    amount: 64
+    durability: 0
+  item25:
+    id: 340
+    amount: 64
+    durability: 0
+  item26:
+    id: 47
+    amount: 64
+    durability: 0
+  item27:
+    id: 386
+    amount: 1
+    durability: 0
+  item28:
+    id: 334
+    amount: 64
+    durability: 0
+  item29:
+    id: 339
+    amount: 64
+    durability: 0
+  item31:
+    id: 351
+    amount: 64
+    durability: 0
+  item32:
+    id: 340
+    amount: 64
+    durability: 0
+  item34:
+    id: 340
+    amount: 64
+    durability: 0
+  item35:
+    id: 47
+    amount: 64
+    durability: 0
+  item36:
+    id: 386
+    amount: 1
+    durability: 0
+
+arsenal:
+  item1:
+    id: 46
+    amount: 64
+    durability: 0
+  item2:
+    id: 46
+    amount: 64
+    durability: 0
+  item3:
+    id: 46
+    amount: 64
+    durability: 0
+  item4:
+    id: 259
+    amount: 1
+    durability: 0
+  item5:
+    id: 70
+    amount: 64
+    durability: 0
+  item6:
+    id: 76
+    amount: 64
+    durability: 0
+  item7:
+    id: 356
+    amount: 64
+    durability: 0
+  item8:
+    id: 69
+    amount: 64
+    durability: 0
+  item9:
+    id: 331
+    amount: 64
+    durability: 0
+  item10:
+    id: 46
+    amount: 64
+    durability: 0
+  item11:
+    id: 46
+    amount: 64
+    durability: 0
+  item12:
+    id: 46
+    amount: 64
+    durability: 0
+  item13:
+    id: 46
+    amount: 64
+    durability: 0
+  item14:
+    id: 46
+    amount: 64
+    durability: 0
+  item15:
+    id: 46
+    amount: 64
+    durability: 0
+  item16:
+    id: 46
+    amount: 64
+    durability: 0
+  item17:
+    id: 46
+    amount: 64
+    durability: 0
+  item18:
+    id: 46
+    amount: 64
+    durability: 0
+  item19:
+    id: 46
+    amount: 64
+    durability: 0
+  item20:
+    id: 46
+    amount: 64
+    durability: 0
+  item21:
+    id: 46
+    amount: 64
+    durability: 0
+  item22:
+    id: 46
+    amount: 64
+    durability: 0
+  item23:
+    id: 46
+    amount: 64
+    durability: 0
+  item24:
+    id: 46
+    amount: 64
+    durability: 0
+  item25:
+    id: 46
+    amount: 64
+    durability: 0
+  item26:
+    id: 46
+    amount: 64
+    durability: 0
+  item27:
+    id: 46
+    amount: 64
+    durability: 0
+  item28:
+    id: 325
+    amount: 16
+    durability: 0
+  item29:
+    id: 326
+    amount: 1
+    durability: 0
+  item30:
+    id: 326
+    amount: 1
+    durability: 0
+  item31:
+    id: 327
+    amount: 1
+    durability: 0
+  item32:
+    id: 327
+    amount: 1
+    durability: 0
+  item33:
+    id: 11
+    amount: 64
+    durability: 0
+  item34:
+    id: 51
+    amount: 64
+    durability: 0
+  item35:
+    id: 259
+    amount: 1
+    durability: 0
+  item36:
+    id: 259
+    amount: 1
+    durability: 0
+  armor1:
+    id: 0
+    durability: -1
+  armor2:
+    id: 0
+    durability: -1
+  armor3:
+    id: 0
+    durability: -1
+  armor4:
+    id: 0
+    durability: -1
+
+doctor:
+  item1:
+    id: 373
+    amount: 1
+    durability: 32757
+  item2:
+    id: 373
+    amount: 1
+    durability: 32753
+  item3:
+    id: 373
+    amount: 1
+    durability: 32764
+  item4:
+    id: 373
+    amount: 1
+    durability: 32760
+  item5:
+    id: 373
+    amount: 1
+    durability: 32756
+  item6:
+    id: 373
+    amount: 1
+    durability: 32762
+  item7:
+    id: 373
+    amount: 1
+    durability: 16377
+  item8:
+    id: 373
+    amount: 1
+    durability: 16371
+  item9:
+    id: 322
+    amount: 64
+    durability: 1
+  item10:
+    id: 373
+    amount: 1
+    durability: 32755
+  item11:
+    id: 373
+    amount: 1
+    durability: 32722
+  item12:
+    id: 373
+    amount: 1
+    durability: 32721
+  item13:
+    id: 373
+    amount: 1
+    durability: 32697
+  item14:
+    id: 373
+    amount: 1
+    durability: 32692
+  item15:
+    id: 373
+    amount: 1
+    durability: 32690
+  item16:
+    id: 373
+    amount: 1
+    durability: 32689
+  item17:
+    id: 373
+    amount: 1
+    durability: 32698
+  item18:
+    id: 373
+    amount: 1
+    durability: 32665
+  item19:
+    id: 373
+    amount: 1
+    durability: 32724
+  item20:
+    id: 373
+    amount: 1
+    durability: 32760
+  item21:
+    id: 373
+    amount: 1
+    durability: 32729
+  item22:
+    id: 373
+    amount: 1
+    durability: 32762
+  item23:
+    id: 373
+    amount: 1
+    durability: 32753
+  item24:
+    id: 373
+    amount: 1
+    durability: 32754
+  item25:
+    id: 373
+    amount: 1
+    durability: 32756
+  item26:
+    id: 373
+    amount: 1
+    durability: 32761
+  item27:
+    id: 373
+    amount: 1
+    durability: 32696
+  item28:
+    id: 373
+    amount: 1
+    durability: 32660
+  item29:
+    id: 373
+    amount: 1
+    durability: 32725
+  item30:
+    id: 373
+    amount: 1
+    durability: 32757
+  item31:
+    id: 373
+    amount: 1
+    durability: 32764
+  item32:
+    id: 373
+    amount: 1
+    durability: 32732
+  item33:
+    id: 373
+    amount: 1
+    durability: 32657
+  item34:
+    id: 373
+    amount: 1
+    durability: 32658
+  item35:
+    id: 373
+    amount: 1
+    durability: 32691
+  item36:
+    id: 373
+    amount: 1
+    durability: 16370
+
+artist:
+  item1:
+    id: 35
+    amount: 64
+    durability: 0
+  item2:
+    id: 35
+    amount: 64
+    durability: 15
+  item3:
+    id: 35
+    amount: 64
+    durability: 7
+  item4:
+    id: 35
+    amount: 64
+    durability: 14
+  item5:
+    id: 35
+    amount: 64
+    durability: 9
+  item6:
+    id: 35
+    amount: 64
+    durability: 4
+  item7:
+    id: 35
+    amount: 64
+    durability: 2
+  item9:
+    id: 50
+    amount: 64
+    durability: 0
+  item10:
+    id: 35
+    amount: 64
+    durability: 6
+  item11:
+    id: 35
+    amount: 64
+    durability: 1
+  item12:
+    id: 35
+    amount: 64
+    durability: 10
+  item13:
+    id: 20
+    amount: 64
+    durability: 0
+  item17:
+    id: 323
+    amount: 16
+    durability: 0
+  item18:
+    id: 321
+    amount: 32
+    durability: 0
+  item19:
+    id: 35
+    amount: 64
+    durability: 12
+  item20:
+    id: 35
+    amount: 64
+    durability: 3
+  item21:
+    id: 35
+    amount: 64
+    durability: 11
+  item22:
+    id: 30
+    amount: 64
+    durability: 0
+  item26:
+    id: 41
+    amount: 64
+    durability: 0
+  item27:
+    id: 42
+    amount: 64
+    durability: 0
+  item28:
+    id: 35
+    amount: 64
+    durability: 13
+  item29:
+    id: 35
+    amount: 64
+    durability: 5
+  item30:
+    id: 35
+    amount: 64
+    durability: 8
+  item31:
+    id: 120
+    amount: 64
+    durability: 0
+  item35:
+    id: 133
+    amount: 64
+    durability: 0
+  item36:
+    id: 57
+    amount: 64
+    durability: 0
+
+builder:
+  item1:
+    id: 5
+    amount: 64
+    durability: 0
+  item2:
+    id: 53
+    amount: 64
+    durability: 0
+  item3:
+    id: 126
+    amount: 64
+    durability: 0
+  item4:
+    id: 3
+    amount: 64
+    durability: 0
+  item5:
+    id: 85
+    amount: 64
+    durability: 0
+  item6:
+    id: 102
+    amount: 64
+    durability: 0
+  item7:
+    id: 96
+    amount: 64
+    durability: 0
+  item8:
+    id: 65
+    amount: 64
+    durability: 0
+  item9:
+    id: 50
+    amount: 64
+    durability: 0
+  item10:
+    id: 321
+    amount: 64
+    durability: 0
+  item11:
+    id: 323
+    amount: 16
+    durability: 0
+  item12:
+    id: 20
+    amount: 64
+    durability: 0
+  item13:
+    id: 47
+    amount: 64
+    durability: 0
+  item17:
+    id: 61
+    amount: 64
+    durability: 0
+  item18:
+    id: 23
+    amount: 64
+    durability: 0
+  item19:
+    id: 326
+    amount: 1
+    durability: 0
+  item20:
+    id: 326
+    amount: 1
+    durability: 0
+  item21:
+    id: 107
+    amount: 64
+    durability: 0
+  item22:
+    id: 72
+    amount: 64
+    durability: 0
+  item25:
+    id: 355
+    amount: 1
+    durability: 0
+  item26:
+    id: 58
+    amount: 64
+    durability: 0
+  item27:
+    id: 54
+    amount: 64
+    durability: 0
+  item28:
+    id: 327
+    amount: 1
+    durability: 0
+  item29:
+    id: 327
+    amount: 1
+    durability: 0
+  item30:
+    id: 325
+    amount: 16
+    durability: 0
+  item31:
+    id: 37
+    amount: 64
+    durability: 0
+  item32:
+    id: 38
+    amount: 64
+    durability: 0
+  item34:
+    id: 116
+    amount: 1
+    durability: 0
+  item35:
+    id: 324
+    amount: 1
+    durability: 0
+  item36:
+    id: 324
+    amount: 1
+    durability: 0
+
+normal:
+
+farmer:
+
+harvest:
+

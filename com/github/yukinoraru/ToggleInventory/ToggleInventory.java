@@ -3,6 +3,7 @@ package com.github.yukinoraru.ToggleInventory;
 //import java.util.logging.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -14,15 +15,20 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ToggleInventory extends JavaPlugin {
+public class ToggleInventory extends JavaPlugin implements Listener {
 
     private static final String CONFIG_INVENTORY_CURRENT_INDEX          = "inv_current_index";
     private static final int    CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT  = 1;
@@ -30,6 +36,13 @@ public class ToggleInventory extends JavaPlugin {
     private static final int    CONFIG_INVENTORY_MAXIMUM                = 30;
 
     public void onEnable(){
+
+        //
+        getServer().getPluginManager().registerEvents(this, this);
+
+        saveDefaultConfig();
+        saveResource("special_inventories.yml", false);
+
         //
         try {
             Metrics metrics = new Metrics(this);
@@ -37,6 +50,14 @@ public class ToggleInventory extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+      if(event.isCancelled()){
+        return;
+      }
+      // onCommand
     }
 
     public void onDisable(){
@@ -198,15 +219,9 @@ public class ToggleInventory extends JavaPlugin {
         return;
     }
 
-    private void loadInventory(CommandSender sender, int inventoryIndex){
-        Player player = (Player)sender;
-        PlayerInventory inventory = player.getInventory();
+    private void deserializeInventoryConfig(PlayerInventory inventory, ConfigurationSection pInv){
 
         inventory.clear();
-
-        //
-        File inventoryFile = getInventoryFile(player.getName(), inventoryIndex);
-        FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
 
         int armorIndex = 0;
         ItemStack[] armorContents = new ItemStack[4];
@@ -230,7 +245,7 @@ public class ToggleInventory extends JavaPlugin {
                     continue;
                 }
                 Enchantment enchantment = Enchantment.getByName(tmp[0]);
-                item.addEnchantment(enchantment, Integer.parseInt(tmp[1]));
+                item.addUnsafeEnchantment(enchantment, Integer.parseInt(tmp[1]));
             }
 
             //written book
@@ -254,6 +269,18 @@ public class ToggleInventory extends JavaPlugin {
         }
 
         inventory.setArmorContents(armorContents);
+        return ;
+    }
+
+    private void loadInventory(CommandSender sender, int inventoryIndex){
+        Player player = (Player)sender;
+        PlayerInventory inventory = player.getInventory();
+
+        //
+        File inventoryFile = getInventoryFile(player.getName(), inventoryIndex);
+        FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
+
+        deserializeInventoryConfig(inventory, pInv.getRoot());
 
         return ;
     }
@@ -303,35 +330,213 @@ public class ToggleInventory extends JavaPlugin {
                 }
             }
 
-            // save current inventory
-            saveInventory(sender);
+            //
+            File configFile         = getPlayerConfigFile(((Player)sender).getName());
+            FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
 
-            int nextInvIndex;
-            if(index > 0){
-                // set next inventory
+            boolean isSpecialInvEnabled = pConf.getString("special_inv_index", "").length() > 0;
+            if(isSpecialInvEnabled){
+                pConf.set("special_inv_index", "");
                 try{
-                    nextInvIndex = setNextInventoryIndex(sender, index);
+                    pConf.save(configFile);
+                }catch (Exception e){
+
                 }
-                catch(Exception e){
-                    sender.sendMessage(e.getMessage()); // out of bounds exception
-                    return true;
-                }
+                int inventoryIndex = getCurrentInventoryIndex(((Player)sender).getName());
+                loadInventory(sender, inventoryIndex);
+                sender.sendMessage(makeInventoryMessage(sender) + "inventory restored.");
+                return true;
             }
             else{
-                // toggle inventory like a ring
-                nextInvIndex = setNextInventoryIndex(sender, -1);
+                // save current inventory
+                saveInventory(sender);
+
+                int nextInvIndex;
+                if(index > 0){
+                    // set next inventory
+                    try{
+                        nextInvIndex = setNextInventoryIndex(sender, index);
+                    }
+                    catch(Exception e){
+                        sender.sendMessage(e.getMessage()); // out of bounds exception
+                        return true;
+                    }
+                }
+                else{
+                    // toggle inventory like a ring
+                    nextInvIndex = setNextInventoryIndex(sender, -1);
+                }
+
+                // load from currentIndex
+                loadInventory(sender, nextInvIndex);
+
+                // TOOD: message to player
+                sender.sendMessage(makeInventoryMessage(sender) + "inventory toggled.");
             }
-
-            // load from currentIndex
-            loadInventory(sender, nextInvIndex);
-
-            // TOOD: message to player
-            //*
-            sender.sendMessage(makeInventoryMessage(sender) + "inventory toggled.");
-            //*/
 
             return true;
         }
+
+        if(cmd.getName().equalsIgnoreCase("toggleis")){
+            if(!sender.hasPermission("toggle_inventory.toggleis")){
+                sender.sendMessage("You don't have permission to toggle special inventories.");
+                return true;
+            }
+
+            this.reloadSpecialInventories();
+
+            File configFile         = getPlayerConfigFile(((Player)sender).getName());
+            FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
+
+            String currentSpecialInv = pConf.getString("special_inv_index", "");
+            boolean isSpecialInvEnabled = currentSpecialInv.length() > 0;
+
+            String targetInv = null;
+            Set<String> nameList = specialInventoriesConfig.getKeys(false);
+
+            if(args.length > 0){
+                getLogger().info("args=" + args[0] + " , namelist=" + nameList.toString() + " , " + specialInventoriesConfig.toString());
+            }
+
+            // type /tis [query]
+            if(args.length == 1 && args[0].length() > 0){
+                int minDist = 0;
+                boolean isFirst = true;
+                for(String name : nameList){
+                    int dist = LevenshteinDistance.computeLevenshteinDistance(name, args[0]);
+                    if(name.startsWith(args[0])){
+                        dist -= args[0].length() * 2;
+                    }
+                    if(isFirst){
+                        targetInv = name;
+                        minDist = dist;
+                        isFirst = false;
+                    }
+                    else if(dist < minDist){
+                        targetInv = name;
+                        minDist = dist;
+                    }
+                    getLogger().info("A=" + name + " , B=" + args[0] + " , Distance=" + Integer.toString(dist));
+                }
+            }
+            //*
+            // just type /tis
+            else{
+                String[] nameListString = nameList.toArray(new String[0]);
+                if(isSpecialInvEnabled){
+                    int targetIndex = -1;
+                    for(int i=0; i < nameListString.length; i++){
+                        String name = nameListString[i];
+                        if(name.equals(currentSpecialInv)){
+                            targetIndex = i+1;
+                        }
+                    }
+                    if(targetIndex >= nameListString.length){
+                        targetIndex = 0;
+                    }
+                    targetInv = nameListString[targetIndex];
+                }
+                else{
+                    if(nameListString.length > 0){
+                        targetInv = nameListString[0];
+                    }
+                }
+            }
+            //*/
+
+            //load inventory
+            if(targetInv != null){
+
+                //
+                String msg = ChatColor.GRAY+"[";
+                for(String name: nameList){
+                    if(name.equals(targetInv)){
+                        msg += ChatColor.GREEN+name;
+                    }
+                    else{
+                        msg += ChatColor.DARK_GREEN+name;
+                    }
+                    msg += ChatColor.RESET+" ";
+                }
+                sender.sendMessage(msg + ChatColor.GRAY + "]  is toggled.");
+
+                //
+                try{
+                    if(!isSpecialInvEnabled){
+                        saveInventory(sender);
+                    }
+                    pConf.set("special_inv_index", targetInv);
+                    pConf.save(configFile);
+                }
+                catch (Exception e){
+
+                }
+
+                deserializeInventoryConfig(
+                        ((Player)sender).getInventory(),
+                        specialInventoriesConfig.getConfigurationSection(targetInv)
+                        );
+                return true;
+            }
+            else{
+                sender.sendMessage("There's no matched inventory.");
+                return true;
+            }
+
+        }
+
         return false;
+    }
+
+    private FileConfiguration specialInventoriesConfig = null;
+    private File specialInventoriesConfigFile = null;
+
+    public void reloadSpecialInventories() {
+        if (specialInventoriesConfigFile == null) {
+            specialInventoriesConfigFile = new File(getDataFolder(), "special_inventories.yml");
+        }
+        specialInventoriesConfig = YamlConfiguration.loadConfiguration(specialInventoriesConfigFile);
+
+        // Look for defaults in the jar
+        InputStream defConfigStream = this.getResource("special_inventories.yml");
+        if (defConfigStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            specialInventoriesConfig.setDefaults(defConfig);
+        }
+    }
+
+    public FileConfiguration getSpecialInventoriesConfig() {
+        if (specialInventoriesConfig == null) {
+            this.reloadSpecialInventories();
+        }
+        return specialInventoriesConfig;
+    }
+
+}
+
+class LevenshteinDistance {
+    private static int minimum(int a, int b, int c) {
+            return Math.min(Math.min(a, b), c);
+    }
+
+    public static int computeLevenshteinDistance(CharSequence str1,
+                    CharSequence str2) {
+            int[][] distance = new int[str1.length() + 1][str2.length() + 1];
+
+            for (int i = 0; i <= str1.length(); i++)
+                    distance[i][0] = i;
+            for (int j = 1; j <= str2.length(); j++)
+                    distance[0][j] = j;
+
+            for (int i = 1; i <= str1.length(); i++)
+                    for (int j = 1; j <= str2.length(); j++)
+                            distance[i][j] = minimum(
+                                            distance[i - 1][j] + 1,
+                                            distance[i][j - 1] + 1,
+                                            distance[i - 1][j - 1]
+                                                            + ((str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0
+                                                                            : 1));
+
+            return distance[str1.length()][str2.length()];
     }
 }

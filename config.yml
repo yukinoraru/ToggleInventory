@@ -1,0 +1,24 @@
+general:
+  sep_inv_gamemode: false
+
+inventories:
+  dev:
+
+  miner:
+
+  killer:
+
+  builder:
+  medicine:
+  woodman:
+  arsenal:
+  lib:
+  spawn:
+  harvest:
+  ecologist:
+  normal:
+  farm:
+  mechs:
+  rich:
+  rail:
+  volt:

@@ -1,6 +1,6 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 0.0.4
+version: 0.0.5
 author: yukinoraru
 description: toggling inventory command.
 commands:
@@ -11,9 +11,18 @@ commands:
       /<command> [0-n]
       Example: /<command> - toggle inventory like a ring
       Example: /<command> 1 - toggle inventory index 1
+  toggleis:
+    description: toggle inventory for special inventories
+    aliases: [tis,its]
+    usage: |
+      /<command> [name]
+      Example: /<command> de - toggle special inventory starts with 'd'
+
 permissions:
-  toggle_inventory.*:
-    description: gives all permissions of the ToggleInventory
+
+  toggle_inventory.toggle_special:
+    default: op
+    description: gives permission to /toggleis command
 
   toggle_inventory.toggle:
     default: op
