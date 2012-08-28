@@ -2,7 +2,7 @@ name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
 version: 0.0.5
 author: yukinoraru
-description: toggling inventory command.
+description: toggle inventory command.
 commands:
   togglei:
     description: toggle inventory
@@ -16,7 +16,7 @@ commands:
     aliases: [tis,its]
     usage: |
       /<command> [name]
-      Example: /<command> de - toggle special inventory starts with 'd'
+      Example: /<command> de - toggle special inventory starts with 'de'
 
 permissions:
 
