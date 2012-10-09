@@ -148,7 +148,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     }
 
     // save inventory to YAML
-    //TODO: Planned feature, save potion effects too.
+    //TODO: Planned feature, save current potion effects too.
     private void saveInventory(CommandSender sender){
 
         Player player = (Player)sender;
