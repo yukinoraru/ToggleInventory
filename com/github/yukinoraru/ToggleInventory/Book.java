@@ -1,5 +1,9 @@
 package com.github.yukinoraru.ToggleInventory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;
@@ -8,68 +12,86 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class Book {
-    private String author;
-    private String title;
-    private String[] pages;
+    private String encoded_author;
+    private String encoded_title;
+    private String[] encoded_pages;
 
-    public Book(ItemStack bookItem) {
+    public Book(ItemStack bookItem) throws UnsupportedEncodingException {
         NBTTagCompound bookData = ((CraftItemStack) bookItem).getHandle().tag;
 
-        this.author = bookData.getString("author");
-        this.title = bookData.getString("title");
+        this.encoded_author = bookData.getString("author");
+        this.encoded_title = bookData.getString("title");
 
         NBTTagList nPages = bookData.getList("pages");
 
         String[] sPages = new String[nPages.size()];
         for (int i = 0; i < nPages.size(); i++) {
-            // TODO: BOOK:URLENCODE
             sPages[i] = nPages.get(i).toString();
         }
-        this.pages = sPages;
+        this.encoded_pages = sPages;
+
+        this.encode(); //
     }
 
-    public Book(String title, String author, String[] pages) {
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
+    private void encode() throws UnsupportedEncodingException{
+        this.encoded_title = URLEncoder.encode(encoded_title, "UTF-8");
+        this.encoded_author = URLEncoder.encode(encoded_author, "UTF-8");
+
+        for (int i = 0; i < this.encoded_pages.length; i++) {
+            this.encoded_pages[i] = URLEncoder.encode(this.encoded_pages[i], "UTF-8");
+        }
+    }
+
+    public Book(String title, String author, String[] pages, Boolean isNeedToEncode) throws UnsupportedEncodingException {
+        this.encoded_title = title;
+        this.encoded_author = author;
+        this.encoded_pages = pages;
+
+        if(isNeedToEncode){
+            this.encode(); //
+        }
     }
 
     public String getAuthor() {
-        return this.author;
+        return this.encoded_author;
     }
 
     public void setAuthor(String sAuthor) {
-        this.author = sAuthor;
+        this.encoded_author = sAuthor;
     }
 
     public String getTitle() {
-        return this.title;
+        return this.encoded_title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.encoded_title = title;
     }
 
     public String[] getPages() {
-        return this.pages;
+        return this.encoded_pages;
     }
 
     public void setPage(int page, String text) {
-        this.pages[page] = text;
+        this.encoded_pages[page] = text;
     }
 
-    public ItemStack generateItemStack() {
+    public ItemStack generateItemStack() throws UnsupportedEncodingException {
         CraftItemStack newbook = new CraftItemStack(Material.WRITTEN_BOOK);
 
         NBTTagCompound newBookData = new NBTTagCompound();
 
-        newBookData.setString("author", this.author);
-        newBookData.setString("title", this.title);
+        // needs for decode. all members are encoded
+        String decoded_author = URLDecoder.decode(this.encoded_author, "UTF-8");
+        String decoded_title  = URLDecoder.decode(this.encoded_title, "UTF-8");
+
+        newBookData.setString("author", decoded_author);
+        newBookData.setString("title", decoded_title);
 
         NBTTagList nPages = new NBTTagList();
-        for (int i = 0; i < this.pages.length; i++) {
-            //TODO:BOOK:URLDECODE
-            nPages.add(new NBTTagString(this.pages[i], this.pages[i]));
+        for (int i = 0; i < this.encoded_pages.length; i++) {
+            String decoded_page = URLDecoder.decode(this.encoded_pages[i], "UTF-8");
+            nPages.add(new NBTTagString(decoded_page, decoded_page));
         }
 
         newBookData.set("pages", nPages);

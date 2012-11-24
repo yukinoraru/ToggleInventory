@@ -237,13 +237,16 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
                 //written book
                 if(itemID == 387) {
-                    Book book = new Book(item);
-                    pInv.set(prefix + ".book" + ".title", book.getTitle());
-                    pInv.set(prefix + ".book" + ".author", book.getAuthor());
-                    pInv.set(prefix + ".book" + ".pages", Arrays.asList(book.getPages()));
+                    try {
+                        Book book = new Book(item);
+                        pInv.set(prefix + ".book" + ".title", book.getTitle());
+                        pInv.set(prefix + ".book" + ".author", book.getAuthor());
+                        pInv.set(prefix + ".book" + ".pages", Arrays.asList(book.getPages()));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
         }
 
         // save
@@ -324,8 +327,12 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 String title   = pInv.getString(key + ".book.title");
                 List<String> pages     = pInv.getStringList(key + ".book.pages");
                 String[] pagesInString = pages.toArray(new String[pages.size()]);
-                Book book = new Book(title, author, pagesInString);
-                item = book.generateItemStack();
+                try {
+                    Book book = new Book(title, author, pagesInString, false);
+                    item = book.generateItemStack();
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
             }
 
             if(key.startsWith("item")){
