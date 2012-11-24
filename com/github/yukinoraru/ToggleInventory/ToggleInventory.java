@@ -5,8 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +166,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     }
 
     // save inventory to YAML
-    //TODO: Planned feature, save current potion effects too.
     private void saveInventory(CommandSender sender){
 
         Player player = (Player)sender;
@@ -176,7 +179,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         File inventoryFile      = getInventoryFile(playerName, invCurrentIndex);
 
         // before save, file must be filled with empty
-        // inventoryFile.delete();
         PrintWriter writer;
         try {
             writer = new PrintWriter(inventoryFile);
@@ -188,83 +190,74 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         }
 
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
-        //pInv.getEncoding();
 
-        int i = 0;
-        for (ItemStack item : inventory) {
-            i++;
-            if(item == null){
-                continue;
+        // CAUTION: inventory is separated two div: armor slots, normal slots
+        HashMap<String, ItemStack[]> invs = new HashMap<String, ItemStack[]>();
+        invs.put("item", inventory.getContents());
+        invs.put("armor", inventory.getArmorContents());
+        Iterator<String> it = invs.keySet().iterator();
+        while (it.hasNext()){
+            int i = 0;
+            String key = (String)it.next();
+            for (ItemStack item : invs.get(key)) {
+                i++;
+                if(item == null){
+                    continue;
+                }
+
+                // create prefix: e.g.) 'item1' or 'armor1'
+                String prefix = key + Integer.toString(i);
+
+                // get/set basic info for item
+                int itemID = item.getTypeId();
+                pInv.set(prefix + ".id", itemID);
+                pInv.set(prefix + ".amount", item.getAmount());
+                pInv.set(prefix + ".durability", item.getDurability());
+
+                // name and lore
+                if( itemID != 0 ){
+                    try {
+                        // encode name
+                        String name = Namer.getName(item);
+                        String encoded_name = (name != null) ? URLEncoder.encode(name, "UTF-8") : "";
+                        pInv.set(prefix + ".name", encoded_name);
+
+                        // encode lores
+                        String []lores = Namer.getLore(item);
+                        String []encoded_lores = new String[lores.length];
+                        for(int m = 0; m < lores.length; m++){
+                            encoded_lores[m] = URLEncoder.encode(lores[m], "UTF-8");
+                        }
+                        pInv.set(prefix + ".lore", encoded_lores);
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    // save colored leather armors
+                    if(Armor.isApplicable(item)){
+                        pInv.set(prefix + ".color", Armor.getColor(item));
+                    }
+                }
+
+                // enchantment
+                String [] arrayOfEnchantment = getEnchantmentsString(item);
+                if(arrayOfEnchantment != null){
+                    pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
+                }
+
+                //written book
+                if(itemID == 387) {
+                    Book book = new Book(item);
+                    pInv.set(prefix + ".book" + ".title", book.getTitle());
+                    pInv.set(prefix + ".book" + ".author", book.getAuthor());
+                    pInv.set(prefix + ".book" + ".pages", Arrays.asList(book.getPages()));
+                }
             }
 
-            // create prefix: e.g.) 'item1'
-            String prefix = "item" + Integer.toString(i);
-
-            // get/set basic info for item
-            int itemID = item.getTypeId();
-            pInv.set(prefix + ".id", itemID);
-            pInv.set(prefix + ".amount", item.getAmount());
-            pInv.set(prefix + ".durability", item.getDurability());
-
-            // name and lore
-            pInv.set(prefix + ".name", Namer.getName(item));
-            pInv.set(prefix + ".lore", Namer.getLore(item));
-
-            for (String tmp : Namer.getLore(item))
-                getLogger().info(tmp);
-
-            // save colored leather armors
-            if(Armor.isApplicable(item)){
-                pInv.set(prefix + ".color", Armor.getColor(item));
-            }
-
-            // enchantment
-            String [] arrayOfEnchantment = getEnchantmentsString(item);
-            if(arrayOfEnchantment != null){
-                pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
-            }
-
-            //written book
-            if(itemID == 387) {
-                Book book = new Book(item);
-                pInv.set(prefix + ".book" + ".title", book.getTitle());
-                pInv.set(prefix + ".book" + ".author", book.getAuthor());
-                pInv.set(prefix + ".book" + ".pages", Arrays.asList(book.getPages()));
-            }
         }
 
-        // save armor
-        i = 0;
-        for (ItemStack item : inventory.getArmorContents()) {
-            i++;
-
-            if(item == null){
-                continue;
-            }
-
-            String prefix = "armor" + Integer.toString(i);
-
-            // get/set basic info for item
-            int itemID = item.getTypeId();
-            pInv.set(prefix + ".id", itemID);
-            pInv.set(prefix + ".durability", item.getDurability());
-
-            // name and lore
-            if(itemID != 0){
-                pInv.set(prefix + ".name", Namer.getName(item));
-                pInv.set(prefix + ".lore", Namer.getLore(item));
-                pInv.set(prefix + ".color", Armor.getColor(item));
-            }
-
-            // enchantment
-            String [] arrayOfEnchantment = getEnchantmentsString(item);
-            if(arrayOfEnchantment != null){
-                pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
-            }
-        }
-
+        // save
         try{
-
             pInv.save(inventoryFile);
         }
         catch(Exception e){
@@ -293,22 +286,41 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             ItemStack item = new ItemStack(itemID);
             item.setDurability(durability);
 
-            // restore name and lore
-            String name           = pInv.getString(key + ".name");
-            List<String> lore     = pInv.getStringList(key + ".lore");
-            String[] loreInStringArray = lore.toArray(new String[lore.size()]);
-
-            if(name != null && name.length() > 0){
-                item = Namer.setName(item, name);
+            // restore name
+            String encoded_name   = pInv.getString(key + ".name");
+            if(encoded_name != null){
+                try {
+                    String name = URLDecoder.decode(encoded_name, "UTF-8");
+                    if(name != null && name.length() > 0){
+                        item = Namer.setName(item, name);
+                    }
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
             }
-            if(loreInStringArray.length > 0){
-                item = Namer.setLore(item, loreInStringArray);
+
+            // restore lore
+            try {
+                List<String> lore     = pInv.getStringList(key + ".lore");
+                String[] encoded_lores = lore.toArray(new String[lore.size()]);
+
+                String []lores = new String[encoded_lores.length];
+                for(int m = 0; m < lores.length; m++){
+                    lores[m] = URLDecoder.decode(encoded_lores[m], "UTF-8");
+                }
+                if(lores.length > 0){
+                    item = Namer.setLore(item, lores);
+                }
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
             }
 
-            // TODO: restore colored leather armors
+            // restore colored leather armors: -1 means not dyed
             if(Armor.isApplicable(item)){
                 int color = pInv.getInt(key + ".color");
-                item = Armor.setColor(item, color);
+                if(color > 0){
+                    item = Armor.setColor(item, color);
+                }
             }
 
             // restore enchantments

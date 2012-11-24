@@ -22,6 +22,7 @@ public class Book {
 
         String[] sPages = new String[nPages.size()];
         for (int i = 0; i < nPages.size(); i++) {
+            // TODO: BOOK:URLENCODE
             sPages[i] = nPages.get(i).toString();
         }
         this.pages = sPages;
@@ -67,6 +68,7 @@ public class Book {
 
         NBTTagList nPages = new NBTTagList();
         for (int i = 0; i < this.pages.length; i++) {
+            //TODO:BOOK:URLDECODE
             nPages.add(new NBTTagString(this.pages[i], this.pages[i]));
         }
 
