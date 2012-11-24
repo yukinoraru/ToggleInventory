@@ -6,7 +6,10 @@ develop:
     enchantment:
     - DURABILITY,3
     - LOOT_BONUS_BLOCKS,3
-    - DIG_SPEED,4
+    - DIG_SPEED,5
+    name: D.E.V SUPER
+    lore:
+    - Dig! Immediately.
   item2:
     id: 331
     amount: 64
@@ -135,8 +138,11 @@ miner:
     durability: 0
     enchantment:
     - DURABILITY,5
-    - DIG_SPEED,5
+    - DIG_SPEED,3
     - LOOT_BONUS_BLOCKS,3
+    name: MINING SUPER
+    lore:
+    - God of miner used this
   item2:
     id: 277
     amount: 1
@@ -145,6 +151,9 @@ miner:
     - DURABILITY,5
     - DIG_SPEED,5
     - LOOT_BONUS_BLOCKS,3
+    name: D.I.G SUPER
+    lore:
+    - D.I.G! D.I.G!
   item3:
     id: 276
     amount: 1
@@ -283,6 +292,10 @@ killer:
     - FIRE_ASPECT,2
     - KNOCKBACK,2
     - LOOT_BONUS_MOBS,3
+    name: '%E8%8D%89%E9%82%A3%E8%97%9D%E5%8A%8D'
+    lore:
+    - (KUSANAGI NO TSURUGI)
+    - THE LEGEND BLADE in Zipang.
   item2:
     id: 261
     amount: 1
@@ -292,6 +305,10 @@ killer:
     - ARROW_DAMAGE,5
     - ARROW_KNOCKBACK,2
     - ARROW_INFINITE,1
+    name: '%E5%A4%A9%E5%BC%93%E5%BD%A6'
+    lore:
+    - (AMA NO YUMIHIKO)
+    - THE LEGEND BOW in Zipang.
   item3:
     id: 364
     amount: 64
@@ -338,6 +355,9 @@ killer:
     - PROTECTION_EXPLOSIONS,4
     - PROTECTION_PROJECTILE,4
     - OXYGEN,3
+    name: GOD BOOTS
+    lore:
+    - ONE OF AN OOPARTS
   armor2:
     id: 312
     durability: 0
@@ -347,6 +367,9 @@ killer:
     - PROTECTION_EXPLOSIONS,4
     - PROTECTION_PROJECTILE,4
     - OXYGEN,3
+    name: GOD PANTS
+    lore:
+    - ONE OF AN OOPARTS
   armor3:
     id: 311
     durability: 0
@@ -356,6 +379,9 @@ killer:
     - PROTECTION_EXPLOSIONS,4
     - PROTECTION_PROJECTILE,4
     - OXYGEN,3
+    name: GOD CHEST
+    lore:
+    - ONE OF AN OOPARTS
   armor4:
     id: 310
     durability: 0
@@ -366,6 +392,9 @@ killer:
     - PROTECTION_PROJECTILE,4
     - OXYGEN,3
     - WATER_WORKER,1
+    name: GOD HELM
+    lore:
+    - ONE OF AN OOPARTS
 
 artist:
   item1:
@@ -2295,6 +2324,246 @@ normal:
   armor4:
     id: 306
     durability: 0
+
+headmania:
+  item1:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: Notch
+  item2:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: jeb_
+  item3:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: mollstam
+  item4:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: carlmanneh
+  item5:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: MinecraftChick
+  item6:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: carnalizer
+  item7:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: xlson
+  item8:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: Dinnerbone
+  item9:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: EvilSeph
+  item11:
+    id: 397
+    amount: 64
+    durability: 2
+    name: ''
+    lore: []
+    skullOwner: ''
+  item14:
+    id: 397
+    amount: 64
+    durability: 3
+    name: ''
+    lore: []
+    skullOwner: ''
+  item17:
+    id: 397
+    amount: 64
+    durability: 4
+    name: ''
+    lore: []
+    skullOwner: ''
+  item30:
+    id: 397
+    amount: 64
+    durability: 0
+    name: ''
+    lore: []
+    skullOwner: ''
+  item34:
+    id: 397
+    amount: 64
+    durability: 1
+    name: ''
+    lore: []
+    skullOwner: ''
+
+samurai:
+  item1:
+    id: 276
+    amount: 1
+    durability: 0
+    name: '%E5%A6%96%E5%88%80%E6%9D%91%E6%AD%A3'
+    lore:
+    - '%28Yoto+Muramasa%29'
+    - This+blade+is+cursed.
+    - People+in+Zipang+says+
+    - +-+No+one+should+be+touch+this+blade.
+    enchantment:
+    - DAMAGE_UNDEAD,10
+    - DAMAGE_ALL,10
+    - KNOCKBACK,2
+    - DAMAGE_ARTHROPODS,10
+  item2:
+    id: 267
+    amount: 1
+    durability: 0
+    name: '%E9%A3%9B%E9%BE%8D%E5%88%80'
+    lore:
+    - Dragon's sword
+    enchantment:
+    - FIRE_ASPECT,10
+  item3:
+    id: 383
+    amount: 1
+    durability: 95
+    name: ''
+    lore: []
+  item6:
+    id: 50
+    amount: 64
+    durability: 0
+    name: ''
+    lore: []
+  item7:
+    id: 386
+    amount: 1
+    durability: 0
+    name: ''
+    lore: []
+  item8:
+    id: 350
+    amount: 16
+    durability: 0
+    name: ''
+    lore: []
+  item9:
+    id: 395
+    amount: 10
+    durability: 0
+    name: ''
+    lore: []
+  item25:
+    id: 350
+    amount: 16
+    durability: 0
+    name: ''
+    lore: []
+  item26:
+    id: 371
+    amount: 10
+    durability: 0
+    name: ''
+    lore: []
+  item27:
+    id: 339
+    amount: 20
+    durability: 0
+    name: ''
+    lore: []
+  item34:
+    id: 282
+    amount: 1
+    durability: 0
+    name: '%E5%91%B3%E5%99%8C%E6%B1%81'
+    lore:
+    - Traditional+food+in+Zipang.
+  item35:
+    id: 282
+    amount: 1
+    durability: 0
+    name: '%E5%91%B3%E5%99%8C%E6%B1%81'
+    lore:
+    - Traditional+food+in+Zipang.
+  item36:
+    id: 282
+    amount: 1
+    durability: 0
+    name: '%E5%91%B3%E5%99%8C%E6%B1%81'
+    lore:
+    - Traditional+food+in+Zipang.
+  armor1:
+    id: 301
+    amount: 1
+    durability: 0
+    name: '%E9%AC%BC%E7%A5%9E%E3%83%8E%E8%B6%B3%E6%9E%B7'
+    lore:
+    - Dyed+by+spurt+of+blood.
+    color: '#FF0000'
+    enchantment:
+    - PROTECTION_FIRE,10
+    - OXYGEN,10
+  armor2:
+    id: 300
+    amount: 1
+    durability: 0
+    name: '%E9%AC%BC%E7%A5%9E%E3%83%8E%E8%85%B0%E5%B7%BB'
+    lore:
+    - Dyed+by+spurt+of+blood.
+    color: '#FF0000'
+    enchantment:
+    - PROTECTION_FIRE,10
+    - OXYGEN,10
+  armor3:
+    id: 299
+    amount: 1
+    durability: 0
+    name: '%E9%AC%BC%E7%A5%9E%E3%83%8E%E7%BE%BD%E7%B9%94'
+    lore:
+    - Dyed+by+spurt+of+blood.
+    color: '#FF0000'
+    enchantment:
+    - PROTECTION_FIRE,10
+    - OXYGEN,10
+  armor4:
+    id: 298
+    amount: 1
+    durability: 0
+    name: '%E9%AC%BC%E7%A5%9E%E3%83%8E%E8%93%8B%E9%AA%A8'
+    lore:
+    - Dyed+by+spurt+of+blood.
+    color: '#FF0000'
+    enchantment:
+    - PROTECTION_FIRE,10
+    - OXYGEN,10
+
 
 original:
   item1:

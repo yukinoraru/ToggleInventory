@@ -1,9 +1,9 @@
 [![ToggleInventory](http://dev.bukkit.org/media/images/44/639/ToggleInventory.png)](http://dev.bukkit.org/server-mods/toggleinventory/)
 
 
-ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.3.2.
+ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.4.5.
 
-Youtube video: [ToggleInventory - multiple inventories plugin for CraftBukkit 1.3.2](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
+Youtube video: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
 
 For more information: [ToggleInventory - BukkitDev](http://dev.bukkit.org/server-mods/toggleinventory/)
 
@@ -16,8 +16,8 @@ First, you need CraftBukkit libraries to build.
 
 So download following files from http://dl.bukkit.org/
 
-* [craftbukkit-1.3.2-R1.0.jar (#2377)](http://dl.bukkit.org/downloads/craftbukkit/)
-* [bukkit-1.3.2-R1.0.jar (#1546)](http://dl.bukkit.org/downloads/bukkit/)
+* [craftbukkit-1.4.5-R0.2.jar (#2488)](http://dl.bukkit.org/downloads/craftbukkit/)
+* [bukkit-1.4.5-R1.0.jar (#1608)](http://dl.bukkit.org/downloads/bukkit/)
 
 Second, you need add above files as external JARs from Eclipse -> Project properties -> Java Build Path -> 'Add External JARs...'
 
