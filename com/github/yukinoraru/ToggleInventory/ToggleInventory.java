@@ -188,6 +188,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         }
 
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
+        //pInv.getEncoding();
 
         int i = 0;
         for (ItemStack item : inventory) {
@@ -196,7 +197,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 continue;
             }
 
-            // prefix is like this: 'item1'
+            // create prefix: e.g.) 'item1'
             String prefix = "item" + Integer.toString(i);
 
             // get/set basic info for item
@@ -205,6 +206,17 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             pInv.set(prefix + ".amount", item.getAmount());
             pInv.set(prefix + ".durability", item.getDurability());
 
+            // name and lore
+            pInv.set(prefix + ".name", Namer.getName(item));
+            pInv.set(prefix + ".lore", Namer.getLore(item));
+
+            for (String tmp : Namer.getLore(item))
+                getLogger().info(tmp);
+
+            // save colored leather armors
+            if(Armor.isApplicable(item)){
+                pInv.set(prefix + ".color", Armor.getColor(item));
+            }
 
             // enchantment
             String [] arrayOfEnchantment = getEnchantmentsString(item);
@@ -225,24 +237,34 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         i = 0;
         for (ItemStack item : inventory.getArmorContents()) {
             i++;
+
             if(item == null){
                 continue;
             }
-            String start = "armor" + Integer.toString(i);
+
+            String prefix = "armor" + Integer.toString(i);
 
             // get/set basic info for item
             int itemID = item.getTypeId();
-            pInv.set(start + ".id", itemID);
-            pInv.set(start + ".durability", item.getDurability());
+            pInv.set(prefix + ".id", itemID);
+            pInv.set(prefix + ".durability", item.getDurability());
+
+            // name and lore
+            if(itemID != 0){
+                pInv.set(prefix + ".name", Namer.getName(item));
+                pInv.set(prefix + ".lore", Namer.getLore(item));
+                pInv.set(prefix + ".color", Armor.getColor(item));
+            }
 
             // enchantment
             String [] arrayOfEnchantment = getEnchantmentsString(item);
             if(arrayOfEnchantment != null){
-                pInv.set(start + ".enchantment", Arrays.asList(arrayOfEnchantment));
+                pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
             }
         }
 
         try{
+
             pInv.save(inventoryFile);
         }
         catch(Exception e){
@@ -271,6 +293,25 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             ItemStack item = new ItemStack(itemID);
             item.setDurability(durability);
 
+            // restore name and lore
+            String name           = pInv.getString(key + ".name");
+            List<String> lore     = pInv.getStringList(key + ".lore");
+            String[] loreInStringArray = lore.toArray(new String[lore.size()]);
+
+            if(name != null && name.length() > 0){
+                item = Namer.setName(item, name);
+            }
+            if(loreInStringArray.length > 0){
+                item = Namer.setLore(item, loreInStringArray);
+            }
+
+            // TODO: restore colored leather armors
+            if(Armor.isApplicable(item)){
+                int color = pInv.getInt(key + ".color");
+                item = Armor.setColor(item, color);
+            }
+
+            // restore enchantments
             List<String> enchantments = pInv.getStringList(key + ".enchantment");
             for (String e : enchantments){
                 String[] tmp = e.split(",");
@@ -282,7 +323,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 item.addUnsafeEnchantment(enchantment, Integer.parseInt(tmp[1]));
             }
 
-            //written book
+            // written book
             if(itemID == 387) {
                 //getLogger().info("Load from written book.");
                 String author  = pInv.getString(key + ".book.author");
