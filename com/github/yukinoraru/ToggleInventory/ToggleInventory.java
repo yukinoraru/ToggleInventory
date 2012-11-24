@@ -225,7 +225,12 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                     }
                     // save colored leather armors
                     if(Armor.isApplicable(item)){
-                        pInv.set(prefix + ".color", Armor.getColor(item));
+                        // convert int to hex color; e.g.) 16711680 -> 0xff0000
+                        int color = Armor.getColor(item);
+                        if(color > 0){
+                            String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                            pInv.set(prefix + ".color", hexColor);
+                        }
                     }
                 }
 
@@ -300,10 +305,11 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 e1.printStackTrace();
             }
 
-            // restore colored leather armors: -1 means not dyed
+            // restore colored leather armors
             if(Armor.isApplicable(item)){
-                int color = pInv.getInt(key + ".color");
-                if(color > 0){
+                String hexColor = pInv.getString(key + ".color", null);
+                if(hexColor != null){
+                    int color = Integer.parseInt(hexColor.replaceFirst("#", ""), 16);
                     item = Armor.setColor(item, color);
                 }
             }
