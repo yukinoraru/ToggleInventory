@@ -240,6 +240,11 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                     pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
                 }
 
+                // skull
+                if(Skull.isApplicable(item)){
+                    pInv.set(prefix + ".skullOwner", Skull.getSkin(item));
+                }
+
                 //written book
                 if(itemID == 387) {
                     try {
@@ -324,6 +329,14 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 }
                 Enchantment enchantment = Enchantment.getByName(tmp[0]);
                 item.addUnsafeEnchantment(enchantment, Integer.parseInt(tmp[1]));
+            }
+
+            // restore skull owner
+            if(Skull.isApplicable(item)){
+                String owner = pInv.getString(key + ".skullOwner");
+                if(owner.length() > 0){
+                    item = Skull.setSkin(item, owner);
+                }
             }
 
             // written book
