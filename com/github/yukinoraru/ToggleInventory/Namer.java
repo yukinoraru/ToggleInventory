@@ -1,5 +1,9 @@
 package com.github.yukinoraru.ToggleInventory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;
@@ -48,6 +52,33 @@ public class Namer {
         tag.setString("Name", name);
         itemStack.tag.setCompound("display", tag);
         return craftStack;
+    }
+
+    public static ItemStack setNameInURLEncoded(ItemStack item, String encoded_name) throws UnsupportedEncodingException {
+        String name = URLDecoder.decode(encoded_name, "UTF-8");
+        return setName(item, name);
+    }
+
+    public static ItemStack setLoreInURLEncoded(ItemStack item, String... encoded_lores) throws UnsupportedEncodingException {
+        String []lores = new String[encoded_lores.length];
+        for(int m = 0; m < lores.length; m++){
+            lores[m] = URLDecoder.decode(encoded_lores[m], "UTF-8");
+        }
+        return setLore(item, lores);
+    }
+
+    public static String getNameInURLEncoded(ItemStack item) throws UnsupportedEncodingException {
+        String name = getName(item);
+        return (name != null) ? URLEncoder.encode(name, "UTF-8") : "";
+    }
+
+    public static String[] getLoreInURLEncoded(ItemStack item) throws UnsupportedEncodingException {
+        String []lores = getLore(item);
+        String []encoded_lores = new String[lores.length];
+        for(int m = 0; m < lores.length; m++){
+            encoded_lores[m] = URLEncoder.encode(lores[m], "UTF-8");
+        }
+        return encoded_lores;
     }
 
     /**

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -217,19 +215,11 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 // name and lore
                 if( itemID != 0 ){
                     try {
-                        // encode name
-                        String name = Namer.getName(item);
-                        String encoded_name = (name != null) ? URLEncoder.encode(name, "UTF-8") : "";
-                        pInv.set(prefix + ".name", encoded_name);
-
-                        // encode lores
-                        String []lores = Namer.getLore(item);
-                        String []encoded_lores = new String[lores.length];
-                        for(int m = 0; m < lores.length; m++){
-                            encoded_lores[m] = URLEncoder.encode(lores[m], "UTF-8");
-                        }
-                        pInv.set(prefix + ".lore", encoded_lores);
-
+                        // get encode name and lores
+                        String name = Namer.getNameInURLEncoded(item);
+                        String []lores = Namer.getLoreInURLEncoded(item);
+                        pInv.set(prefix + ".name", name);
+                        pInv.set(prefix + ".lore", lores);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -287,29 +277,21 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             item.setDurability(durability);
 
             // restore name
-            String encoded_name   = pInv.getString(key + ".name");
-            if(encoded_name != null){
-                try {
-                    String name = URLDecoder.decode(encoded_name, "UTF-8");
-                    if(name != null && name.length() > 0){
-                        item = Namer.setName(item, name);
-                    }
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
+            try {
+                String encoded_name   = pInv.getString(key + ".name");
+                if(encoded_name != null && encoded_name.length() > 0){
+                    item = Namer.setNameInURLEncoded(item, encoded_name);
                 }
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
             }
 
             // restore lore
             try {
                 List<String> lore     = pInv.getStringList(key + ".lore");
                 String[] encoded_lores = lore.toArray(new String[lore.size()]);
-
-                String []lores = new String[encoded_lores.length];
-                for(int m = 0; m < lores.length; m++){
-                    lores[m] = URLDecoder.decode(encoded_lores[m], "UTF-8");
-                }
-                if(lores.length > 0){
-                    item = Namer.setLore(item, lores);
+                if(encoded_lores.length > 0){
+                    item = Namer.setLoreInURLEncoded(item, encoded_lores);
                 }
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
