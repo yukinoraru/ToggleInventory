@@ -119,7 +119,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             pConf.set(CONFIG_INVENTORY_CURRENT_INDEX, nextInvIndex);
             pConf.save(configFile);
         } catch (IOException e) {
-            outputError("Something went to wrong when set next inventory index.", sender);
+            outputError("Something went wrong when setting next inventory index.", sender);
             e.printStackTrace();
         }
 
@@ -183,7 +183,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             writer.print("");
             writer.close();
         } catch (FileNotFoundException e) {
-            outputError("Something went to wrong when saving inventory.", sender);
+            outputError("Something went wrong when saving inventory.", sender);
             e.printStackTrace();
         }
 
@@ -264,7 +264,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             pInv.save(inventoryFile);
         }
         catch(Exception e){
-            outputError("Something went to wrong when saving inventory.", sender);
+            outputError("Something went wrong when saving inventory.", sender);
             e.printStackTrace();
         }
         return;
@@ -324,7 +324,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             for (String e : enchantments){
                 String[] tmp = e.split(",");
                 if(tmp.length != 2){
-                    getLogger().warning("enchantments is something wrong.");
+                    getLogger().warning("Something wrong with enchantments.");
                     continue;
                 }
                 Enchantment enchantment = Enchantment.getByName(tmp[0]);
@@ -455,7 +455,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                     pConf.set(CONFIG_INVENTORY_SPCIAL_INV_INDEX, ""); // set empty
                     pConf.save(configFile);
                 }catch (Exception e){
-                    outputError("Unknown error is occured.", sender);
+                    outputError("Unknown error occured.", sender);
                     e.printStackTrace();
                     return true;
                 }
@@ -547,7 +547,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 // select special inv from file in order when user is using special inv.
                 String[] nameListString = nameList.toArray(new String[0]);
                 if(nameListString.length == 0){
-                    getLogger().warning("There is no special inventories in " + CONFIG_FILENAME_SPECIAL_INV + ". Please check it.");
+                    getLogger().warning("There are no special inventories in " + CONFIG_FILENAME_SPECIAL_INV + ". Please check it.");
                     sender.sendMessage("There are no special inventories!");
                     return true;
                 }
@@ -582,7 +582,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                     pConf.save(configFile);
                 }
                 catch (Exception e){
-                    sender.sendMessage(ChatColor.RED + "Can't save your inventory." + ChatColor.RESET);
+                    sender.sendMessage(ChatColor.RED + "Cannot save your inventory." + ChatColor.RESET);
                     return true;
                 }
 
@@ -608,7 +608,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 return true;
             }
             else{
-                sender.sendMessage("There's no matched inventory.");
+                sender.sendMessage("There is no matched inventory.");
                 return true;
             }
 
