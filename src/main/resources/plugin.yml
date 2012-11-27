@@ -1,6 +1,6 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 0.0.7
+version: 0.0.8
 author: yukinoraru
 description: toggle inventory command.
 commands:

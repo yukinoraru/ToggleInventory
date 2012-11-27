@@ -1,6 +1,6 @@
 *.jar
-/.classpath
-/.project
-/.settings/
+/target/
+/bukkit
+/bin
 *.class
 *.jardesc

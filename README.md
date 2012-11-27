@@ -1,37 +1,58 @@
 [![ToggleInventory](http://dev.bukkit.org/media/images/44/639/ToggleInventory.png)](http://dev.bukkit.org/server-mods/toggleinventory/)
 
+###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.4.5.
 
-ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.4.5.
+* Demo on Youtube: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
 
-Youtube video: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
+* More information: [ToggleInventory - BukkitDev](http://dev.bukkit.org/server-mods/toggleinventory/)
 
-For more information: [ToggleInventory - BukkitDev](http://dev.bukkit.org/server-mods/toggleinventory/)
-
-日本のフォーラム: [マインクラフト 非公式 ユーザーフォーラム](http://forum.minecraftuser.jp/viewtopic.php?f=38&t=6442)
-
-
-## How to build (using Eclipse)
-
-First, you need CraftBukkit libraries to build.
-
-So download following files from http://dl.bukkit.org/
-
-* [craftbukkit-1.4.5-R0.2.jar (#2488)](http://dl.bukkit.org/downloads/craftbukkit/)
-* [bukkit-1.4.5-R1.0.jar (#1608)](http://dl.bukkit.org/downloads/bukkit/)
-
-Second, you need add above files as external JARs from Eclipse -> Project properties -> Java Build Path -> 'Add External JARs...'
+* 日本のフォーラム: [マインクラフト 非公式 ユーザーフォーラム](http://forum.minecraftuser.jp/viewtopic.php?f=38&t=6442)
 
 
-Sorry for poor lect.
+## How to build (using Eclipse JUNO)
+
+### Prerequisites
+* Eclipse JUNO
+* Maven
+* JRE 1.6 lib
+
+
+### Instruction
+1. Clone my repo or download zip and extract.
+2. Launch Eclipse. Place the ToggleInventory directory into your workspace directory.
+  * Go into [File] -> [Import...]
+  * Select [General] -> [Existing Projects into your Workspace] -> ....
+  * Right click on ToggleInventory in 'Project Explorer', press [Maven] -> [Update Project...], hit OK.
+  * Go into [File] -> [Import...]. Now, select [Run/Debug] -> [Launch Configurations]. Click 'Browse...' and browse to the project directory. Check root dir then press 'Finish'.
+  * Now go to [Run]->[Run Configurations...], follow the tree to [Java Application] -> [Run Craftbukkit] and press Run.
+  * Voilà, CraftBukkit has started. You can stop it like any java application. Your plugin will be automatically compiled and packaged into a jar. You can now rename things and develop your plugin.
+
+
+3. To update craftbukkit or bukkit lib, you can edit 'pom.xml' from the projects list.
+There is tags named 'dependency' in it like this.
+
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.5-R0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>1.4.5-R0.3-SNAPSHOT</version>
+		</dependency>
+
+
 If you have any problems to build this plugin, feel free to contact.
 
-
-## Planned features & Known bugs
-
-See [ToggleInventory - BukkitDev](http://dev.bukkit.org/server-mods/toggleinventory/)
+(This instruction is based on http://forums.bukkit.org/threads/eclipse-juno-maven-craftbukkit-a-plugin-project-template.90715/)
 
 
+## Further Information
 
-## Plugin statistics (mcstats.org)
+See [ToggleInventory - BukkitDev](http://dev.bukkit.org/server-mods/toggleinventory/).
 
-![plugin statistics](http://mcstats.org/signature/toggleinventory.png)
+
+## Plugin Statistics (mcstats.org)
+
+[![Plugin Statistics](http://mcstats.org/signature/toggleinventory.png)](http://mcstats.org/plugin/ToggleInventory)
