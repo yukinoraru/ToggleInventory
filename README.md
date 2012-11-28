@@ -8,7 +8,6 @@
 
 * 日本のフォーラム: [マインクラフト 非公式 ユーザーフォーラム](http://forum.minecraftuser.jp/viewtopic.php?f=38&t=6442)
 
-
 ## How to build (using Eclipse JUNO)
 
 ### Prerequisites

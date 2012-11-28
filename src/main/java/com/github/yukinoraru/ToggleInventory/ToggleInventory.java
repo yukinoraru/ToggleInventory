@@ -1,7 +1,6 @@
 package com.github.yukinoraru.ToggleInventory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -179,10 +178,14 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         // before save, file must be filled with empty
         PrintWriter writer;
         try {
+        	// file doesn't exist, create new file
+            if(!inventoryFile.exists()){
+            	inventoryFile.createNewFile();
+            }
             writer = new PrintWriter(inventoryFile);
             writer.print("");
             writer.close();
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             outputError("Something went wrong when saving inventory.", sender);
             e.printStackTrace();
         }
