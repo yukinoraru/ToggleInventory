@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -36,7 +37,18 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     private static final int    CONFIG_INVENTORY_MAXIMUM                = 30;
     private static final String CONFIG_FILENAME_SPECIAL_INV             = "special_inventories.yml";
 
+    protected Logger log;
+    protected UpdateChecker updateChecker;
+
     public void onEnable(){
+
+    	this.log = this.getLogger();
+    	this.updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/server-mods/toggleinventory/files.rss");
+
+    	if(this.updateChecker.updateNeeded()){
+    		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
+    		this.log.info("Get it from: " + this.updateChecker.getLink());
+    	}
 
         // save config files if not exist
         saveDefaultConfig();
@@ -327,7 +339,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             for (String e : enchantments){
                 String[] tmp = e.split(",");
                 if(tmp.length != 2){
-                    getLogger().warning("Something wrong with enchantments.");
+                	this.log.warning("Something wrong with enchantments.");
                     continue;
                 }
                 Enchantment enchantment = Enchantment.getByName(tmp[0]);
@@ -344,7 +356,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
             // written book
             if(itemID == 387) {
-                //getLogger().info("Load from written book.");
+                //this.log.info("Load from written book.");
                 String author  = pInv.getString(key + ".book.author");
                 String title   = pInv.getString(key + ".book.title");
                 List<String> pages     = pInv.getStringList(key + ".book.pages");
@@ -516,7 +528,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             Set<String> nameList = specialInventoriesConfig.getKeys(false);
 
             /* output debug info
-            getLogger().info(
+            this.log.info(
                 ((args.length > 0) ? "args=" + args[0] : "") +
                 " , sp_inv_list=" + nameList.toString()
             );//*/
@@ -542,7 +554,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                         targetInv = name;
                         minDist = dist;
                     }
-                    //getLogger().info("A=" + name + " , B=" + args[0] + " , Distance=" + Integer.toString(dist));
+                    //this.log.info("A=" + name + " , B=" + args[0] + " , Distance=" + Integer.toString(dist));
                 }
             }
             // when type just /tis
@@ -550,7 +562,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 // select special inv from file in order when user is using special inv.
                 String[] nameListString = nameList.toArray(new String[0]);
                 if(nameListString.length == 0){
-                    getLogger().warning("There are no special inventories in " + CONFIG_FILENAME_SPECIAL_INV + ". Please check it.");
+                    this.log.warning("There are no special inventories in " + CONFIG_FILENAME_SPECIAL_INV + ". Please check it.");
                     sender.sendMessage("There are no special inventories!");
                     return true;
                 }
@@ -619,34 +631,4 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         return false;
     }
 
-}
-
-// string match for /tis command.
-// when distance=0: equals
-// when distance=1: 1 character is different
-class LevenshteinDistance {
-    private static int minimum(int a, int b, int c) {
-        return Math.min(Math.min(a, b), c);
-    }
-
-    public static int computeLevenshteinDistance(CharSequence str1,
-            CharSequence str2) {
-        int[][] distance = new int[str1.length() + 1][str2.length() + 1];
-
-        for (int i = 0; i <= str1.length(); i++)
-            distance[i][0] = i;
-        for (int j = 1; j <= str2.length(); j++)
-            distance[0][j] = j;
-
-        for (int i = 1; i <= str1.length(); i++)
-            for (int j = 1; j <= str2.length(); j++)
-                distance[i][j] = minimum(
-                        distance[i - 1][j] + 1,
-                        distance[i][j - 1] + 1,
-                        distance[i - 1][j - 1]
-                                + ((str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0
-                                        : 1));
-
-        return distance[str1.length()][str2.length()];
-    }
 }
