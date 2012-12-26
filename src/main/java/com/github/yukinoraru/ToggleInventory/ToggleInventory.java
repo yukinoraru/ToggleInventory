@@ -4,14 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -21,11 +13,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ToggleInventory extends JavaPlugin implements Listener {
@@ -66,9 +58,13 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     public void onDisable(){
     }
 
+    private void outputError(String msg){
+        getLogger().warning(msg);
+    }
+
     private void outputError(String msg, CommandSender sender){
         sender.sendMessage(msg);
-        getLogger().warning(msg);
+        outputError(msg);
     }
 
     // maximum one precedes
@@ -156,23 +152,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         return specialInventoriesConfig;
     }
 
-    // serialize 'Enchantment' to 'String[]'
-    private String []getEnchantmentsString(ItemStack item){
-        Map<Enchantment,Integer> enchantments = item.getEnchantments();
-        Iterator<Entry<Enchantment,Integer>> iter = enchantments.entrySet().iterator();
-        ArrayList<String> listOfEnchantment      = new ArrayList<String>();
-        while(iter.hasNext()){
-            Entry<Enchantment,Integer> entry = iter.next();
-            String enchantmentName = entry.getKey().getName();
-            int    echantmentLevel = entry.getValue();
-            listOfEnchantment.add(enchantmentName + "," + echantmentLevel);
-        }
-        if(listOfEnchantment.size() > 0){
-            String [] arrayOfEnchantment = listOfEnchantment.toArray(new String[listOfEnchantment.size()]);
-            return arrayOfEnchantment;
-        }
-        return null;
-    }
 
     // save inventory to YAML
     private void saveInventory(CommandSender sender){
@@ -204,75 +183,14 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
         FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
 
-        // CAUTION: inventory is separated two div: armor slots, normal slots
-        HashMap<String, ItemStack[]> invs = new HashMap<String, ItemStack[]>();
-        invs.put("item", inventory.getContents());
-        invs.put("armor", inventory.getArmorContents());
-        Iterator<String> it = invs.keySet().iterator();
-        while (it.hasNext()){
-            int i = 0;
-            String key = (String)it.next();
-            for (ItemStack item : invs.get(key)) {
-                i++;
-                if(item == null){
-                    continue;
-                }
+        // serialize inv to string
+        Inventory inventory_armor = ItemSerialization.getArmorInventory(inventory);
 
-                // create prefix: e.g.) 'item1' or 'armor1'
-                String prefix = key + Integer.toString(i);
+        String serialized_inv_normal = ItemSerialization.toBase64(inventory);
+        String serialized_inv_armor  = ItemSerialization.toBase64(inventory_armor);
 
-                // get/set basic info for item
-                int itemID = item.getTypeId();
-                pInv.set(prefix + ".id", itemID);
-                pInv.set(prefix + ".amount", item.getAmount());
-                pInv.set(prefix + ".durability", item.getDurability());
-
-                // name and lore
-                if( itemID != 0 ){
-                    try {
-                        // get encode name and lores
-                        String name = Namer.getNameInURLEncoded(item);
-                        String []lores = Namer.getLoreInURLEncoded(item);
-                        pInv.set(prefix + ".name", name);
-                        pInv.set(prefix + ".lore", lores);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    // save colored leather armors
-                    if(Armor.isApplicable(item)){
-                        // convert int to hex color; e.g.) 16711680 -> 0xff0000
-                        int color = Armor.getColor(item);
-                        if(color > 0){
-                            String hexColor = String.format("#%06X", (0xFFFFFF & color));
-                            pInv.set(prefix + ".color", hexColor);
-                        }
-                    }
-                }
-
-                // enchantment
-                String [] arrayOfEnchantment = getEnchantmentsString(item);
-                if(arrayOfEnchantment != null){
-                    pInv.set(prefix + ".enchantment", Arrays.asList(arrayOfEnchantment));
-                }
-
-                // skull
-                if(Skull.isApplicable(item)){
-                    pInv.set(prefix + ".skullOwner", Skull.getSkin(item));
-                }
-
-                //written book
-                if(itemID == 387) {
-                    try {
-                        Book book = new Book(item);
-                        pInv.set(prefix + ".book" + ".title", book.getTitle());
-                        pInv.set(prefix + ".book" + ".author", book.getAuthor());
-                        pInv.set(prefix + ".book" + ".pages", Arrays.asList(book.getPages()));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        pInv.set("inv_normal", serialized_inv_normal);
+        pInv.set("inv_armor", serialized_inv_armor);
 
         // save
         try{
@@ -285,100 +203,38 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         return;
     }
 
-    // desirialize inventory from ConfigurationSection, not ConfigFile.
+    // deserialize inventory from ConfigurationSection, not ConfigFile.
     private void deserializeInventoryConfig(PlayerInventory inventory, ConfigurationSection pInv){
 
-        inventory.clear();
+        inventory.clear(-1, -1);
 
-        int armorIndex = 0;
-        ItemStack[] armorContents = new ItemStack[4];
+        String serialized_inv_normal = pInv.getString("inv_normal");
+        String serialized_inv_armor  = pInv.getString("inv_armor");
 
-        Set<String> item_keys = pInv.getKeys(false);
-        for (String key: item_keys) {
+        if(serialized_inv_normal != null){
+        	Inventory deserialized_inv_normal = ItemSerialization.fromBase64(serialized_inv_normal);
 
-            int index        = (key.startsWith("item")) ? Integer.parseInt(key.substring("item".length())) - 1 : Integer.parseInt(key.substring("armor".length())) - 1 ;
-            int itemID       = pInv.getInt(key + ".id");
-            int amount       = pInv.getInt(key + ".amount");
-            short durability = (short)pInv.getInt(key + ".durability");
-
-            ItemStack item = new ItemStack(itemID);
-            item.setDurability(durability);
-
-            // restore name
-            try {
-                String encoded_name   = pInv.getString(key + ".name");
-                if(encoded_name != null && encoded_name.length() > 0){
-                    item = Namer.setNameInURLEncoded(item, encoded_name);
-                }
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-
-            // restore lore
-            try {
-                List<String> lore     = pInv.getStringList(key + ".lore");
-                String[] encoded_lores = lore.toArray(new String[lore.size()]);
-                if(encoded_lores.length > 0){
-                    item = Namer.setLoreInURLEncoded(item, encoded_lores);
-                }
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-
-            // restore colored leather armors
-            if(Armor.isApplicable(item)){
-                String hexColor = pInv.getString(key + ".color", null);
-                if(hexColor != null){
-                    int color = Integer.parseInt(hexColor.replaceFirst("#", ""), 16);
-                    item = Armor.setColor(item, color);
-                }
-            }
-
-            // restore enchantments
-            List<String> enchantments = pInv.getStringList(key + ".enchantment");
-            for (String e : enchantments){
-                String[] tmp = e.split(",");
-                if(tmp.length != 2){
-                	this.log.warning("Something wrong with enchantments.");
-                    continue;
-                }
-                Enchantment enchantment = Enchantment.getByName(tmp[0]);
-                item.addUnsafeEnchantment(enchantment, Integer.parseInt(tmp[1]));
-            }
-
-            // restore skull owner
-            if(Skull.isApplicable(item)){
-                String owner = pInv.getString(key + ".skullOwner");
-                if(owner.length() > 0){
-                    item = Skull.setSkin(item, owner);
-                }
-            }
-
-            // written book
-            if(itemID == 387) {
-                //this.log.info("Load from written book.");
-                String author  = pInv.getString(key + ".book.author");
-                String title   = pInv.getString(key + ".book.title");
-                List<String> pages     = pInv.getStringList(key + ".book.pages");
-                String[] pagesInString = pages.toArray(new String[pages.size()]);
-                try {
-                    Book book = new Book(title, author, pagesInString, false);
-                    item = book.generateItemStack();
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-            if(key.startsWith("item")){
-                item.setAmount(amount);
-                inventory.setItem(index, item);
-            }
-            else if(key.startsWith("armor")){
-                armorContents[armorIndex++] = item;
-            }
+        	int i=0;
+			for (ItemStack item : deserialized_inv_normal.getContents()) {
+				i++;
+				if (item == null) {
+					continue;
+				}
+        		inventory.setItem(i-1, item);
+			}
         }
 
-        inventory.setArmorContents(armorContents);
+        if(serialized_inv_armor != null){
+            Inventory deserialized_inv_armor = ItemSerialization.fromBase64(serialized_inv_armor);
+            ItemStack []tmp = deserialized_inv_armor.getContents();
+        	if(tmp != null){
+        		inventory.setArmorContents(tmp);
+        	}
+        }
+
+//    	outputError(tmp.toString());
+//    	outputError(String.valueOf(tmp.length));
+
         return ;
     }
 
