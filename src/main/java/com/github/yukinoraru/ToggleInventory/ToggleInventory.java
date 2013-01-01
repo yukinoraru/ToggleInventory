@@ -22,15 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ToggleInventory extends JavaPlugin implements Listener {
 
-    private static final String CONFIG_INVENTORY_CURRENT_INDEX          = "inv_current_index";
-    private static final String CONFIG_INVENTORY_SPCIAL_INV_INDEX       = "special_inv_index";
-    private static final int    CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT  = 1;
-    private static final int    CONFIG_INVENTORY_MAX_INDEX_DEFAULT      = 4;
-    private static final int    CONFIG_INVENTORY_MAXIMUM                = 30;
-    private static final String CONFIG_FILENAME_SPECIAL_INV             = "special_inventories.yml";
-
     protected Logger log;
     protected UpdateChecker updateChecker;
+    protected ConfigManager configManager;
 
     public void onEnable(){
 
@@ -42,9 +36,11 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     		this.log.info("Get it from: " + this.updateChecker.getLink());
     	}
 
+    	this.configManager = new ConfigManager(this);
+
         // save config files if not exist
         saveDefaultConfig();
-        saveResource(CONFIG_FILENAME_SPECIAL_INV, false);
+        //saveResource(CONFIG_FILENAME_SPECIAL_INV, false);
 
         // MCStats cf.http://mcstats.org/plugin/ToggleInventory
         try {
@@ -65,142 +61,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     private void outputError(String msg, CommandSender sender){
         sender.sendMessage(msg);
         outputError(msg);
-    }
-
-    // maximum one precedes
-    private int getMaxInventoryIndex(CommandSender sender){
-        int max = -1;
-        for(int i=2; i <= CONFIG_INVENTORY_MAXIMUM; i++){
-            String permissionPath = "toggle_inventory." + Integer.toString(i);
-            if(sender.hasPermission(permissionPath)){
-                max = i;
-            }
-        }
-        return (max <= 1) ? CONFIG_INVENTORY_MAX_INDEX_DEFAULT : max;
-    }
-
-    // create File instance for saving inventory
-    // path = plugins/ToggleInventory/players/[player-name]/inv[n].yml
-    private File getInventoryFile(String playerName, int num){
-        String parentPath = getDataFolder() + File.separator + "players" + File.separator + playerName;
-        String childPath  = "inv" + num + ".yml";
-        return new File(parentPath, childPath);
-    }
-
-    // create File instance for player's config
-    // path = plugins/ToggleInventory/players/[player-name]/config.yml
-    private File getPlayerConfigFile(String playerName){
-        String parentPath = getDataFolder() + File.separator + "players" + File.separator + playerName;
-        String childPath  = "config.yml";
-        return new File(parentPath, childPath);
-    }
-
-    //
-    private int getCurrentInventoryIndex(String playerName){
-        File configFile         = getPlayerConfigFile(playerName);
-        FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
-        int invCurrentIndex     = pConf.getInt(CONFIG_INVENTORY_CURRENT_INDEX, CONFIG_INVENTORY_CURRENT_INDEX_DEFAULT);
-        return invCurrentIndex;
-    }
-
-    // calculate and set next inventory index
-    // inventory index must be loop like a ring: 1 -> 2 -> 3 -> 1 -> .....
-    private int setNextInventoryIndex(CommandSender sender, int nextInvIndex) throws IndexOutOfBoundsException{
-        String playerName = sender.getName();
-
-        int maxIndex = getMaxInventoryIndex(sender);
-        int invCurrentIndex = getCurrentInventoryIndex(playerName);
-
-        if(nextInvIndex < 0){
-            nextInvIndex = (invCurrentIndex+1 > maxIndex) ? 1 : invCurrentIndex+1;
-        }
-        else if(nextInvIndex > maxIndex){
-            throw new IndexOutOfBoundsException("[ERROR] Max inventory index is " + ChatColor.RED+Integer.toString(maxIndex));
-        }
-
-        // save next index
-        File configFile         = getPlayerConfigFile(playerName);
-        FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
-
-        try {
-            pConf.set(CONFIG_INVENTORY_CURRENT_INDEX, nextInvIndex);
-            pConf.save(configFile);
-        } catch (IOException e) {
-            outputError("Something went wrong when setting next inventory index.", sender);
-            e.printStackTrace();
-        }
-
-        return nextInvIndex;
-    }
-
-
-    private FileConfiguration reloadSpecialInventories() {
-
-        FileConfiguration specialInventoriesConfig = null;
-        File specialInventoriesConfigFile = null;
-
-        specialInventoriesConfigFile = new File(getDataFolder(), CONFIG_FILENAME_SPECIAL_INV);
-        specialInventoriesConfig = YamlConfiguration.loadConfiguration(specialInventoriesConfigFile);
-
-        // Look for defaults in the jar
-        InputStream defConfigStream = this.getResource(CONFIG_FILENAME_SPECIAL_INV);
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            specialInventoriesConfig.setDefaults(defConfig);
-        }
-
-        return specialInventoriesConfig;
-    }
-
-
-    // save inventory to YAML
-    private void saveInventory(CommandSender sender){
-
-        Player player = (Player)sender;
-        String playerName = player.getName();
-        PlayerInventory inventory = player.getInventory();
-
-        // load current inventory index
-        int invCurrentIndex     = getCurrentInventoryIndex(playerName);
-
-        // load saved currentInventory
-        File inventoryFile      = getInventoryFile(playerName, invCurrentIndex);
-
-        // before save, file must be filled with empty
-        PrintWriter writer;
-        try {
-        	// file doesn't exist, create new file
-            if(!inventoryFile.exists()){
-            	inventoryFile.createNewFile();
-            }
-            writer = new PrintWriter(inventoryFile);
-            writer.print("");
-            writer.close();
-        } catch (Exception e) {
-            outputError("Something went wrong when saving inventory.", sender);
-            e.printStackTrace();
-        }
-
-        FileConfiguration pInv  = YamlConfiguration.loadConfiguration(inventoryFile);
-
-        // serialize inv to string
-        Inventory inventory_armor = ItemSerialization.getArmorInventory(inventory);
-
-        String serialized_inv_normal = ItemSerialization.toBase64(inventory);
-        String serialized_inv_armor  = ItemSerialization.toBase64(inventory_armor);
-
-        pInv.set("inv_normal", serialized_inv_normal);
-        pInv.set("inv_armor", serialized_inv_armor);
-
-        // save
-        try{
-            pInv.save(inventoryFile);
-        }
-        catch(Exception e){
-            outputError("Something went wrong when saving inventory.", sender);
-            e.printStackTrace();
-        }
-        return;
     }
 
     // deserialize inventory from ConfigurationSection, not ConfigFile.
@@ -231,9 +91,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
         		inventory.setArmorContents(tmp);
         	}
         }
-
-//    	outputError(tmp.toString());
-//    	outputError(String.valueOf(tmp.length));
 
         return ;
     }
@@ -288,12 +145,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             return false;
          }
 
-        // check whether player is using special inventories
-        File configFile         = getPlayerConfigFile(playerName);
-        FileConfiguration pConf = YamlConfiguration.loadConfiguration(configFile);
-        String currentSpecialInv = pConf.getString(CONFIG_INVENTORY_SPCIAL_INV_INDEX, "");
-        boolean isSpecialInvEnabled = currentSpecialInv.length() > 0;
-
         // ------------------------------------------------
         // implement /togglei command.
         // ------------------------------------------------
@@ -338,7 +189,13 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             // if a user is not using special inv, toggle inv.
             else{
 
-                saveInventory(sender);  // save current inventory
+                try{
+                	configManager.saveInventory(playerName, player.getInventory());
+                }
+                catch(Exception e){
+                    outputError("Something went wrong when saving inventory.", sender);
+                    e.printStackTrace();
+                }
 
                 // calculate next inv
                 int nextInvIndex;
