@@ -40,6 +40,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 	protected Logger log;
 	protected UpdateChecker updateChecker;
 
+	@Override
 	public void onEnable() {
 
 		this.log = this.getLogger();
@@ -65,6 +66,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 		}
 	}
 
+	@Override
 	public void onDisable() {
 	}
 
@@ -176,8 +178,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 	}
 
 	// serialize 'Enchantment' to 'String[]'
-	private String[] getEnchantmentsString(ItemStack item) {
-		Map<Enchantment, Integer> enchantments = item.getEnchantments();
+	private String[] getEnchantmentsString(Map<Enchantment, Integer> enchantments) {
 		Iterator<Entry<Enchantment, Integer>> iter = enchantments.entrySet()
 				.iterator();
 		ArrayList<String> listOfEnchantment = new ArrayList<String>();
@@ -211,7 +212,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 		// before save, file must be filled with empty
 		PrintWriter writer;
 		try {
-			
+
 			// file doesn't exist, create new file
 			if (!inventoryFile.exists()) {
 				inventoryFile.createNewFile();
@@ -234,7 +235,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 		Iterator<String> it = invs.keySet().iterator();
 		while (it.hasNext()) {
 			int i = 0;
-			String key = (String) it.next();
+			String key = it.next();
 			for (ItemStack item : invs.get(key)) {
 				i++;
 				if (item == null) {
@@ -274,10 +275,19 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 				}
 
 				// enchantment
-				String[] arrayOfEnchantment = getEnchantmentsString(item);
+				String[] arrayOfEnchantment = getEnchantmentsString(item.getEnchantments());
 				if (arrayOfEnchantment != null) {
 					pInv.set(prefix + ".enchantment",
 							Arrays.asList(arrayOfEnchantment));
+				}
+
+				// enchanted book
+				if(EnchantedBook.isApplicable(item)){
+					String[] arrayOfBookEnchantment = getEnchantmentsString(EnchantedBook.getEnchants(item));
+					if (arrayOfBookEnchantment != null) {
+						pInv.set(prefix + ".book_enchantment",
+								Arrays.asList(arrayOfBookEnchantment));
+					}
 				}
 
 				// skull
@@ -376,10 +386,25 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 				item.addUnsafeEnchantment(enchantment, Integer.parseInt(tmp[1]));
 			}
 
+			// restore enchanted book
+			List<String> book_enchantments = pInv
+					.getStringList(key + ".book_enchantment");
+			for (String e : book_enchantments) {
+				String[] tmp = e.split(",");
+				if (tmp.length != 2) {
+					this.log.warning("Something wrong with enchantment books.");
+					continue;
+				}
+				Enchantment enchantment = Enchantment.getByName(tmp[0]);
+				item = EnchantedBook.addBookEnchantment(item, enchantment, Integer.parseInt(tmp[1]));
+			}
+
+
 			// restore skull owner
 			if (Skull.isApplicable(item)) {
 				String owner = pInv.getString(key + ".skullOwner");
-				if (owner.length() > 0) {
+
+				if (owner != null && owner.length() > 0) {
 					item = Skull.setSkin(item, owner);
 				}
 			}
@@ -451,6 +476,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 	}
 
 	//
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
 

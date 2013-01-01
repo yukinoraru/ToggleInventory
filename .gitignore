@@ -32,3 +32,6 @@
 
 # testing files
 /bukkit
+
+# ignore class
+*.class
