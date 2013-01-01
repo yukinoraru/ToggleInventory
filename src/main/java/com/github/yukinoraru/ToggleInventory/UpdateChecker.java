@@ -25,7 +25,7 @@ public class UpdateChecker {
 		return link;
 	}
 
-	public UpdateChecker(ToggleInventory plugin, String url){
+	public UpdateChecker(ToggleInventory plugin, String url) {
 		this.plugin = plugin;
 
 		try {
@@ -35,20 +35,23 @@ public class UpdateChecker {
 		}
 	}
 
-	public boolean updateNeeded(){
+	public boolean updateNeeded() {
 		try {
-			InputStream input = this.filesFeed.openConnection().getInputStream();
-			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
+			InputStream input = this.filesFeed.openConnection()
+					.getInputStream();
+			Document document = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder().parse(input);
 
 			Node latestFile = document.getElementsByTagName("item").item(0);
 			NodeList children = latestFile.getChildNodes();
 
-			this.version = children.item(1).getTextContent().replaceAll("[a-zA-Z ]", "");
+			this.version = children.item(1).getTextContent()
+					.replaceAll("[a-zA-Z ]", "");
 			this.link = children.item(3).getTextContent();
 
-			//plugin.getLogger().info(this.version + " " + this.link);
+			// plugin.getLogger().info(this.version + " " + this.link);
 
-			if(!plugin.getDescription().getVersion().equals(this.version)){
+			if (!plugin.getDescription().getVersion().equals(this.version)) {
 				return true;
 			}
 
