@@ -90,6 +90,10 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 	private File getInventoryFile(String playerName, int num) {
 		String parentPath = getDataFolder() + File.separator + "players"
 				+ File.separator + playerName;
+		File f = new File(parentPath);
+		if (!f.isDirectory()) {
+			f.mkdirs();
+		}
 		String childPath = "inv" + num + ".yml";
 		return new File(parentPath, childPath);
 	}
@@ -207,6 +211,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 		// before save, file must be filled with empty
 		PrintWriter writer;
 		try {
+			
 			// file doesn't exist, create new file
 			if (!inventoryFile.exists()) {
 				inventoryFile.createNewFile();
