@@ -28,4 +28,26 @@ public class LevenshteinDistance {
 
 		return distance[str1.length()][str2.length()];
 	}
+
+	public static int find(String []list, String str){
+		int minDist = 0;
+		int target = 0;
+		boolean isFirst = true;
+		for (int i=0; i < list.length; i++) {
+			String l = list[i];
+			int dist = computeLevenshteinDistance(l, str);
+			if (l.startsWith(str)) {
+				dist -= str.length() * 2; // twice matching weight
+			}
+			if (isFirst) {
+				target = i;
+				minDist = dist;
+				isFirst = false;
+			} else if (dist < minDist) {
+				minDist = dist;
+				target = i;
+			}
+		}
+		return target;
+	}
 }

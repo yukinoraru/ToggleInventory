@@ -21,6 +21,9 @@ commands:
     usage: |
       /<command> [name]
       Example: /<command> de - toggle special inventory starts with 'de'
+  toggleisr:
+    description: toggle inventory for special inventories (reverse)
+    aliases: [its]
 
 permissions:
   toggle_inventory.toggle:

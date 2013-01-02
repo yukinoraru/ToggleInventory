@@ -3,6 +3,7 @@ package com.github.yukinoraru.ToggleInventory;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -17,6 +18,7 @@ public class InventoryManager {
 
 	private static final int CONFIG_INVENTORY_MAX_INDEX_DEFAULT = 4;
 	private static final int CONFIG_INVENTORY_MAXIMUM = 30;
+	private static final String CONFIG_FILENAME_SPECIAL_INV = "special_inventories.yml";
 
 	private ToggleInventory plugin;
 
@@ -32,6 +34,10 @@ public class InventoryManager {
 			f.mkdirs();
 		}
         return new File(parentPath, childPath);
+    }
+
+    public File getSpecialInventoryFile(){
+    	return new File(plugin.getDataFolder(), CONFIG_FILENAME_SPECIAL_INV);
     }
 
 	private void beforeSave(File file) throws Exception{
@@ -64,7 +70,7 @@ public class InventoryManager {
 
 	// calculate and set next inventory index
 	// inventory index must be loop like a ring: 1 -> 2 -> 3 -> 1 -> .....
-	private int calcNextInventoryIndex(int maxIndex, int currentIndex, boolean rotateDirection){
+	public int calcNextInventoryIndex(int maxIndex, int currentIndex, boolean rotateDirection){
 		int nextIndex;
 		if(rotateDirection){
 			nextIndex = ((currentIndex + 1) > maxIndex) ? 1 : currentIndex + 1;
@@ -88,23 +94,31 @@ public class InventoryManager {
         return fileConfiguration.getInt("current", 1);
 	}
 
-	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
-
-        File file = getInventoryFile(playerName);
+	private void setCurrentSpecialInventoryIndex(String playerName, String name) throws IOException{
+		File file = getInventoryFile(playerName);
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-
-		beforeSave(file);
-
-        Inventory inventoryArmor = ItemSerialization.getArmorInventory(inventory);
-
-        String serializedInventoryNormal = ItemSerialization.toBase64(inventory);
-        String serializedInventoryArmor  = ItemSerialization.toBase64(inventoryArmor);
-
-        fileConfiguration.set(String.format("inv%d_normal", index), serializedInventoryNormal);
-        fileConfiguration.set(String.format("inv%d_armor", index), serializedInventoryArmor);
-
+        fileConfiguration.set("sp_current", name);
         fileConfiguration.save(file);
-        return ;
+	}
+
+	public void setSpecialInventoryUsingStatus(String playerName, boolean isUsing) throws IOException{
+		File file = getInventoryFile(playerName);
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        fileConfiguration.set("sp_using", isUsing);
+        fileConfiguration.save(file);
+	}
+
+	public boolean getSpecialInventoryUsingStatus(String playerName){
+		File file = getInventoryFile(playerName);
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        return fileConfiguration.getBoolean("sp_using");
+	}
+
+
+	private String getCurrentSpecialInventoryIndex(String playerName){
+		File file = getInventoryFile(playerName);
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        return (String) fileConfiguration.get("sp_current", "");
 	}
 
 	// this method generates string like '[1 2 3 4 ... n]'
@@ -115,11 +129,22 @@ public class InventoryManager {
 		int maxIndex = getMaxInventoryIndex(player);
 
 		for (int i = 1; i <= maxIndex; i++) {
-			if (i == invCurrentIndex) {
-				msg += ChatColor.WHITE + Integer.toString(i);
-			} else {
-				msg += ChatColor.GRAY + Integer.toString(i);
-			}
+			msg += ( (i == invCurrentIndex) ? ChatColor.WHITE : ChatColor.GRAY ) + Integer.toString(i);
+			msg += ChatColor.RESET + " ";
+		}
+		return msg + ChatColor.GRAY + "] ";
+	}
+
+	// this method generates string like '[1 2 3 4 ... n]'
+	public String makeSpecialInventoryMessage(CommandSender player) throws Exception {
+		String msg = ChatColor.GRAY + "[";
+
+		String playerName = player.getName();
+		String invCurrentName = getCurrentSpecialInventoryIndex(playerName);
+		String []list = getListSpecialInventory(getSpecialInventoryFile());
+
+		for (int i = 0; i < list.length; i++) {
+			msg += ((list[i].equals(invCurrentName)) ? ChatColor.GREEN : ChatColor.DARK_GREEN) + list[i];
 			msg += ChatColor.RESET + " ";
 		}
 		return msg + ChatColor.GRAY + "] ";
@@ -152,6 +177,74 @@ public class InventoryManager {
 		setCurrentInventoryIndex(playerName, nextIndex);
 	}
 
+	public void toggleSpecialInventory(CommandSender player, String inventoryName) throws Exception{
+		// 1. get current inv index and save inventory
+		String playerName = player.getName();
+		PlayerInventory inventory = ((Player) player).getInventory();
+		if (!getSpecialInventoryUsingStatus(playerName)) {
+			int currentIndex = getCurrentInventoryIndex(playerName);
+			saveInventory(playerName, inventory, currentIndex);
+		}
+
+		// 2. matching inv with inventoryName
+		String []list = getListSpecialInventory(getSpecialInventoryFile());
+		int index = LevenshteinDistance.find(list, inventoryName);
+		String specialInvName = list[index];
+
+		// 3. load inventory
+		loadSpecialInventory(playerName, inventory, specialInvName);
+
+		// 4. set SpInv index
+		setCurrentSpecialInventoryIndex(playerName, specialInvName);
+
+		// 5. update SpInv Using Status
+		setSpecialInventoryUsingStatus(playerName, true);
+	}
+
+	private String[] getListSpecialInventory(File specialInventoryFile) throws Exception{
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
+		Set<String> nameList = fileConfiguration.getKeys(false);
+		String []tmp = nameList.toArray(new String[0]);
+		if(tmp.length == 0){
+			throw new Exception("There are no special inventories in "
+					+ CONFIG_FILENAME_SPECIAL_INV
+					+ ". Please check it.");
+		}
+		return tmp;
+	}
+
+	public String getNextSpecialInventory(String []list, String name, boolean rotateDirection) throws Exception{
+		String nextInvName = null;
+		for (int i = 0; i < list.length; i++) {
+			if (list[i].equals(name)) {
+				if (rotateDirection) {
+					if (i + 1 < list.length) {
+						nextInvName = list[i + 1];
+					} else {
+						nextInvName = list[0];
+					}
+				} else {
+					if (i - 1 >= 0) {
+						nextInvName = list[i - 1];
+					} else {
+						nextInvName = list[list.length-1];
+					}
+				}
+				break;
+			}
+		}
+		return (nextInvName == null) ? list[0] : nextInvName;
+	}
+
+	public void toggleSpecialInventory(CommandSender player, boolean rotateDirection) throws Exception{
+		String playerName = player.getName();
+		String []list = getListSpecialInventory(getSpecialInventoryFile());
+		String currentSpIndex = getCurrentSpecialInventoryIndex(playerName);
+		String nextSpIndex = (getSpecialInventoryUsingStatus(playerName)) ? getNextSpecialInventory(
+				list, currentSpIndex, rotateDirection) : currentSpIndex;
+		toggleSpecialInventory(player, nextSpIndex);
+	}
+
 	public void toggleInventory(CommandSender player, boolean rotateDirection) throws Exception{
 		String playerName = player.getName();
 
@@ -162,19 +255,36 @@ public class InventoryManager {
 		toggleInventory(player, nextIndex);
 	}
 
-	private void loadInventory(String playerName, PlayerInventory inventory, int index){
+	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
 
-		File file = getInventoryFile(playerName);
+        File file = getInventoryFile(playerName);
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
 
-        String serializedInventoryNormal = fileConfiguration.getString(String.format("inv%d_normal", index));
-        String serializedInventoryArmor  = fileConfiguration.getString(String.format("inv%d_armor", index));
+		beforeSave(file);
+
+        Inventory inventoryArmor = ItemSerialization.getArmorInventory(inventory);
+
+        String serializedInventoryNormal = ItemSerialization.toBase64(inventory);
+        String serializedInventoryArmor  = ItemSerialization.toBase64(inventoryArmor);
+
+        fileConfiguration.set(String.format("inv%d.contents", index), serializedInventoryNormal);
+        fileConfiguration.set(String.format("inv%d.armor", index), serializedInventoryArmor);
+
+        fileConfiguration.save(file);
+        return ;
+	}
+
+	private void loadInventory(String playerName, PlayerInventory inventory, File inventoryFile, String sectionPathContents, String sectionPathArmor){
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
+
+        String serializedInventoryContents = fileConfiguration.getString(sectionPathContents);
+        String serializedInventoryArmor  = fileConfiguration.getString(sectionPathArmor);
 
 		inventory.clear();
 		inventory.setArmorContents(null);
 
-        if(serializedInventoryNormal != null){
-        	Inventory deserializedInventoryNormal = ItemSerialization.fromBase64(serializedInventoryNormal);
+        if(serializedInventoryContents != null){
+        	Inventory deserializedInventoryNormal = ItemSerialization.fromBase64(serializedInventoryContents);
 
         	int i=0;
 			for (ItemStack item : deserializedInventoryNormal.getContents()) {
@@ -195,4 +305,26 @@ public class InventoryManager {
         }
 		return;
 	}
+
+	public void restoreInventory(CommandSender player) {
+		String playerName = player.getName();
+		PlayerInventory inventory = ((Player) player).getInventory();
+		int index = getCurrentInventoryIndex(playerName);
+		String sectionPathContents = String.format("inv%d.contents", index);
+		String sectionPathArmor = String.format("inv%d.armor", index);
+		loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+	}
+
+	private void loadInventory(String playerName, PlayerInventory inventory, int index){
+        String sectionPathContents = String.format("inv%d.contents", index);
+        String sectionPathArmor    = String.format("inv%d.armor", index);
+        loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+	}
+
+	private void loadSpecialInventory(String playerName, PlayerInventory inventory, String name){
+        String sectionPathContents = String.format("%s.contents", name);
+        String sectionPathArmor    = String.format("%s.armor", name);
+        loadInventory(playerName, inventory, getSpecialInventoryFile(), sectionPathContents, sectionPathArmor);
+	}
+
 }
