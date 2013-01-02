@@ -1,6 +1,9 @@
 package com.github.yukinoraru.ToggleInventory;
 
+import java.io.IOException;
 import java.util.logging.Logger;
+
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,13 +19,18 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     public void onEnable(){
     	this.log = this.getLogger();
     	this.updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/server-mods/toggleinventory/files.rss");
+    	this.inventoryManager = new InventoryManager(this);
 
     	if(this.updateChecker.updateNeeded()){
     		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
     		this.log.info("Get it from: " + this.updateChecker.getLink());
     	}
-
-    	this.inventoryManager = new InventoryManager(this);
+		try {
+			Metrics metrics = new Metrics(this);
+			metrics.start();
+		} catch (IOException e) {
+			// Failed to submit the stats :-(
+		}
     }
 
     //
@@ -49,11 +57,18 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
             // toggle inventory
             try {
-				inventoryManager.toggleInventory(player, !isReverse);
-				player.sendMessage(inventoryManager.makeInventoryMessage(player));
+    			if (args.length >= 1 && args[0].length() > 0) {
+    				int index = Integer.parseInt(args[0]);
+    				inventoryManager.toggleInventory(player, index);
+    			}
+    			else{
+    				inventoryManager.toggleInventory(player, !isReverse);
+    			}
+				player.sendMessage(inventoryManager.makeInventoryMessage(player) + " inventory toggled.");
+			} catch(NumberFormatException e){
+				outputError("Index must be a number.", player);
 			} catch (Exception e) {
-				player.sendMessage(e.toString());
-				e.printStackTrace();
+				outputError(e.getMessage(), player);
 			}
 
             return true;
@@ -70,7 +85,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     }
 
     private void outputError(String msg, CommandSender sender){
-        sender.sendMessage(msg);
+        sender.sendMessage(ChatColor.RED + "[ERROR] " + msg);
         outputError(msg);
     }
 }

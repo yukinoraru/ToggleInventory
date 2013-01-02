@@ -125,21 +125,41 @@ public class InventoryManager {
 		return msg + ChatColor.GRAY + "] ";
 	}
 
-	public void toggleInventory(CommandSender player, boolean rotateDirection) throws Exception{
+	public void toggleInventory(CommandSender player, int index) throws Exception{
 
 		// 1. get info
 		String playerName = player.getName();
 		PlayerInventory inventory = ((Player) player).getInventory();
 		int maxIndex = getMaxInventoryIndex(player);
 		int currentIndex = getCurrentInventoryIndex(playerName);
-		int nextIndex = calcNextInventoryIndex(maxIndex, currentIndex, rotateDirection);
+		int nextIndex = index;
 
-		// 2. save and load inv
+		// 2. index validating
+		if (nextIndex > maxIndex) {
+			throw new IndexOutOfBoundsException(String.format(
+					"Max inventory index is %d", maxIndex));
+		}else if(nextIndex <= 0){
+			throw new Exception("Inventory index is wrong.");
+		}else if(currentIndex == nextIndex){
+			throw new Exception("It's current inventory.");
+		}
+
+		// 3. save and load inv
 		saveInventory(playerName, inventory, currentIndex);
 		loadInventory(playerName, inventory, nextIndex);
 
-		// 3. set next inv
+		// 4. set next inv
 		setCurrentInventoryIndex(playerName, nextIndex);
+	}
+
+	public void toggleInventory(CommandSender player, boolean rotateDirection) throws Exception{
+		String playerName = player.getName();
+
+		int maxIndex = getMaxInventoryIndex(player);
+		int currentIndex = getCurrentInventoryIndex(playerName);
+		int nextIndex = calcNextInventoryIndex(maxIndex, currentIndex, rotateDirection);
+
+		toggleInventory(player, nextIndex);
 	}
 
 	private void loadInventory(String playerName, PlayerInventory inventory, int index){
