@@ -1,20 +1,20 @@
 package com.github.yukinoraru.ToggleInventory;
 
+import net.minecraft.server.v1_4_6.NBTBase;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagList;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.math.BigInteger;
-
-import net.minecraft.server.v1_4_5.NBTBase;
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-import net.minecraft.server.v1_4_5.NBTTagList;
-
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class ItemSerialization {
     public static String toBase64(Inventory inventory) {
@@ -53,7 +53,7 @@ public class ItemSerialization {
             // IsEmpty
             if (!inputObject.d()) {
                 inventory.setItem(i, CraftItemStack.asCraftMirror(
-                  	net.minecraft.server.v1_4_5.ItemStack.a(inputObject)));
+                  	net.minecraft.server.v1_4_6.ItemStack.a(inputObject)));
             }
         }
 
