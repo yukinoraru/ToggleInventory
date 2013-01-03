@@ -31,7 +31,7 @@ public class UpdateChecker {
 		try {
 			this.filesFeed = new URL(url);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			plugin.getLogger().warning("Update check failed.");
 		}
 	}
 
@@ -43,17 +43,28 @@ public class UpdateChecker {
 			Node latestFile = document.getElementsByTagName("item").item(0);
 			NodeList children = latestFile.getChildNodes();
 
-			this.version = children.item(1).getTextContent().replaceAll("[a-zA-Z ]", "");
+			this.version = children.item(1).getTextContent().replaceAll("[a-zA-Z -]", "").replaceAll("\\(.*\\)", "");
 			this.link = children.item(3).getTextContent();
 
-			//plugin.getLogger().info(this.version + " " + this.link);
+			//plugin.getLogger().info("Version=" + this.version + ", DL link=" + this.link);
 
-			if(!plugin.getDescription().getVersion().equals(this.version)){
+			// compare version
+			String runningVersion = plugin.getDescription().getVersion().replaceAll("[-a-zA-Z ]", "");
+
+			int cmp = runningVersion.compareTo(this.version);
+			if(cmp < 0){
 				return true;
+			}
+			else if(cmp > 0){
+				// maybe developing
+				plugin.getLogger().info("This version is newer than dev.bukkit.org one.");
+			}else{
+				// latest
+				plugin.getLogger().info("This is the latest version :)");
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			plugin.getLogger().warning(String.format("Update check failed. (%s)", e.getMessage()));
 		}
 		return false;
 	}
