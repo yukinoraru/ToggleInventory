@@ -1,8 +1,11 @@
 package com.github.yukinoraru.ToggleInventory;
 
-import org.bukkit.Color;
+import java.awt.Color;
+
+import net.minecraft.server.NBTTagCompound;
+
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
  * Class, that allows setting and getting color of the leather armor.
@@ -21,10 +24,27 @@ public class Armor {
     public static ItemStack setColor(ItemStack item, int color) {
         if (!isApplicable(item))
             return null;
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        lam.setColor(Color.fromRGB(color));
-        item.setItemMeta(lam);
-        return item;
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        tag.setInt("color", color);
+        itemStack.tag.setCompound("display", tag);
+        return craftStack;
     }
 
     /**
@@ -56,10 +76,27 @@ public class Armor {
     public static ItemStack setColor(ItemStack item, Color color) {
         if (!isApplicable(item))
             return null;
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        lam.setColor(color);
-        item.setItemMeta(lam);
-        return item;
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        tag.setInt("color", color.getRGB());
+        itemStack.tag.setCompound("display", tag);
+        return craftStack;
     }
 
     /**
@@ -72,10 +109,27 @@ public class Armor {
     public static ItemStack setColor(ItemStack item, ArmorColor color) {
         if (!isApplicable(item))
             return null;
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        lam.setColor(Color.fromRGB(color.getColor()));
-        item.setItemMeta(lam);
-        return item;
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        tag.setInt("color", color.getColor());
+        itemStack.tag.setCompound("display", tag);
+        return craftStack;
     }
 
     /**
@@ -89,10 +143,27 @@ public class Armor {
         if (!isApplicable(item))
             return null;
         int color = Integer.decode(colorStr);
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        lam.setColor(Color.fromRGB(color));
-        item.setItemMeta(lam);
-        return item;
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        tag.setInt("color", color);
+        itemStack.tag.setCompound("display", tag);
+        return craftStack;
     }
 
     /**
@@ -107,11 +178,28 @@ public class Armor {
     public static ItemStack setColor(ItemStack item, int colorR, int colorG, int colorB) {
         if (!isApplicable(item))
             return null;
-        Color c = Color.fromRGB(colorR, colorG, colorB);
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        lam.setColor(c);
-        item.setItemMeta(lam);
-        return item;
+        int color = Integer.decode(ColorConverter.toHex(colorR, colorG, colorB));
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        tag.setInt("color", color);
+        itemStack.tag.setCompound("display", tag);
+        return craftStack;
     }
 
     /**
@@ -123,8 +211,25 @@ public class Armor {
     public static int getColor(ItemStack item) {
         if (!isApplicable(item))
             return -1;
-        LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-        int color = lam.getColor().asRGB();
-        return color;
+        CraftItemStack craftStack = null;
+        net.minecraft.server.ItemStack itemStack = null;
+        if (item instanceof CraftItemStack) {
+            craftStack = (CraftItemStack) item;
+            itemStack = craftStack.getHandle();
+        }
+        else if (item instanceof ItemStack) {
+            craftStack = new CraftItemStack(item);
+            itemStack = craftStack.getHandle();
+        }
+        NBTTagCompound tag = itemStack.tag;
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            tag.setCompound("display", new NBTTagCompound());
+            itemStack.tag = tag;
+            return -1;
+        }
+
+        tag = itemStack.tag.getCompound("display");
+        return tag.getInt("color");
     }
 }

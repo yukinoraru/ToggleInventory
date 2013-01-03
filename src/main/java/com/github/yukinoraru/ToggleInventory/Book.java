@@ -3,98 +3,100 @@ package com.github.yukinoraru.ToggleInventory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.List;
 
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 public class Book {
-	private String encoded_author;
-	private String encoded_title;
-	private String[] encoded_pages;
+    private String encoded_author;
+    private String encoded_title;
+    private String[] encoded_pages;
 
-	public Book(ItemStack bookItem) throws UnsupportedEncodingException {
-		BookMeta bookData = (BookMeta) bookItem.getItemMeta();
+    public Book(ItemStack bookItem) throws UnsupportedEncodingException {
+        NBTTagCompound bookData = ((CraftItemStack) bookItem).getHandle().tag;
 
-		this.encoded_author = bookData.getAuthor();
-		this.encoded_title = bookData.getTitle();
+        this.encoded_author = bookData.getString("author");
+        this.encoded_title = bookData.getString("title");
 
-		List<String> nPages = bookData.getPages();
+        NBTTagList nPages = bookData.getList("pages");
 
-		String[] sPages = new String[nPages.size()];
-		for (int i = 0; i < nPages.size(); i++) {
-			sPages[i] = nPages.get(i).toString();
-		}
-		this.encoded_pages = sPages;
+        String[] sPages = new String[nPages.size()];
+        for (int i = 0; i < nPages.size(); i++) {
+            sPages[i] = nPages.get(i).toString();
+        }
+        this.encoded_pages = sPages;
 
-		this.encode(); //
-	}
+        this.encode(); //
+    }
 
-	private void encode() throws UnsupportedEncodingException {
-		this.encoded_title = URLEncoder.encode(encoded_title, "UTF-8");
-		this.encoded_author = URLEncoder.encode(encoded_author, "UTF-8");
+    private void encode() throws UnsupportedEncodingException{
+        this.encoded_title = URLEncoder.encode(encoded_title, "UTF-8");
+        this.encoded_author = URLEncoder.encode(encoded_author, "UTF-8");
 
-		for (int i = 0; i < this.encoded_pages.length; i++) {
-			this.encoded_pages[i] = URLEncoder.encode(this.encoded_pages[i],
-					"UTF-8");
-		}
-	}
+        for (int i = 0; i < this.encoded_pages.length; i++) {
+            this.encoded_pages[i] = URLEncoder.encode(this.encoded_pages[i], "UTF-8");
+        }
+    }
 
-	public Book(String title, String author, String[] pages,
-			Boolean isNeedToEncode) throws UnsupportedEncodingException {
-		this.encoded_title = title;
-		this.encoded_author = author;
-		this.encoded_pages = pages;
+    public Book(String title, String author, String[] pages, Boolean isNeedToEncode) throws UnsupportedEncodingException {
+        this.encoded_title = title;
+        this.encoded_author = author;
+        this.encoded_pages = pages;
 
-		if (isNeedToEncode) {
-			this.encode(); //
-		}
-	}
+        if(isNeedToEncode){
+            this.encode(); //
+        }
+    }
 
-	public String getAuthor() {
-		return this.encoded_author;
-	}
+    public String getAuthor() {
+        return this.encoded_author;
+    }
 
-	public void setAuthor(String sAuthor) {
-		this.encoded_author = sAuthor;
-	}
+    public void setAuthor(String sAuthor) {
+        this.encoded_author = sAuthor;
+    }
 
-	public String getTitle() {
-		return this.encoded_title;
-	}
+    public String getTitle() {
+        return this.encoded_title;
+    }
 
-	public void setTitle(String title) {
-		this.encoded_title = title;
-	}
+    public void setTitle(String title) {
+        this.encoded_title = title;
+    }
 
-	public String[] getPages() {
-		return this.encoded_pages;
-	}
+    public String[] getPages() {
+        return this.encoded_pages;
+    }
 
-	public void setPage(int page, String text) {
-		this.encoded_pages[page] = text;
-	}
+    public void setPage(int page, String text) {
+        this.encoded_pages[page] = text;
+    }
 
-	public ItemStack generateItemStack() throws UnsupportedEncodingException {
-		ItemStack newbook = new ItemStack(Material.WRITTEN_BOOK);
+    public ItemStack generateItemStack() throws UnsupportedEncodingException {
+        CraftItemStack newbook = new CraftItemStack(Material.WRITTEN_BOOK);
 
-		// needs for decode. all members are encoded
-		String decoded_author = URLDecoder.decode(this.encoded_author, "UTF-8");
-		String decoded_title = URLDecoder.decode(this.encoded_title, "UTF-8");
+        NBTTagCompound newBookData = new NBTTagCompound();
 
-		BookMeta bm = (BookMeta) newbook.getItemMeta();
-		bm.setAuthor(decoded_author);
-		bm.setTitle(decoded_title);
+        // needs for decode. all members are encoded
+        String decoded_author = URLDecoder.decode(this.encoded_author, "UTF-8");
+        String decoded_title  = URLDecoder.decode(this.encoded_title, "UTF-8");
 
-		for (int i = 0; i < this.encoded_pages.length; i++) {
-			String decoded_page = URLDecoder.decode(this.encoded_pages[i],
-					"UTF-8");
-			bm.addPage(decoded_page);
-		}
+        newBookData.setString("author", decoded_author);
+        newBookData.setString("title", decoded_title);
 
-		newbook.setItemMeta(bm);
+        NBTTagList nPages = new NBTTagList();
+        for (int i = 0; i < this.encoded_pages.length; i++) {
+            String decoded_page = URLDecoder.decode(this.encoded_pages[i], "UTF-8");
+            nPages.add(new NBTTagString(decoded_page, decoded_page));
+        }
 
-		return newbook;
-	}
+        newBookData.set("pages", nPages);
+        newbook.getHandle().tag = newBookData;
+
+        return newbook;
+    }
 }

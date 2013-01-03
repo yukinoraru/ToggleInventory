@@ -2564,354 +2564,49 @@ samurai:
     - PROTECTION_FIRE,10
     - OXYGEN,10
 
-enchanter:
-  item1:
-    id: 145
-    amount: 1
-    durability: 0
-    name: ''
-    enchantment:
-    - ARROW_INFINITE,1
-    - DURABILITY,3
-  item2:
-    id: 403
-    amount: 1
-    durability: 0
-    name: BIBLE+OF+MINECRAFT%28ARROW%29
-    book_enchantment:
-    - ARROW_INFINITE,1
-    - DURABILITY,3
-    - ARROW_FIRE,1
-    - ARROW_KNOCKBACK,2
-    - ARROW_DAMAGE,5
-  item3:
-    id: 403
-    amount: 1
-    durability: 0
-    name: BIBLE+OF+MINECRAFT%28SWORD%29
-    book_enchantment:
-    - DAMAGE_UNDEAD,5
-    - DAMAGE_ALL,5
-    - KNOCKBACK,2
-    - DAMAGE_ARTHROPODS,5
-    - LOOT_BONUS_MOBS,3
-    - FIRE_ASPECT,2
-    - THORNS,3
-  item4:
-    id: 403
-    amount: 1
-    durability: 0
-    name: BIBLE+OF+MINECRAFT%28ARMOR%29
-    book_enchantment:
-    - PROTECTION_ENVIRONMENTAL,4
-    - PROTECTION_FIRE,4
-    - PROTECTION_FALL,4
-    - PROTECTION_EXPLOSIONS,4
-    - PROTECTION_PROJECTILE,4
-    - OXYGEN,3
-    - WATER_WORKER,1
-  item5:
-    id: 403
-    amount: 1
-    durability: 0
-    name: BIBLE+OF+MINECRAFT%28ITEM%29
-    book_enchantment:
-    - DURABILITY,3
-    - LOOT_BONUS_BLOCKS,3
-    - DIG_SPEED,5
-  item10:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - DAMAGE_ALL,5
-  item11:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - DAMAGE_UNDEAD,5
-  item12:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - DAMAGE_ARTHROPODS,5
-  item13:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - KNOCKBACK,2
-  item14:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - FIRE_ASPECT,2
-  item15:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - LOOT_BONUS_MOBS,3
-  item16:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - DIG_SPEED,5
-  item17:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - SILK_TOUCH,1
-  item18:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - DURABILITY,3
-  item19:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - LOOT_BONUS_BLOCKS,3
-  item20:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - ARROW_DAMAGE,5
-  item21:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - ARROW_KNOCKBACK,2
-  item22:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - ARROW_FIRE,1
-  item23:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - ARROW_INFINITE,1
-  item24:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - PROTECTION_ENVIRONMENTAL,4
-  item25:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - PROTECTION_FIRE,4
-  item26:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - PROTECTION_FALL,4
-  item27:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - PROTECTION_EXPLOSIONS,4
-  item28:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - PROTECTION_PROJECTILE,4
-  item29:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - OXYGEN,3
-  item30:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - WATER_WORKER,1
-  item31:
-    id: 403
-    amount: 1
-    durability: 0
-    name: ''
-    book_enchantment:
-    - THORNS,3
-  armor1:
-    id: 0
-    amount: 0
-    durability: -1
-  armor2:
-    id: 0
-    amount: 0
-    durability: -1
-  armor3:
-    id: 0
-    amount: 0
-    durability: -1
-  armor4:
-    id: 0
-    amount: 0
-    durability: -1
 
 original:
   item1:
-    id: 267
+    id: 387
     amount: 1
     durability: 0
-    name: ''
+    book:
+      title: Special Invs
+      author: mirumiruz
+      pages:
+      - 'You can add/delete special inventories in [plugins/ToggleInventory/special_inventories.yml].
+
+
+        It''s easy to configure, please try it.'
   item2:
+    id: 1
+    amount: 1
+    durability: 0
+  item3:
+    id: 2
+    amount: 2
+    durability: 0
+  item4:
+    id: 3
+    amount: 3
+    durability: 0
+  item5:
+    id: 276
+    amount: 1
+    durability: 0
+    enchantment:
+    - DAMAGE_ALL,5
+    - DAMAGE_ARTHROPODS,5
+    - DAMAGE_UNDEAD,5
+    - FIRE_ASPECT,2
+    - KNOCKBACK,2
+    - LOOT_BONUS_MOBS,3
+  item6:
     id: 261
     amount: 1
     durability: 0
-    name: ''
-  item3:
-    id: 257
-    amount: 1
-    durability: 0
-    name: ''
-  item4:
-    id: 256
-    amount: 1
-    durability: 0
-    name: ''
-  item5:
-    id: 258
-    amount: 1
-    durability: 0
-    name: ''
-  item6:
-    id: 3
-    amount: 64
-    durability: 0
-    name: ''
-  item7:
-    id: 50
-    amount: 64
-    durability: 0
-    name: ''
-  item8:
-    id: 326
-    amount: 1
-    durability: 0
-    name: ''
-  item9:
-    id: 393
-    amount: 64
-    durability: 0
-    name: ''
-  item15:
-    id: 267
-    amount: 1
-    durability: 0
-    name: ''
-  item16:
-    id: 257
-    amount: 1
-    durability: 0
-    name: ''
-  item17:
-    id: 263
-    amount: 64
-    durability: 1
-    name: ''
-  item18:
-    id: 17
-    amount: 64
-    durability: 0
-    name: ''
-  item24:
-    id: 262
-    amount: 64
-    durability: 0
-    name: ''
-  item25:
-    id: 257
-    amount: 1
-    durability: 0
-    name: ''
-  item26:
-    id: 50
-    amount: 64
-    durability: 0
-    name: ''
-  item27:
-    id: 323
-    amount: 1
-    durability: 0
-    name: ''
-  item34:
-    id: 355
-    amount: 1
-    durability: 0
-    name: ''
-  item35:
-    id: 58
-    amount: 1
-    durability: 0
-    name: ''
-  item36:
-    id: 54
-    amount: 1
-    durability: 0
-    name: ''
-  armor1:
-    id: 301
-    amount: 1
-    durability: 0
-    name: ''
-    color: '#A06540'
-  armor2:
-    id: 300
-    amount: 1
-    durability: 0
-    name: ''
-    color: '#A06540'
-  armor3:
-    id: 299
-    amount: 1
-    durability: 0
-    name: ''
-    color: '#A06540'
-  armor4:
-    id: 298
-    amount: 1
-    durability: 0
-    name: ''
-    color: '#A06540'
+    enchantment:
+    - ARROW_FIRE,1
+    - ARROW_DAMAGE,5
+    - ARROW_KNOCKBACK,2
+    - ARROW_INFINITE,1
