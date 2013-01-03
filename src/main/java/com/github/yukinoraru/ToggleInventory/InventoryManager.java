@@ -18,7 +18,7 @@ public class InventoryManager {
 
 	private static final int CONFIG_INVENTORY_MAX_INDEX_DEFAULT = 4;
 	private static final int CONFIG_INVENTORY_MAXIMUM = 30;
-	private static final String CONFIG_FILENAME_SPECIAL_INV = "special_inventories.yml";
+	public static final String CONFIG_FILENAME_SPECIAL_INV = "special_inventories.yml";
 
 	private ToggleInventory plugin;
 

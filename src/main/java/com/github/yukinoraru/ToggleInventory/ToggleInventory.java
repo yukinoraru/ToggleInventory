@@ -1,5 +1,6 @@
 package com.github.yukinoraru.ToggleInventory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -25,7 +26,14 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
     		this.log.info("Get it from: " + this.updateChecker.getLink());
     	}
-		try {
+
+    	// copy default special inventory file
+    	File spInvFile = inventoryManager.getSpecialInventoryFile();
+    	if(!spInvFile.exists()){
+    		saveResource(spInvFile.getName(), false);
+    	}
+
+    	try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
 		} catch (IOException e) {
@@ -103,6 +111,23 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 					}
 					return true;
 				}
+
+				// implement /tis reset [-f]
+				if(args.length >= 1 && args[0].equals("reset")){
+					boolean isForce = (args.length == 2) ? args[1].equals("-f") : false;
+					if(isForce){
+				    	File spInvFile = inventoryManager.getSpecialInventoryFile();
+				    	saveResource(spInvFile.getName(), true);
+						player.sendMessage(ChatColor.GOLD + "[ToggleInventory] All special inventory were reset!");
+						return true;
+					}
+					else{
+						player.sendMessage(ChatColor.GOLD + "WARNING: All special inventory will be reset by default.");
+						player.sendMessage(ChatColor.GOLD + "If you want to continue operation, retype " + ChatColor.DARK_RED +  "'/tis reset -f'");
+					}
+					return true;
+				}
+
 				// implement /tis and /its command
 				else if (args.length == 1 && args[0].length() > 0) {
 					inventoryManager.toggleSpecialInventory(player, args[0]);
