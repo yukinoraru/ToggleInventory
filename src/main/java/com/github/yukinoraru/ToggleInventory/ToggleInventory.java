@@ -35,7 +35,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
     //
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-
         // make sure the sender is a Player before casting
         Player player = null;
         String playerName = null;
@@ -87,7 +86,25 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 				return true;
 			}
 			try {
-				if (args.length == 1 && args[0].length() > 0) {
+				// implement /tis [add|delete] command
+				if(args.length >= 1 && (args[0].equals("add") || args[0].equals("delete"))){
+					String name = (args.length == 2) ? args[1] : null;
+					if(name == null){
+						player.sendMessage("USAGE: /tis [add|delete] [name]");
+						return true;
+					}
+					if(args[0].equals("add")){
+						inventoryManager.saveSpecialInventory(player.getInventory(), name);
+						player.sendMessage(ChatColor.DARK_GREEN+String.format("Add %s to special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
+					}
+					else if(args[0].equals("delete")){
+						inventoryManager.deleteSpecialInventory(name);
+						player.sendMessage(ChatColor.DARK_GREEN+String.format("Delete %s from special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
+					}
+					return true;
+				}
+				// implement /tis and /its command
+				else if (args.length == 1 && args[0].length() > 0) {
 					inventoryManager.toggleSpecialInventory(player, args[0]);
 				} else {
 					inventoryManager.toggleSpecialInventory(player, !isTISReverse);
@@ -95,7 +112,6 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 				player.sendMessage(inventoryManager.makeSpecialInventoryMessage(player) + " inventory toggled.");
 			} catch (Exception e) {
 				outputError(e.getMessage(), player);
-				e.printStackTrace();
 			}
         }
         return true;

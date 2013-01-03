@@ -255,22 +255,28 @@ public class InventoryManager {
 		toggleInventory(player, nextIndex);
 	}
 
-	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
+	public void saveInventory(PlayerInventory inventory, File inventoryFile, String sectionPathContents, String sectionPathArmor) throws Exception{
 
-        File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-
-		beforeSave(file);
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
 
         Inventory inventoryArmor = ItemSerialization.getArmorInventory(inventory);
 
-        String serializedInventoryNormal = ItemSerialization.toBase64(inventory);
+        String serializedInventoryContents = ItemSerialization.toBase64(inventory);
         String serializedInventoryArmor  = ItemSerialization.toBase64(inventoryArmor);
 
-        fileConfiguration.set(String.format("inv%d.contents", index), serializedInventoryNormal);
-        fileConfiguration.set(String.format("inv%d.armor", index), serializedInventoryArmor);
+        fileConfiguration.set(sectionPathContents, serializedInventoryContents);
+        fileConfiguration.set(sectionPathArmor, serializedInventoryArmor);
 
-        fileConfiguration.save(file);
+		beforeSave(inventoryFile);
+        fileConfiguration.save(inventoryFile);
+        return ;
+	}
+
+	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
+        File inventoryFile = getInventoryFile(playerName);
+        String sectionPathContents = String.format("inv%d.contents", index);
+        String sectionPathArmor = String.format("inv%d.armor", index);
+        saveInventory(inventory, inventoryFile, sectionPathContents, sectionPathArmor);
         return ;
 	}
 
@@ -313,6 +319,19 @@ public class InventoryManager {
 		String sectionPathContents = String.format("inv%d.contents", index);
 		String sectionPathArmor = String.format("inv%d.armor", index);
 		loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+	}
+
+	public void deleteSpecialInventory(String name) throws IOException{
+		File file = getSpecialInventoryFile();
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+		fileConfiguration.set(name, null);
+		fileConfiguration.save(file);
+	}
+
+	public void saveSpecialInventory(PlayerInventory inventory, String name) throws Exception{
+        String sectionPathContents = String.format("%s.contents", name);
+        String sectionPathArmor    = String.format("%s.armor", name);
+        saveInventory(inventory, getSpecialInventoryFile(), sectionPathContents, sectionPathArmor);
 	}
 
 	private void loadInventory(String playerName, PlayerInventory inventory, int index){
