@@ -1,33 +1,38 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 0.0.8
+version: 1.0.0-SNAPSHOT
 dev-url: http://dev.bukkit.org/server-mods/toggleinventory/
 author: yukinoraru
 description: toggle inventory command.
 commands:
   togglei:
     description: toggle inventory
-    aliases: [ti, it]
+    aliases: [ti]
     usage: |
       /<command> [0-n]
       Example: /<command> - toggle inventory like a ring
       Example: /<command> 1 - toggle inventory index 1
+  toggleir:
+    description: toggle inventory (reverse)
+    aliases: [it]
   toggleis:
     description: toggle inventory for special inventories
-    aliases: [tis,its]
+    aliases: [tis]
     usage: |
       /<command> [name]
       Example: /<command> de - toggle special inventory starts with 'de'
+  toggleisr:
+    description: toggle inventory for special inventories (reverse)
+    aliases: [its]
 
 permissions:
+  toggle_inventory.toggle:
+    default: op
+    description: gives permission to /togglei command
 
   toggle_inventory.toggle_special:
     default: op
     description: gives permission to /toggleis command
-
-  toggle_inventory.toggle:
-    default: op
-    description: gives permission to /togglei command
 
   toggle_inventory.2:
     default: false
