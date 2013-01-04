@@ -101,16 +101,32 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 						return true;
 					}
 					if(args[0].equals("add")){
-						inventoryManager.saveSpecialInventory(playerName, player.getInventory(), name);
+						inventoryManager.saveSpecialInventory(inventoryManager.getInventoryFile(playerName), player.getInventory(), name);
 						player.sendMessage(ChatColor.DARK_GREEN+String.format("Add %s to special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
 					}
 					else if(args[0].equals("delete")){
-						inventoryManager.deleteSpecialInventory(playerName, name);
+						inventoryManager.deleteSpecialInventory(inventoryManager.getInventoryFile(playerName), name);
 						player.sendMessage(ChatColor.DARK_GREEN+String.format("Delete %s from special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
 					}
 					return true;
 				}
-
+				// implement /tis [add-default|delete-default] command
+				else if(args.length >= 1 && (args[0].equals("add-default") || args[0].equals("delete-default"))){
+					String name = (args.length == 2) ? args[1] : null;
+					if(name == null){
+						player.sendMessage("USAGE: /tis [add-deafult|delete-default] [name]");
+						return true;
+					}
+					if(args[0].equals("add-default")){
+						inventoryManager.saveSpecialInventory(inventoryManager.getDefaultSpecialInventoryFile(), player.getInventory(), name);
+						player.sendMessage(ChatColor.DARK_GREEN+String.format("Add %s to default special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
+					}
+					else if(args[0].equals("delete-default")){
+						inventoryManager.deleteSpecialInventory(inventoryManager.getDefaultSpecialInventoryFile(), name);
+						player.sendMessage(ChatColor.DARK_GREEN+String.format("Delete %s from default special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
+					}
+					return true;
+				}
 				// implement /tis copy [n]
 				else if(args.length >= 1 && args[0].equals("copy")){
 					int destinationIndex = (args.length == 3) ? Integer.parseInt(args[2]) : -1;

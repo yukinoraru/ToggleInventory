@@ -1,6 +1,6 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 1.0.0-SNAPSHOT
+version: 1.0.0-PRE
 dev-url: http://dev.bukkit.org/server-mods/toggleinventory/
 author: yukinoraru
 description: toggle inventory command.
@@ -21,8 +21,9 @@ commands:
     usage: |
       /<command> [name]
       /<command> [add|delete] [name]
-      /<command> [add|delete] [name]
+      /<command> [add-default|delete-default] [name]
       /<command> reset [-f]
+      /<command> reset-default [-f]
       /<command> copy [name] [inventory index]
   toggleisr:
     description: toggle inventory for special inventories (reverse)

@@ -40,10 +40,6 @@ public class InventoryManager {
     	return new File(plugin.getDataFolder(), CONFIG_FILENAME_SPECIAL_INV);
     }
 
-    public File getSpecialInventoryFile(String playerName){
-    	return getInventoryFile(playerName);
-    }
-
 	private void beforeSave(File file) throws Exception{
         // before save, file must be filled with empty
         PrintWriter writer;
@@ -157,7 +153,7 @@ public class InventoryManager {
 
 		String playerName = player.getName();
 		String invCurrentName = getCurrentSpecialInventoryIndex(playerName);
-		String []list = getListSpecialInventory(getSpecialInventoryFile(playerName));
+		String []list = getListSpecialInventory(getInventoryFile(playerName));
 
 		for (int i = 0; i < list.length; i++) {
 			msg += ((list[i].equals(invCurrentName)) ? ChatColor.GREEN : ChatColor.DARK_GREEN) + list[i];
@@ -203,7 +199,7 @@ public class InventoryManager {
 		}
 
 		// 2. matching inv with inventoryName
-		String []list = getListSpecialInventory(getSpecialInventoryFile(playerName));
+		String []list = getListSpecialInventory(getInventoryFile(playerName));
         if(list == null){
 			throw new Exception("Your special inventory is empty.\n Try '/tis add' or '/tis reset -f', '/tis reset-default -f'");
 		}
@@ -258,7 +254,7 @@ public class InventoryManager {
 	}
 
 	private boolean isExistSpecialInv(String playerName, String specialInventoryName) throws Exception{
-		String []list = getListSpecialInventory(getSpecialInventoryFile(playerName));
+		String []list = getListSpecialInventory(getInventoryFile(playerName));
 		boolean isMatched = false;
 		for(String name : list){
 			if(name.equals(specialInventoryName)){
@@ -284,7 +280,7 @@ public class InventoryManager {
 		}
 
         File playerInventoryFile = getInventoryFile(playerName);
-        File specialInventoryFile = getSpecialInventoryFile(playerName);
+        File specialInventoryFile = getInventoryFile(playerName);
         FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerInventoryFile);
         FileConfiguration spinvFileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
 
@@ -306,7 +302,7 @@ public class InventoryManager {
 	public void toggleSpecialInventory(CommandSender player, boolean rotateDirection) throws Exception{
 		String playerName = player.getName();
 		String currentSpIndex = getCurrentSpecialInventoryIndex(playerName);
-		String []list = getListSpecialInventory(getSpecialInventoryFile(playerName));
+		String []list = getListSpecialInventory(getInventoryFile(playerName));
 		try{
 			String nextSpIndex = (getSpecialInventoryUsingStatus(playerName)) ? getNextSpecialInventory(
 				list, currentSpIndex, rotateDirection) : currentSpIndex;
@@ -401,23 +397,23 @@ public class InventoryManager {
         return String.format("%s.armor", getSectionPathForSPInvRoot(name));
 	}
 
-	private void deleteAllSPInv(String playerName) throws Exception{
-		File playerFile = getSpecialInventoryFile(playerName);
+	private void deleteAllSPInventoryFromUser(String playerName) throws Exception{
+		File playerFile = getInventoryFile(playerName);
         String [] playerSPInvList = getListSpecialInventory(playerFile);
 		if (playerSPInvList != null) {
 			for (String name : playerSPInvList) {
-				deleteSpecialInventory(playerName, name);
+				deleteSpecialInventory(playerFile, name);
 			}
 		}
 	}
 
 	public void initializeSPInvFromDefault(String playerName) throws Exception{
         // delete
-        deleteAllSPInv(playerName);
+        deleteAllSPInventoryFromUser(playerName);
 
         // copy
 		File defaultFile = getDefaultSpecialInventoryFile();
-		File playerFile = getSpecialInventoryFile(playerName);
+		File playerFile = getInventoryFile(playerName);
         FileConfiguration defaultFileConfiguration = YamlConfiguration.loadConfiguration(defaultFile);
         FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerFile);
 
@@ -445,18 +441,17 @@ public class InventoryManager {
 		loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
 	}
 
-	public void deleteSpecialInventory(String playerName, String name) throws IOException{
-		File file = getSpecialInventoryFile(playerName);
+	public void deleteSpecialInventory(File file, String name) throws IOException{
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
         plugin.getLogger().warning(getSectionPathForSPInvRoot(name));
 		fileConfiguration.set(getSectionPathForSPInvRoot(name), null);
 		fileConfiguration.save(file);
 	}
 
-	public void saveSpecialInventory(String playerName, PlayerInventory inventory, String name) throws Exception{
+	public void saveSpecialInventory(File file, PlayerInventory inventory, String name) throws Exception{
         String sectionPathContents = getSectionPathForSPInvContents(name);
         String sectionPathArmor    = getSectionPathForSPInvArmor(name);
-        saveInventory(inventory, getSpecialInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+        saveInventory(inventory, file, sectionPathContents, sectionPathArmor);
 	}
 
 	private void loadInventory(String playerName, PlayerInventory inventory, int index){
@@ -468,7 +463,7 @@ public class InventoryManager {
 	private void loadSpecialInventory(String playerName, PlayerInventory inventory, String name){
         String sectionPathContents = getSectionPathForSPInvContents(name);
         String sectionPathArmor    = getSectionPathForSPInvArmor(name);
-        loadInventory(playerName, inventory, getSpecialInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+        loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
 	}
 
 }
