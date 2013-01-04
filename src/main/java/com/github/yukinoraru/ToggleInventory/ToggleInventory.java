@@ -28,11 +28,10 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     	}
 
     	// copy default special inventory file
-    	File spInvFile = inventoryManager.getSpecialInventoryFile();
+    	File spInvFile = inventoryManager.getDefaultSpecialInventoryFile();
     	if(!spInvFile.exists()){
     		saveResource(spInvFile.getName(), false);
     	}
-
     	try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -102,34 +101,18 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 						return true;
 					}
 					if(args[0].equals("add")){
-						inventoryManager.saveSpecialInventory(player.getInventory(), name);
+						inventoryManager.saveSpecialInventory(playerName, player.getInventory(), name);
 						player.sendMessage(ChatColor.DARK_GREEN+String.format("Add %s to special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
 					}
 					else if(args[0].equals("delete")){
-						inventoryManager.deleteSpecialInventory(name);
+						inventoryManager.deleteSpecialInventory(playerName, name);
 						player.sendMessage(ChatColor.DARK_GREEN+String.format("Delete %s from special inventories.", ChatColor.GREEN+name+ChatColor.DARK_GREEN));
 					}
 					return true;
 				}
 
-				// implement /tis reset [-f]
-				if(args.length >= 1 && args[0].equals("reset")){
-					boolean isForce = (args.length == 2) ? args[1].equals("-f") : false;
-					if(isForce){
-				    	File spInvFile = inventoryManager.getSpecialInventoryFile();
-				    	saveResource(spInvFile.getName(), true);
-						player.sendMessage(ChatColor.GOLD + "[ToggleInventory] All special inventory were reset!");
-						return true;
-					}
-					else{
-						player.sendMessage(ChatColor.GOLD + "WARNING: All special inventory will be reset by default.");
-						player.sendMessage(ChatColor.GOLD + "If you want to continue operation, retype " + ChatColor.DARK_RED +  "'/tis reset -f'");
-					}
-					return true;
-				}
-
 				// implement /tis copy [n]
-				if(args.length >= 1 && args[0].equals("copy")){
+				else if(args.length >= 1 && args[0].equals("copy")){
 					int destinationIndex = (args.length == 3) ? Integer.parseInt(args[2]) : -1;
 					String spInvName = (args.length == 3) ? args[1] : null;
 					if(destinationIndex > 0){
@@ -150,16 +133,52 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 					}
 					return true;
 				}
+				// implement /tis reset [-f]
+				else if(args.length >= 1 && args[0].equals("reset")){
+					boolean isForce = (args.length == 2) ? args[1].equals("-f") : false;
+					if(isForce){
+						inventoryManager.initializeSPInvFromDefault(playerName);
+						player.sendMessage(ChatColor.GOLD + "All special inventory were reset!");
+						return true;
+					}
+					else{
+						player.sendMessage(ChatColor.GOLD + "WARNING: All special inventory will be reset by default.");
+						player.sendMessage(ChatColor.GOLD + "If you want to continue operation, retype " + ChatColor.DARK_RED +  "'/tis reset -f'");
+					}
+					return true;
+				}
+				// implement /tis reset-default [-f]
+				else if(args.length >= 1 && args[0].equals("reset-default")){
+					boolean isForce = (args.length == 2) ? args[1].equals("-f") : false;
+					if(isForce){
+				    	saveResource(inventoryManager.getDefaultSpecialInventoryFile().getName(), true);
+						player.sendMessage(ChatColor.GOLD + "Default special inventory were reset!");
+						return true;
+					}
+					else{
+						player.sendMessage(ChatColor.GOLD + "WARNING: Default special inventory will be reset by default.");
+						player.sendMessage(ChatColor.GOLD + "If you want to continue operation, retype " + ChatColor.DARK_RED +  "'/tis reset-default -f'");
+					}
+					return true;
 
+				}
 				// implement /tis and /its command
-				else if (args.length == 1 && args[0].length() > 0) {
-					inventoryManager.toggleSpecialInventory(player, args[0]);
-				} else {
-					inventoryManager.toggleSpecialInventory(player, !isTISReverse);
+				else {
+					// TODO: FIRST USE
+					if(inventoryManager.isFirstUseForToggleInventorySpecial(playerName)){
+						inventoryManager.initializeSPInvFromDefault(playerName);
+						inventoryManager.setSpecialInventoryUsingStatusForFirstUse(playerName, false);
+					}
+					if (args.length == 1 && args[0].length() > 0) {
+						inventoryManager.toggleSpecialInventory(player, args[0]);
+					} else {
+						inventoryManager.toggleSpecialInventory(player, !isTISReverse);
+					}
 				}
 				player.sendMessage(inventoryManager.makeSpecialInventoryMessage(player) + " inventory toggled.");
 			} catch (Exception e) {
 				outputError(e.getMessage(), player);
+				e.printStackTrace();
 			}
         }
         return true;
