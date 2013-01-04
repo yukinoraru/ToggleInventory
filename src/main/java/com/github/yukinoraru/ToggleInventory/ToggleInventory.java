@@ -137,6 +137,13 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 						if(destinationIndex == inventoryManager.getCurrentInventoryIndex(playerName)){
 							inventoryManager.restoreInventory(player);
 						}
+						player.sendMessage(String.format(
+								"'%s' was copied to '%s' successfully!",
+								ChatColor.GREEN + spInvName + ChatColor.RESET,
+								ChatColor.BOLD
+										+ String.valueOf(destinationIndex)
+										+ ChatColor.RESET));
+						return true;
 					}
 					else{
 						player.sendMessage("USAGE: /tis copy [special inventory name] [invenotry index]");

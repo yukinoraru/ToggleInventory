@@ -236,6 +236,18 @@ public class InventoryManager {
 		return (nextInvName == null) ? list[0] : nextInvName;
 	}
 
+	private boolean isExistSpecialInv(String specialInventoryName) throws Exception{
+		String []list = getListSpecialInventory(getSpecialInventoryFile());
+		boolean isMatched = false;
+		for(String name : list){
+			if(name.equals(specialInventoryName)){
+				isMatched = true;
+				break;
+			}
+		}
+		return isMatched;
+	}
+
 	public void copySpInvToNormalInventory(CommandSender player, String specialInventoryName, int destinationIndex) throws Exception{
 		String playerName = player.getName();
 
@@ -245,16 +257,8 @@ public class InventoryManager {
 			throw new Exception("Wrong destination index.");
 		}
 
-		//
-		String []list = getListSpecialInventory(getSpecialInventoryFile());
-		boolean isMatched = false;
-		for(String name : list){
-			if(name.equals(specialInventoryName)){
-				isMatched = true;
-				break;
-			}
-		}
-		if(!isMatched){
+		// isExit?
+		if(!isExistSpecialInv(specialInventoryName)){
 			throw new Exception(String.format("No such special inventory found: '%s'", specialInventoryName));
 		}
 
@@ -263,12 +267,13 @@ public class InventoryManager {
         FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerInventoryFile);
         FileConfiguration spinvFileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
 
-        String playerSectionPathContents = String.format("inv%d.contents", destinationIndex);
-        String playerSectionPathArmor = String.format("inv%d.armor", destinationIndex);
+        String playerSectionPathContents = getSectionPathForUserContents(destinationIndex);
+        String playerSectionPathArmor = getSectionPathForUserArmor(destinationIndex);
 
-        String spinvSectionPathContents = String.format("%s.contents", specialInventoryName);
-        String spinvSectionPathArmor    = String.format("%s.armor", specialInventoryName);
+        String spinvSectionPathContents = getSectionPathForSPInvContents(specialInventoryName);
+        String spinvSectionPathArmor    = getSectionPathForSPInvArmor(specialInventoryName);
 
+        // copy
         playerFileConfiguration.set(playerSectionPathContents, spinvFileConfiguration.get(spinvSectionPathContents));
         playerFileConfiguration.set(playerSectionPathArmor, spinvFileConfiguration.get(spinvSectionPathArmor));
 
@@ -315,8 +320,8 @@ public class InventoryManager {
 
 	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
         File inventoryFile = getInventoryFile(playerName);
-        String sectionPathContents = String.format("inv%d.contents", index);
-        String sectionPathArmor = String.format("inv%d.armor", index);
+        String sectionPathContents = getSectionPathForUserContents(index);
+        String sectionPathArmor = getSectionPathForUserArmor(index);
         saveInventory(inventory, inventoryFile, sectionPathContents, sectionPathArmor);
         return ;
 	}
@@ -353,12 +358,25 @@ public class InventoryManager {
 		return;
 	}
 
+	private String getSectionPathForUserContents(int index){
+		return String.format("inv%d.contents", index);
+	}
+	private String getSectionPathForUserArmor(int index){
+        return String.format("inv%d.armor", index);
+	}
+	private String getSectionPathForSPInvContents(String name){
+		return String.format("%s.contents", name);
+	}
+	private String getSectionPathForSPInvArmor(String name){
+        return String.format("%s.armor", name);
+	}
+
 	public void restoreInventory(CommandSender player) {
 		String playerName = player.getName();
 		PlayerInventory inventory = ((Player) player).getInventory();
 		int index = getCurrentInventoryIndex(playerName);
-		String sectionPathContents = String.format("inv%d.contents", index);
-		String sectionPathArmor = String.format("inv%d.armor", index);
+		String sectionPathContents = getSectionPathForUserContents(index);
+		String sectionPathArmor = getSectionPathForUserArmor(index);
 		loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
 	}
 
@@ -370,20 +388,20 @@ public class InventoryManager {
 	}
 
 	public void saveSpecialInventory(PlayerInventory inventory, String name) throws Exception{
-        String sectionPathContents = String.format("%s.contents", name);
-        String sectionPathArmor    = String.format("%s.armor", name);
+        String sectionPathContents = getSectionPathForSPInvContents(name);
+        String sectionPathArmor    = getSectionPathForSPInvArmor(name);
         saveInventory(inventory, getSpecialInventoryFile(), sectionPathContents, sectionPathArmor);
 	}
 
 	private void loadInventory(String playerName, PlayerInventory inventory, int index){
-        String sectionPathContents = String.format("inv%d.contents", index);
-        String sectionPathArmor    = String.format("inv%d.armor", index);
+        String sectionPathContents = getSectionPathForUserContents(index);
+        String sectionPathArmor    = getSectionPathForUserArmor(index);
         loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
 	}
 
 	private void loadSpecialInventory(String playerName, PlayerInventory inventory, String name){
-        String sectionPathContents = String.format("%s.contents", name);
-        String sectionPathArmor    = String.format("%s.armor", name);
+        String sectionPathContents = getSectionPathForSPInvContents(name);
+        String sectionPathArmor    = getSectionPathForSPInvArmor(name);
         loadInventory(playerName, inventory, getSpecialInventoryFile(), sectionPathContents, sectionPathArmor);
 	}
 
