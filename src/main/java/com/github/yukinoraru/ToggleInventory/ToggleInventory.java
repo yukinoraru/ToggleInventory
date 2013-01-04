@@ -128,6 +128,22 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 					return true;
 				}
 
+				// implement /tis copy [n]
+				if(args.length >= 1 && args[0].equals("copy")){
+					int destinationIndex = (args.length == 3) ? Integer.parseInt(args[2]) : -1;
+					String spInvName = (args.length == 3) ? args[1] : null;
+					if(destinationIndex > 0){
+						inventoryManager.copySpInvToNormalInventory(player, spInvName, destinationIndex);
+						if(destinationIndex == inventoryManager.getCurrentInventoryIndex(playerName)){
+							inventoryManager.restoreInventory(player);
+						}
+					}
+					else{
+						player.sendMessage("USAGE: /tis copy [special inventory name] [invenotry index]");
+					}
+					return true;
+				}
+
 				// implement /tis and /its command
 				else if (args.length == 1 && args[0].length() > 0) {
 					inventoryManager.toggleSpecialInventory(player, args[0]);

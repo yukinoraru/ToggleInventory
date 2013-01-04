@@ -20,7 +20,10 @@ commands:
     aliases: [tis]
     usage: |
       /<command> [name]
-      Example: /<command> de - toggle special inventory starts with 'de'
+      /<command> [add|delete] [name]
+      /<command> [add|delete] [name]
+      /<command> reset [-f]
+      /<command> copy [name] [inventory index]
   toggleisr:
     description: toggle inventory for special inventories (reverse)
     aliases: [its]

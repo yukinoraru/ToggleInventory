@@ -88,7 +88,7 @@ public class InventoryManager {
         fileConfiguration.save(file);
 	}
 
-	private int getCurrentInventoryIndex(String playerName){
+	public int getCurrentInventoryIndex(String playerName){
 		File file = getInventoryFile(playerName);
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
         return fileConfiguration.getInt("current", 1);
@@ -234,6 +234,47 @@ public class InventoryManager {
 			}
 		}
 		return (nextInvName == null) ? list[0] : nextInvName;
+	}
+
+	public void copySpInvToNormalInventory(CommandSender player, String specialInventoryName, int destinationIndex) throws Exception{
+		String playerName = player.getName();
+
+		// validation
+		int maxIndex = getMaxInventoryIndex(player);
+		if(destinationIndex <= 0 || destinationIndex > maxIndex){
+			throw new Exception("Wrong destination index.");
+		}
+
+		//
+		String []list = getListSpecialInventory(getSpecialInventoryFile());
+		boolean isMatched = false;
+		for(String name : list){
+			if(name.equals(specialInventoryName)){
+				isMatched = true;
+				break;
+			}
+		}
+		if(!isMatched){
+			throw new Exception(String.format("No such special inventory found: '%s'", specialInventoryName));
+		}
+
+        File playerInventoryFile = getInventoryFile(playerName);
+        File specialInventoryFile = getSpecialInventoryFile();
+        FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerInventoryFile);
+        FileConfiguration spinvFileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
+
+        String playerSectionPathContents = String.format("inv%d.contents", destinationIndex);
+        String playerSectionPathArmor = String.format("inv%d.armor", destinationIndex);
+
+        String spinvSectionPathContents = String.format("%s.contents", specialInventoryName);
+        String spinvSectionPathArmor    = String.format("%s.armor", specialInventoryName);
+
+        playerFileConfiguration.set(playerSectionPathContents, spinvFileConfiguration.get(spinvSectionPathContents));
+        playerFileConfiguration.set(playerSectionPathArmor, spinvFileConfiguration.get(spinvSectionPathArmor));
+
+        playerFileConfiguration.save(playerInventoryFile);
+
+        return;
 	}
 
 	public void toggleSpecialInventory(CommandSender player, boolean rotateDirection) throws Exception{
