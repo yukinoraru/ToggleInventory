@@ -19,13 +19,23 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
     public void onEnable(){
     	this.log = this.getLogger();
-    	this.updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/server-mods/toggleinventory/files.rss");
-    	this.inventoryManager = new InventoryManager(this);
 
-    	if(this.updateChecker.updateNeeded()){
-    		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
-    		this.log.info("Get it from: " + this.updateChecker.getLink());
+    	saveDefaultConfig();
+
+    	// for previous version
+    	getConfig().options().copyDefaults(true);
+    	saveConfig();
+
+    	// update check
+    	if(getConfig().getBoolean("update-check", true)){
+	    	this.updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/server-mods/toggleinventory/files.rss");
+	    	if(this.updateChecker.updateNeeded()){
+	    		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
+	    		this.log.info("Get it from: " + this.updateChecker.getLink());
+	    	}
     	}
+
+    	this.inventoryManager = new InventoryManager(this);
 
     	// copy default special inventory file
     	File spInvFile = inventoryManager.getDefaultSpecialInventoryFile();
