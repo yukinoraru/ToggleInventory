@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.yukinoraru</groupId>
-	<artifactId>ToggleInventory</artifactId>
-	<version>1.0.0</version>
-	<packaging>jar</packaging>
-
 	<url>https://github.com/yukinoraru/ToggleInventory</url>
+	<artifactId>ToggleInventory</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
 
 	<properties>
+		<bukkit.version>1.4.6-R0.3</bukkit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -18,12 +18,12 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.6-R0.3</version>
+			<version>${bukkit.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.4.6-R0.3</version>
+			<version>${bukkit.version}</version>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -136,7 +136,7 @@
 						<phase>compile</phase>
 						<configuration>
 							<tasks>
-								<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${basedir}/bukkit/plugins/${project.name}.jar" />
+								<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/${bukkit.version}/${project.name}.jar" />
 							</tasks>
 						</configuration>
 						<goals>
