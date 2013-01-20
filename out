@@ -1,0 +1,172 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building ToggleInventory 1.0.0
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ ToggleInventory ---
+[INFO] Deleting C:\Users\Steven\workspace\ToggleInventory\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ ToggleInventory ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ ToggleInventory ---
+[INFO] Compiling 6 source files to C:\Users\Steven\workspace\ToggleInventory\target\classes
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.2:jar (jarify) @ ToggleInventory ---
+[INFO] Building jar: C:\Users\Steven\workspace\ToggleInventory\target\ToggleInventory-1.0.0.jar
+[INFO] 
+[INFO] --- maven-antrun-plugin:1.3:run (copy) @ ToggleInventory ---
+[INFO] Executing tasks
+     [copy] Copying 1 file to C:\Users\Steven\workspace\ToggleInventory\target\1.4.7-R0.1
+[INFO] Executed tasks
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ ToggleInventory ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\Steven\workspace\ToggleInventory\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ ToggleInventory ---
+[INFO] Compiling 2 source files to C:\Users\Steven\workspace\ToggleInventory\target\test-classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[3,23] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[5,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[6,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[3,23] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[5,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[6,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[14,2] cannot find symbol
+symbol  : class Before
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[20,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[34,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[39,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[44,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[51,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[57,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[10,2] cannot find symbol
+symbol  : class Before
+location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[14,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[21,2] cannot find symbol
+symbol  : class Test
+location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[30,3] cannot find symbol
+symbol  : method assertEquals(java.lang.String,int,int)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[37,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[42,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[48,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[49,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[60,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[18,2] cannot find symbol
+symbol  : method assertEquals(java.lang.String,int,int)
+location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[28,3] cannot find symbol
+symbol  : method assertEquals(java.lang.String,int,int)
+location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[INFO] 24 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.424s
+[INFO] Finished at: Mon Jan 21 01:50:13 GMT+08:00 2013
+[INFO] Final Memory: 12M/30M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:2.3.2:testCompile (default-testCompile) on project ToggleInventory: Compilation failure: Compilation failure:
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[3,23] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[5,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[6,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[3,23] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[5,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[6,16] package org.junit does not exist
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[14,2] cannot find symbol
+[ERROR] symbol  : class Before
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[20,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[34,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[39,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[44,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[51,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[57,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[10,2] cannot find symbol
+[ERROR] symbol  : class Before
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[14,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[21,2] cannot find symbol
+[ERROR] symbol  : class Test
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[30,3] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,int,int)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[37,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[42,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[48,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[49,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\InventoryManagerTest.java:[60,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,java.lang.String,java.lang.String)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.InventoryManagerTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[18,2] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,int,int)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] \Users\Steven\workspace\ToggleInventory\src\test\java\com\github\yukinoraru\ToggleInventory\LevenshteinDistanceTest.java:[28,3] cannot find symbol
+[ERROR] symbol  : method assertEquals(java.lang.String,int,int)
+[ERROR] location: class com.github.yukinoraru.ToggleInventory.LevenshteinDistanceTest
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

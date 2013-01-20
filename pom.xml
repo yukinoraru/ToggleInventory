@@ -10,7 +10,7 @@
 	<version>1.0.0</version>
 
 	<properties>
-		<bukkit.version>1.4.6-R0.3</bukkit.version>
+		<bukkit.version>1.4.7-R0.1</bukkit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
