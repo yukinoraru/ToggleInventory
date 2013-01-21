@@ -7,10 +7,10 @@
 	<url>https://github.com/yukinoraru/ToggleInventory</url>
 	<artifactId>ToggleInventory</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<properties>
-		<bukkit.version>1.4.6-R0.3</bukkit.version>
+		<bukkit.version>1.4.7-R0.1</bukkit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -25,11 +25,21 @@
 			<artifactId>craftbukkit</artifactId>
 			<version>${bukkit.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>ibiblio</id>
+			<url>http://mirrors.ibiblio.org/maven2/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>

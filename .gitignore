@@ -1,6 +1,6 @@
 *.jar
-/target/
-/bukkit
-/bin
+target/
+bukkit/
+bin/
 *.class
 *.jardesc
