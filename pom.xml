@@ -7,10 +7,10 @@
 	<url>https://github.com/yukinoraru/ToggleInventory</url>
 	<artifactId>ToggleInventory</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 
 	<properties>
-		<bukkit.version>1.4.7-R0.1</bukkit.version>
+		<bukkit.version>1.5-R0.1-SNAPSHOT</bukkit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -125,6 +125,14 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+		    <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <configuration>
+		            <source>1.6</source>
+		            <target>1.6</target>
+		        </configuration>
+		    </plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -147,6 +155,7 @@
 						<configuration>
 							<tasks>
 								<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/${bukkit.version}/${project.name}.jar" />
+								<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${basedir}/bukkit/plugins/${project.name}.jar" />
 							</tasks>
 						</configuration>
 						<goals>

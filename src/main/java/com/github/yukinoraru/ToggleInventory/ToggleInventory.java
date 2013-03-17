@@ -34,6 +34,9 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 	    		this.log.info("Get it from: " + this.updateChecker.getLink());
 	    	}
     	}
+    	else{
+    		this.log.info("Update check was skipped.");
+    	}
 
     	this.inventoryManager = new InventoryManager(this);
 

@@ -1,6 +1,7 @@
 package com.github.yukinoraru.ToggleInventory;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -37,7 +38,12 @@ public class UpdateChecker {
 
 	public boolean updateNeeded(){
 		try {
-			InputStream input = this.filesFeed.openConnection().getInputStream();
+			// set timeout
+			HttpURLConnection urlConnection = (HttpURLConnection)this.filesFeed.openConnection();
+			urlConnection.setConnectTimeout(5 * 1000);
+			urlConnection.setReadTimeout(5 * 1000);
+
+			InputStream input = urlConnection.getInputStream();
 			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
 
 			Node latestFile = document.getElementsByTagName("item").item(0);

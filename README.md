@@ -1,6 +1,6 @@
 [![ToggleInventory](http://dev.bukkit.org/media/images/44/639/ToggleInventory.png)](http://dev.bukkit.org/server-mods/toggleinventory/)
 
-###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.4.6.
+###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.5.*.
 
 * Demo on Youtube: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
 
@@ -33,12 +33,12 @@ There is tags named 'dependency' in it like this.
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.6-R0.3-SNAPSHOT</version>
+			<version>1.5-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.4.6-R0.3-SNAPSHOT</version>
+			<version>1.5-R0.1-SNAPSHOT</version>
 		</dependency>
 
 
