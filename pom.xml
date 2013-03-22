@@ -7,10 +7,10 @@
 	<url>https://github.com/yukinoraru/ToggleInventory</url>
 	<artifactId>ToggleInventory</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 
 	<properties>
-		<bukkit.version>1.5-R0.1-SNAPSHOT</bukkit.version>
+		<bukkit.version>1.5.1-R0.1-SNAPSHOT</bukkit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
