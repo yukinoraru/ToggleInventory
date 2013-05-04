@@ -1,10 +1,10 @@
 package com.github.yukinoraru.ToggleInventory;
 
-import net.minecraft.server.v1_5_R2.NBTBase;
-import net.minecraft.server.v1_5_R2.NBTTagCompound;
-import net.minecraft.server.v1_5_R2.NBTTagList;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_5_R3.NBTBase;
+import net.minecraft.server.v1_5_R3.NBTTagCompound;
+import net.minecraft.server.v1_5_R3.NBTTagList;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +53,7 @@ public class ItemSerialization {
             // IsEmpty
             if (!inputObject.isEmpty()) {
                 inventory.setItem(i, CraftItemStack.asCraftMirror(
-                  	net.minecraft.server.v1_5_R2.ItemStack.createStack(inputObject)));
+                  	net.minecraft.server.v1_5_R3.ItemStack.createStack(inputObject)));
             }
         }
 

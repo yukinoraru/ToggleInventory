@@ -81,57 +81,51 @@ public class InventoryManager {
 		return nextIndex;
 	}
 
-	private void setCurrentInventoryIndex(String playerName, int index) throws IOException{
+	private FileConfiguration getPlayersFileConfiguration(String playerName){
 		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        fileConfiguration.set("current", index);
-        fileConfiguration.save(file);
+		return YamlConfiguration.loadConfiguration(file);
 	}
 
-	public int getCurrentInventoryIndex(String playerName){
+	//
+	private void setPlayerConfig(String playerName, String section, Object obj) throws IOException{
 		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        return fileConfiguration.getInt("current", 1);
-	}
-
-	private void setCurrentSpecialInventoryIndex(String playerName, String name) throws IOException{
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        fileConfiguration.set("sp_current", name);
-        fileConfiguration.save(file);
-	}
-
-	public boolean isFirstUseForToggleInventorySpecial(String playerName){
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        return fileConfiguration.getBoolean("sp_firstuse", true);
-	}
-
-	public void setSpecialInventoryUsingStatusForFirstUse(String playerName, boolean isFirstUse) throws IOException{
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        fileConfiguration.set("sp_firstuse", isFirstUse);
-        fileConfiguration.save(file);
-	}
-
-	public void setSpecialInventoryUsingStatus(String playerName, boolean isUsing) throws IOException{
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        fileConfiguration.set("sp_using", isUsing);
+		FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        fileConfiguration.set(section, obj);
         fileConfiguration.save(file);
 	}
 
 	public boolean getSpecialInventoryUsingStatus(String playerName){
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        return fileConfiguration.getBoolean("sp_using");
+        return getPlayersFileConfiguration(playerName).getBoolean("sp_using");
 	}
 
 	private String getCurrentSpecialInventoryIndex(String playerName){
-		File file = getInventoryFile(playerName);
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        return (String) fileConfiguration.get("sp_current", "");
+        return getPlayersFileConfiguration(playerName).getString("sp_current", "");
 	}
+
+	public int getCurrentInventoryIndex(String playerName){
+        return getPlayersFileConfiguration(playerName).getInt("current", 1);
+	}
+
+	public boolean isFirstUseForToggleInventorySpecial(String playerName){
+        return getPlayersFileConfiguration(playerName).getBoolean("sp_firstuse", true);
+	}
+
+	private void setCurrentInventoryIndex(String playerName, int index) throws IOException{
+		setPlayerConfig(playerName, "current", index);
+	}
+
+	private void setCurrentSpecialInventoryIndex(String playerName, String name) throws IOException{
+		setPlayerConfig(playerName, "sp_current", name);
+	}
+
+	public void setSpecialInventoryUsingStatusForFirstUse(String playerName, boolean isFirstUse) throws IOException{
+        setPlayerConfig(playerName, "sp_firstuse", isFirstUse);
+	}
+
+	public void setSpecialInventoryUsingStatus(String playerName, boolean isUsing) throws IOException{
+		setPlayerConfig(playerName, "sp_using", isUsing);
+	}
+
 
 	// this method generates string like '[1 2 3 4 ... n]'
 	public String makeInventoryMessage(CommandSender player) {

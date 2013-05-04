@@ -45,6 +45,9 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     	if(!spInvFile.exists()){
     		saveResource(spInvFile.getName(), false);
     	}
+
+    	// Use MCStats:
+    	// http://mcstats.org/plugin/ToggleInventory
     	try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -66,7 +69,7 @@ public class ToggleInventory extends JavaPlugin implements Listener {
             return false;
          }
 
-        // implement /togglei command.
+        // implement /togglei and /toggleir command.
         boolean isToggleInvCommand = cmd.getName().equalsIgnoreCase("togglei");
         boolean isReverse = cmd.getName().equalsIgnoreCase("toggleir");
 
