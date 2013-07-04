@@ -1,10 +1,10 @@
 package com.github.yukinoraru.ToggleInventory;
 
-import net.minecraft.server.v1_5_R3.NBTBase;
-import net.minecraft.server.v1_5_R3.NBTTagCompound;
-import net.minecraft.server.v1_5_R3.NBTTagList;
-import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_6_R1.NBTBase;
+import net.minecraft.server.v1_6_R1.NBTTagCompound;
+import net.minecraft.server.v1_6_R1.NBTTagList;
+import org.bukkit.craftbukkit.v1_6_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_6_R1.inventory.CraftItemStack;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +21,7 @@ public class ItemSerialization {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutput = new DataOutputStream(outputStream);
         NBTTagList itemList = new NBTTagList();
+
 
         // Save every element in the list
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -44,7 +45,7 @@ public class ItemSerialization {
     public static Inventory fromBase64(String data) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
         //ByteArrayInputStream inputStream = new ByteArrayInputStream(decodeBase64(data));
-        NBTTagList itemList = (NBTTagList) NBTBase.b(new DataInputStream(inputStream));
+        NBTTagList itemList = (NBTTagList) NBTBase.b(new DataInputStream(inputStream), 0);
         Inventory inventory = new CraftInventoryCustom(null, itemList.size());
 
         for (int i = 0; i < itemList.size(); i++) {
@@ -53,7 +54,7 @@ public class ItemSerialization {
             // IsEmpty
             if (!inputObject.isEmpty()) {
                 inventory.setItem(i, CraftItemStack.asCraftMirror(
-                  	net.minecraft.server.v1_5_R3.ItemStack.createStack(inputObject)));
+                  	net.minecraft.server.v1_6_R1.ItemStack.createStack(inputObject)));
             }
         }
 
