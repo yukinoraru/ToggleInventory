@@ -1,6 +1,6 @@
 [![ToggleInventory](http://dev.bukkit.org/media/images/44/639/ToggleInventory.png)](http://dev.bukkit.org/server-mods/toggleinventory/)
 
-###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.5.*.
+###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.6.*.
 
 * Demo on Youtube: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
 
