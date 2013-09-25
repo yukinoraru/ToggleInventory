@@ -33,12 +33,12 @@ There is tags named 'dependency' in it like this.
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.5-R0.1-SNAPSHOT</version>
+			<version>1.6.4-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.5-R0.1-SNAPSHOT</version>
+			<version>1.6.4-R0.1-SNAPSHOT</version>
 		</dependency>
 
 
