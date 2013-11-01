@@ -1,6 +1,6 @@
 name: ToggleInventory
 main: com.github.yukinoraru.ToggleInventory.ToggleInventory
-version: 1.2.3
+version: 1.2.4
 dev-url: http://dev.bukkit.org/server-mods/toggleinventory/
 author: yukinoraru
 description: toggle inventory command.
