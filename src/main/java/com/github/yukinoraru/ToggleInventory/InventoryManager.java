@@ -40,7 +40,7 @@ public class InventoryManager {
     	return new File(plugin.getDataFolder(), CONFIG_FILENAME_SPECIAL_INV);
     }
 
-	private void beforeSave(File file) throws Exception{
+	private void prepareFile(File file) throws Exception{
         // before save, file must be filled with empty
         PrintWriter writer;
         try {
@@ -160,7 +160,7 @@ public class InventoryManager {
 
 		// 1. get info
 		String playerName = player.getName();
-		PlayerInventory inventory = ((Player) player).getInventory();
+
 		int maxIndex = getMaxInventoryIndex(player);
 		int currentIndex = getCurrentInventoryIndex(playerName);
 		int nextIndex = index;
@@ -176,8 +176,8 @@ public class InventoryManager {
 		}
 
 		// 3. save and load inv
-		saveInventory(playerName, inventory, currentIndex);
-		loadInventory(playerName, inventory, nextIndex);
+		saveInventory((Player) player, String.valueOf(currentIndex), false);
+		loadInventory((Player) player, String.valueOf(nextIndex), false);
 
 		// 4. set next inv
 		setCurrentInventoryIndex(playerName, nextIndex);
@@ -186,10 +186,9 @@ public class InventoryManager {
 	public void toggleSpecialInventory(CommandSender player, String inventoryName) throws Exception{
 		// 1. get current inv index and save inventory
 		String playerName = player.getName();
-		PlayerInventory inventory = ((Player) player).getInventory();
 		if (!getSpecialInventoryUsingStatus(playerName)) {
 			int currentIndex = getCurrentInventoryIndex(playerName);
-			saveInventory(playerName, inventory, currentIndex);
+			saveInventory((Player) player, String.valueOf(currentIndex), false);
 		}
 
 		// 2. matching inv with inventoryName
@@ -201,7 +200,7 @@ public class InventoryManager {
 		String specialInvName = list[index];
 
 		// 3. load inventory
-		loadSpecialInventory(playerName, inventory, specialInvName);
+		loadSpecialInventory((Player) player, specialInvName);
 
 		// 4. set SpInv index
 		setCurrentSpecialInventoryIndex(playerName, specialInvName);
@@ -317,42 +316,73 @@ public class InventoryManager {
 		toggleInventory(player, nextIndex);
 	}
 
-	public void saveInventory(PlayerInventory inventory, File inventoryFile, String sectionPathContents, String sectionPathArmor) throws Exception{
+	// index equals inventory name
+	public void saveInventory(Player player, String index, boolean isSpecialInventory) throws Exception{
 
+		// preparing
+		PlayerInventory inventory = player.getInventory();
+        Inventory inventoryArmor = InventoryUtils.getArmorInventory(inventory);
+
+        // serialize
+        String serializedInventoryContents = InventoryUtils.inventoryToString(inventory);
+        String serializedInventoryArmor = InventoryUtils.inventoryToString(inventoryArmor);
+
+        // create section name
+        String sectionPathContents;
+        String sectionPathArmor;
+
+        // set special inv
+        if(isSpecialInventory){
+        	sectionPathContents = getSectionPathForSPInvContents(index);
+        	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        }
+        else{
+        	sectionPathContents = getSectionPathForUserContents(Integer.parseInt(index));
+        	sectionPathArmor = getSectionPathForUserArmor(Integer.parseInt(index));
+        }
+
+        // save to config file
+		File inventoryFile = getInventoryFile(player.getName());
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
-
-        Inventory inventoryArmor = ItemSerialization.getArmorInventory(inventory);
-
-        String serializedInventoryContents = ItemSerialization.toBase64(inventory);
-        String serializedInventoryArmor  = ItemSerialization.toBase64(inventoryArmor);
 
         fileConfiguration.set(sectionPathContents, serializedInventoryContents);
         fileConfiguration.set(sectionPathArmor, serializedInventoryArmor);
 
-		beforeSave(inventoryFile);
+		prepareFile(inventoryFile);
+
         fileConfiguration.save(inventoryFile);
+
         return ;
 	}
 
-	public void saveInventory(String playerName, PlayerInventory inventory, int index) throws Exception{
-        File inventoryFile = getInventoryFile(playerName);
-        String sectionPathContents = getSectionPathForUserContents(index);
-        String sectionPathArmor = getSectionPathForUserArmor(index);
-        saveInventory(inventory, inventoryFile, sectionPathContents, sectionPathArmor);
-        return ;
-	}
+	private void loadInventory(Player player, String index, boolean isSpecialInventory){
 
-	private void loadInventory(String playerName, PlayerInventory inventory, File inventoryFile, String sectionPathContents, String sectionPathArmor){
+		File inventoryFile = getInventoryFile(player.getName());
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
+
+        String sectionPathContents;
+        String sectionPathArmor;
+
+        // set special inv
+        if(isSpecialInventory){
+        	sectionPathContents = getSectionPathForSPInvContents(index);
+        	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        }
+        else{
+        	sectionPathContents = getSectionPathForUserContents(Integer.parseInt(index));
+        	sectionPathArmor = getSectionPathForUserArmor(Integer.parseInt(index));
+        }
 
         String serializedInventoryContents = fileConfiguration.getString(sectionPathContents);
         String serializedInventoryArmor  = fileConfiguration.getString(sectionPathArmor);
+
+		PlayerInventory inventory = player.getInventory();
 
 		inventory.clear();
 		inventory.setArmorContents(null);
 
         if(serializedInventoryContents != null){
-        	Inventory deserializedInventoryNormal = ItemSerialization.fromBase64(serializedInventoryContents);
+        	Inventory deserializedInventoryNormal = InventoryUtils.stringToInventory(serializedInventoryContents);
 
         	int i=0;
 			for (ItemStack item : deserializedInventoryNormal.getContents()) {
@@ -365,30 +395,13 @@ public class InventoryManager {
         }
 
         if(serializedInventoryArmor != null){
-            Inventory deserialized_inv_armor = ItemSerialization.fromBase64(serializedInventoryArmor);
+            Inventory deserialized_inv_armor = InventoryUtils.stringToInventory(serializedInventoryArmor);
             ItemStack []tmp = deserialized_inv_armor.getContents();
         	if(tmp != null){
         		inventory.setArmorContents(tmp);
         	}
         }
 		return;
-	}
-
-	private String getSectionPathForUserContents(int index){
-		return String.format("inv%d.contents", index);
-	}
-	private String getSectionPathForUserArmor(int index){
-        return String.format("inv%d.armor", index);
-	}
-
-	private String getSectionPathForSPInvRoot(String name){
-        return String.format("special_inventories.%s", name);
-	}
-	private String getSectionPathForSPInvContents(String name){
-		return String.format("%s.contents", getSectionPathForSPInvRoot(name));
-	}
-	private String getSectionPathForSPInvArmor(String name){
-        return String.format("%s.armor", getSectionPathForSPInvRoot(name));
 	}
 
 	private void deleteAllSPInventoryFromUser(String playerName) throws Exception{
@@ -400,6 +413,24 @@ public class InventoryManager {
 			}
 		}
 	}
+
+
+	       private String getSectionPathForUserContents(int index){
+	               return String.format("inv%d.contents", index);
+	       }
+	       private String getSectionPathForUserArmor(int index){
+	        return String.format("inv%d.armor", index);
+	       }
+
+	       private String getSectionPathForSPInvRoot(String name){
+	        return String.format("special_inventories.%s", name);
+	       }
+	       private String getSectionPathForSPInvContents(String name){
+	               return String.format("%s.contents", getSectionPathForSPInvRoot(name));
+	       }
+	       private String getSectionPathForSPInvArmor(String name){
+	        return String.format("%s.armor", getSectionPathForSPInvRoot(name));
+	       }
 
 	public void initializeSPInvFromDefault(String playerName) throws Exception{
         // delete
@@ -427,12 +458,8 @@ public class InventoryManager {
 	}
 
 	public void restoreInventory(CommandSender player) {
-		String playerName = player.getName();
-		PlayerInventory inventory = ((Player) player).getInventory();
-		int index = getCurrentInventoryIndex(playerName);
-		String sectionPathContents = getSectionPathForUserContents(index);
-		String sectionPathArmor = getSectionPathForUserArmor(index);
-		loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+		int index = getCurrentInventoryIndex(((Player)player).getName());
+		loadInventory((Player)player, index);
 	}
 
 	public void deleteSpecialInventory(File file, String name) throws IOException{
@@ -442,22 +469,16 @@ public class InventoryManager {
 		fileConfiguration.save(file);
 	}
 
-	public void saveSpecialInventory(File file, PlayerInventory inventory, String name) throws Exception{
-        String sectionPathContents = getSectionPathForSPInvContents(name);
-        String sectionPathArmor    = getSectionPathForSPInvArmor(name);
-        saveInventory(inventory, file, sectionPathContents, sectionPathArmor);
+	public void saveSpecialInventory(Player player, String name) throws Exception{
+        saveInventory(player, name, true);
 	}
 
-	private void loadInventory(String playerName, PlayerInventory inventory, int index){
-        String sectionPathContents = getSectionPathForUserContents(index);
-        String sectionPathArmor    = getSectionPathForUserArmor(index);
-        loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+	private void loadInventory(Player player, int index){
+        loadInventory(player, String.valueOf(index), false);
 	}
 
-	private void loadSpecialInventory(String playerName, PlayerInventory inventory, String name){
-        String sectionPathContents = getSectionPathForSPInvContents(name);
-        String sectionPathArmor    = getSectionPathForSPInvArmor(name);
-        loadInventory(playerName, inventory, getInventoryFile(playerName), sectionPathContents, sectionPathArmor);
+	private void loadSpecialInventory(Player player, String name){
+        loadInventory(player, name, true);
 	}
 
 }
