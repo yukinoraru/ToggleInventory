@@ -249,6 +249,9 @@ public class InventoryUtils
 		return false;
 	}
 
+	// ---------------------------------
+
+	//
     public static Inventory getArmorInventory(PlayerInventory playerInventory) {
         ItemStack[] armor = playerInventory.getArmorContents();
         Inventory inventory = createInventory(null, armor.length);

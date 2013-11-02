@@ -6,12 +6,14 @@ import java.io.PrintWriter;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.entity.Player;
 
 public class InventoryManager {
@@ -326,19 +328,27 @@ public class InventoryManager {
         // serialize
         String serializedInventoryContents = InventoryUtils.inventoryToString(inventory);
         String serializedInventoryArmor = InventoryUtils.inventoryToString(inventoryArmor);
+        String serializedPotion = PotionUtils.serializePotion(player.getActivePotionEffects());
 
         // create section name
         String sectionPathContents;
         String sectionPathArmor;
+        String sectionPathGameMode;
+        String sectionPathPotion;
 
-        // set special inv
+        // if special inv
         if(isSpecialInventory){
         	sectionPathContents = getSectionPathForSPInvContents(index);
         	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
+        	sectionPathPotion = getSectionPathForSPInvPotion(index);
         }
         else{
-        	sectionPathContents = getSectionPathForUserContents(Integer.parseInt(index));
-        	sectionPathArmor = getSectionPathForUserArmor(Integer.parseInt(index));
+        	int tmp = Integer.parseInt(index);
+        	sectionPathContents = getSectionPathForUserContents(tmp);
+        	sectionPathArmor = getSectionPathForUserArmor(tmp);
+        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
+        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
         }
 
         // save to config file
@@ -347,6 +357,8 @@ public class InventoryManager {
 
         fileConfiguration.set(sectionPathContents, serializedInventoryContents);
         fileConfiguration.set(sectionPathArmor, serializedInventoryArmor);
+        fileConfiguration.set(sectionPathGameMode, player.getGameMode().name());
+        fileConfiguration.set(sectionPathPotion, serializedPotion);
 
 		prepareFile(inventoryFile);
 
@@ -362,17 +374,25 @@ public class InventoryManager {
 
         String sectionPathContents;
         String sectionPathArmor;
+        String sectionPathGameMode;
+        String sectionPathPotion;
 
         // set special inv
         if(isSpecialInventory){
         	sectionPathContents = getSectionPathForSPInvContents(index);
         	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
+        	sectionPathPotion = getSectionPathForSPInvPotion(index);
         }
         else{
-        	sectionPathContents = getSectionPathForUserContents(Integer.parseInt(index));
-        	sectionPathArmor = getSectionPathForUserArmor(Integer.parseInt(index));
+        	int tmp = Integer.parseInt(index);
+        	sectionPathContents = getSectionPathForUserContents(tmp);
+        	sectionPathArmor = getSectionPathForUserArmor(tmp);
+        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
+        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
         }
 
+        // deserialize
         String serializedInventoryContents = fileConfiguration.getString(sectionPathContents);
         String serializedInventoryArmor  = fileConfiguration.getString(sectionPathArmor);
 
@@ -401,6 +421,25 @@ public class InventoryManager {
         		inventory.setArmorContents(tmp);
         	}
         }
+
+        // restore Game Mode
+        String gamemode = fileConfiguration.getString(sectionPathGameMode);
+        if(gamemode != null && gamemode.length() > 0){
+        	player.setGameMode(GameMode.valueOf(gamemode));
+        }
+
+        // restore PotionEffect
+        for (PotionEffect effect : player.getActivePotionEffects()){
+            player.removePotionEffect(effect.getType());
+        }
+        // restore
+        String effectsInString = fileConfiguration.getString(sectionPathPotion);
+        try {
+			player.addPotionEffects(PotionUtils.deserializePotion(effectsInString));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return;
 	}
 
@@ -414,23 +453,42 @@ public class InventoryManager {
 		}
 	}
 
+	private String getSectionPathForSPInvPotion(String name) {
+		return String.format("%s.potion", getSectionPathForSPInvRoot(name));
+	}
 
-	       private String getSectionPathForUserContents(int index){
-	               return String.format("inv%d.contents", index);
-	       }
-	       private String getSectionPathForUserArmor(int index){
-	        return String.format("inv%d.armor", index);
-	       }
+	private String getSectionPathForUserInvPotion(int index) {
+		return String.format("inv%d.potion", index);
+	}
 
-	       private String getSectionPathForSPInvRoot(String name){
-	        return String.format("special_inventories.%s", name);
-	       }
-	       private String getSectionPathForSPInvContents(String name){
-	               return String.format("%s.contents", getSectionPathForSPInvRoot(name));
-	       }
-	       private String getSectionPathForSPInvArmor(String name){
-	        return String.format("%s.armor", getSectionPathForSPInvRoot(name));
-	       }
+
+	private String getSectionPathForSPInvGameMode(String name) {
+		return String.format("%s.gamemode", getSectionPathForSPInvRoot(name));
+	}
+
+	private String getSectionPathForUserInvGameMode(int index) {
+		return String.format("inv%d.gamemode", index);
+	}
+
+	private String getSectionPathForUserContents(int index) {
+		return String.format("inv%d.contents", index);
+	}
+
+	private String getSectionPathForUserArmor(int index) {
+		return String.format("inv%d.armor", index);
+	}
+
+	private String getSectionPathForSPInvRoot(String name) {
+		return String.format("special_inventories.%s", name);
+	}
+
+	private String getSectionPathForSPInvContents(String name) {
+		return String.format("%s.contents", getSectionPathForSPInvRoot(name));
+	}
+
+	private String getSectionPathForSPInvArmor(String name) {
+		return String.format("%s.armor", getSectionPathForSPInvRoot(name));
+	}
 
 	public void initializeSPInvFromDefault(String playerName) throws Exception{
         // delete
@@ -480,5 +538,4 @@ public class InventoryManager {
 	private void loadSpecialInventory(Player player, String name){
         loadInventory(player, name, true);
 	}
-
 }
