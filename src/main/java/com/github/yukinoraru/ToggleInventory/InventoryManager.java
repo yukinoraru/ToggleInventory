@@ -96,39 +96,6 @@ public class InventoryManager {
         fileConfiguration.save(file);
 	}
 
-	public boolean getSpecialInventoryUsingStatus(String playerName){
-        return getPlayersFileConfiguration(playerName).getBoolean("sp_using");
-	}
-
-	private String getCurrentSpecialInventoryIndex(String playerName){
-        return getPlayersFileConfiguration(playerName).getString("sp_current", "");
-	}
-
-	public int getCurrentInventoryIndex(String playerName){
-        return getPlayersFileConfiguration(playerName).getInt("current", 1);
-	}
-
-	public boolean isFirstUseForToggleInventorySpecial(String playerName){
-        return getPlayersFileConfiguration(playerName).getBoolean("sp_firstuse", true);
-	}
-
-	private void setCurrentInventoryIndex(String playerName, int index) throws IOException{
-		setPlayerConfig(playerName, "current", index);
-	}
-
-	private void setCurrentSpecialInventoryIndex(String playerName, String name) throws IOException{
-		setPlayerConfig(playerName, "sp_current", name);
-	}
-
-	public void setSpecialInventoryUsingStatusForFirstUse(String playerName, boolean isFirstUse) throws IOException{
-        setPlayerConfig(playerName, "sp_firstuse", isFirstUse);
-	}
-
-	public void setSpecialInventoryUsingStatus(String playerName, boolean isUsing) throws IOException{
-		setPlayerConfig(playerName, "sp_using", isUsing);
-	}
-
-
 	// this method generates string like '[1 2 3 4 ... n]'
 	public String makeInventoryMessage(CommandSender player) {
 		String msg = ChatColor.GRAY + "[";
@@ -156,6 +123,193 @@ public class InventoryManager {
 			msg += ChatColor.RESET + " ";
 		}
 		return msg + ChatColor.GRAY + "] ";
+	}
+
+	private String[] getListSpecialInventory(File specialInventoryFile) throws Exception{
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
+        try{
+            Set<String> nameList = fileConfiguration.getConfigurationSection("special_inventories").getKeys(false);
+    		String []tmp = nameList.toArray(new String[0]);
+    		if(tmp.length == 0){
+    			throw new Exception();
+    		}
+    		return tmp;
+        }catch(Exception e){
+        	return null;
+        }
+	}
+
+	public String getNextSpecialInventory(String []list, String name, boolean rotateDirection){
+		String nextInvName = null;
+		for (int i = 0; i < list.length; i++) {
+			if (list[i].equals(name)) {
+				if (rotateDirection) {
+					if (i + 1 < list.length) {
+						nextInvName = list[i + 1];
+					} else {
+						nextInvName = list[0];
+					}
+				} else {
+					if (i - 1 >= 0) {
+						nextInvName = list[i - 1];
+					} else {
+						nextInvName = list[list.length-1];
+					}
+				}
+				break;
+			}
+		}
+		return (nextInvName == null) ? list[0] : nextInvName;
+	}
+
+	private boolean isExistSpecialInv(String playerName, String specialInventoryName) throws Exception{
+		String []list = getListSpecialInventory(getInventoryFile(playerName));
+		boolean isMatched = false;
+		for(String name : list){
+			if(name.equals(specialInventoryName)){
+				isMatched = true;
+				break;
+			}
+		}
+		return isMatched;
+	}
+
+	// index equals inventory name
+	public void saveInventory(Player player, String index, boolean isSpecialInventory) throws Exception{
+
+		// preparing
+		PlayerInventory inventory = player.getInventory();
+        Inventory inventoryArmor = InventoryUtils.getArmorInventory(inventory);
+
+        // serialize
+        String serializedInventoryContents = InventoryUtils.inventoryToString(inventory);
+        String serializedInventoryArmor = InventoryUtils.inventoryToString(inventoryArmor);
+        String serializedPotion = PotionUtils.serializePotion(player.getActivePotionEffects());
+
+        // create section name
+        String sectionPathContents;
+        String sectionPathArmor;
+        String sectionPathGameMode;
+        String sectionPathPotion;
+
+        // TODO: NEED TO REFACTORING
+        // if special inv
+        if(isSpecialInventory){
+        	sectionPathContents = getSectionPathForSPInvContents(index);
+        	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
+        	sectionPathPotion = getSectionPathForSPInvPotion(index);
+        }
+        else{
+        	int tmp = Integer.parseInt(index);
+        	sectionPathContents = getSectionPathForUserContents(tmp);
+        	sectionPathArmor = getSectionPathForUserArmor(tmp);
+        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
+        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
+        }
+
+        // save to config file
+		File inventoryFile = getInventoryFile(player.getName());
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
+
+        fileConfiguration.set(sectionPathContents, serializedInventoryContents);
+        fileConfiguration.set(sectionPathArmor, serializedInventoryArmor);
+        fileConfiguration.set(sectionPathGameMode, player.getGameMode().name());
+        fileConfiguration.set(sectionPathPotion, serializedPotion);
+
+		prepareFile(inventoryFile);
+
+        fileConfiguration.save(inventoryFile);
+
+        return ;
+	}
+
+	private void loadInventory(Player player, String index, boolean isSpecialInventory){
+
+		File inventoryFile = getInventoryFile(player.getName());
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
+
+        String sectionPathContents;
+        String sectionPathArmor;
+        String sectionPathGameMode;
+        String sectionPathPotion;
+
+        // TODO: NEED TO REFACTORING
+        // set special inv
+        if(isSpecialInventory){
+        	sectionPathContents = getSectionPathForSPInvContents(index);
+        	sectionPathArmor = getSectionPathForSPInvArmor(index);
+        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
+        	sectionPathPotion = getSectionPathForSPInvPotion(index);
+        }
+        else{
+        	int tmp = Integer.parseInt(index);
+        	sectionPathContents = getSectionPathForUserContents(tmp);
+        	sectionPathArmor = getSectionPathForUserArmor(tmp);
+        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
+        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
+        }
+
+        // deserialize
+        String serializedInventoryContents = fileConfiguration.getString(sectionPathContents);
+        String serializedInventoryArmor  = fileConfiguration.getString(sectionPathArmor);
+
+		PlayerInventory inventory = player.getInventory();
+
+		inventory.clear();
+		inventory.setArmorContents(null);
+
+        if(serializedInventoryContents != null){
+        	Inventory deserializedInventoryNormal = InventoryUtils.stringToInventory(serializedInventoryContents);
+
+        	int i=0;
+			for (ItemStack item : deserializedInventoryNormal.getContents()) {
+				i++;
+				if (item == null) {
+					continue;
+				}
+        		inventory.setItem(i-1, item);
+			}
+        }
+
+        if(serializedInventoryArmor != null){
+            Inventory deserialized_inv_armor = InventoryUtils.stringToInventory(serializedInventoryArmor);
+            ItemStack []tmp = deserialized_inv_armor.getContents();
+        	if(tmp != null){
+        		inventory.setArmorContents(tmp);
+        	}
+        }
+
+        // restore Game Mode
+        if(isEnableGameModeSaving(player.getName())){
+	        String gamemode = fileConfiguration.getString(sectionPathGameMode);
+	        if(gamemode != null && gamemode.length() > 0){
+	        	player.setGameMode(GameMode.valueOf(gamemode));
+	        }
+        }
+
+        // restore PotionEffect
+        for (PotionEffect effect : player.getActivePotionEffects()){
+            player.removePotionEffect(effect.getType());
+        }
+        String effectsInString = fileConfiguration.getString(sectionPathPotion);
+        try {
+			player.addPotionEffects(PotionUtils.deserializePotion(effectsInString));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return;
+	}
+
+	public void toggleInventory(CommandSender player, boolean rotateDirection) throws Exception{
+		String playerName = player.getName();
+
+		int maxIndex = getMaxInventoryIndex(player);
+		int currentIndex = getCurrentInventoryIndex(playerName);
+		int nextIndex = calcNextInventoryIndex(maxIndex, currentIndex, rotateDirection);
+
+		toggleInventory(player, nextIndex);
 	}
 
 	public void toggleInventory(CommandSender player, int index) throws Exception{
@@ -211,54 +365,48 @@ public class InventoryManager {
 		setSpecialInventoryUsingStatus(playerName, true);
 	}
 
-	private String[] getListSpecialInventory(File specialInventoryFile) throws Exception{
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
-        try{
-            Set<String> nameList = fileConfiguration.getConfigurationSection("special_inventories").getKeys(false);
-    		String []tmp = nameList.toArray(new String[0]);
-    		if(tmp.length == 0){
-    			throw new Exception();
-    		}
-    		return tmp;
-        }catch(Exception e){
-        	return null;
-        }
-	}
-
-	public String getNextSpecialInventory(String []list, String name, boolean rotateDirection){
-		String nextInvName = null;
-		for (int i = 0; i < list.length; i++) {
-			if (list[i].equals(name)) {
-				if (rotateDirection) {
-					if (i + 1 < list.length) {
-						nextInvName = list[i + 1];
-					} else {
-						nextInvName = list[0];
-					}
-				} else {
-					if (i - 1 >= 0) {
-						nextInvName = list[i - 1];
-					} else {
-						nextInvName = list[list.length-1];
-					}
-				}
-				break;
-			}
-		}
-		return (nextInvName == null) ? list[0] : nextInvName;
-	}
-
-	private boolean isExistSpecialInv(String playerName, String specialInventoryName) throws Exception{
+	public void toggleSpecialInventory(CommandSender player, boolean rotateDirection) throws Exception{
+		String playerName = player.getName();
+		String currentSpIndex = getCurrentSpecialInventoryIndex(playerName);
 		String []list = getListSpecialInventory(getInventoryFile(playerName));
-		boolean isMatched = false;
-		for(String name : list){
-			if(name.equals(specialInventoryName)){
-				isMatched = true;
-				break;
-			}
+		try{
+			String nextSpIndex = (getSpecialInventoryUsingStatus(playerName)) ? getNextSpecialInventory(
+				list, currentSpIndex, rotateDirection) : currentSpIndex;
+				toggleSpecialInventory(player, nextSpIndex);
+		}catch(NullPointerException e){
+			// delegate exception when NullPointerException occurred
+			toggleSpecialInventory(player, null);
 		}
-		return isMatched;
 	}
+
+	public void initializeSPInvFromDefault(String playerName) throws Exception{
+        // delete
+        deleteAllSPInventoryFromUser(playerName);
+
+        // copy
+		File defaultFile = getDefaultSpecialInventoryFile();
+		File playerFile = getInventoryFile(playerName);
+        FileConfiguration defaultFileConfiguration = YamlConfiguration.loadConfiguration(defaultFile);
+        FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerFile);
+
+        String [] defaultSPInvList = getListSpecialInventory(defaultFile);
+
+        if(defaultSPInvList == null){
+			throw new Exception("There are no default special inventories in "
+					+ CONFIG_FILENAME_SPECIAL_INV
+					+ ". Please check it.");
+		}
+
+        for(String name : defaultSPInvList){
+        	playerFileConfiguration.set(getSectionPathForSPInvContents(name), defaultFileConfiguration.get(getSectionPathForSPInvContents(name)));
+        	playerFileConfiguration.set(getSectionPathForSPInvArmor(name), defaultFileConfiguration.get(getSectionPathForSPInvArmor(name)));
+        	playerFileConfiguration.set(getSectionPathForSPInvPotion(name), defaultFileConfiguration.get(getSectionPathForSPInvPotion(name)));
+        	playerFileConfiguration.set(getSectionPathForSPInvGameMode(name), defaultFileConfiguration.get(getSectionPathForSPInvGameMode(name)));
+
+        }
+        playerFileConfiguration.save(playerFile);
+	}
+
 
 	public void copySpInvToNormalInventory(CommandSender player, String specialInventoryName, int destinationIndex) throws Exception{
 		String playerName = player.getName();
@@ -279,168 +427,39 @@ public class InventoryManager {
         FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerInventoryFile);
         FileConfiguration spinvFileConfiguration = YamlConfiguration.loadConfiguration(specialInventoryFile);
 
+        // get section names
         String playerSectionPathContents = getSectionPathForUserContents(destinationIndex);
-        String playerSectionPathArmor = getSectionPathForUserArmor(destinationIndex);
+        String playerSectionPathArmor    = getSectionPathForUserArmor(destinationIndex);
+        String playerSectionPathPotion   = getSectionPathForUserInvPotion(destinationIndex);
+        String playerSectionPathGameMode = getSectionPathForUserInvGameMode(destinationIndex);
 
+        // get contents
         String spinvSectionPathContents = getSectionPathForSPInvContents(specialInventoryName);
         String spinvSectionPathArmor    = getSectionPathForSPInvArmor(specialInventoryName);
+        String spinvSectionPathPotion   = getSectionPathForSPInvPotion(specialInventoryName);
+        String spinvSectionPathGameMode = getSectionPathForSPInvGameMode(specialInventoryName);
 
         // copy
         playerFileConfiguration.set(playerSectionPathContents, spinvFileConfiguration.get(spinvSectionPathContents));
         playerFileConfiguration.set(playerSectionPathArmor, spinvFileConfiguration.get(spinvSectionPathArmor));
+        playerFileConfiguration.set(playerSectionPathPotion, spinvFileConfiguration.get(spinvSectionPathPotion));
+        playerFileConfiguration.set(playerSectionPathGameMode, spinvFileConfiguration.get(spinvSectionPathGameMode));
 
         playerFileConfiguration.save(playerInventoryFile);
 
         return;
 	}
 
-	public void toggleSpecialInventory(CommandSender player, boolean rotateDirection) throws Exception{
-		String playerName = player.getName();
-		String currentSpIndex = getCurrentSpecialInventoryIndex(playerName);
-		String []list = getListSpecialInventory(getInventoryFile(playerName));
-		try{
-			String nextSpIndex = (getSpecialInventoryUsingStatus(playerName)) ? getNextSpecialInventory(
-				list, currentSpIndex, rotateDirection) : currentSpIndex;
-				toggleSpecialInventory(player, nextSpIndex);
-		}catch(NullPointerException e){
-			// delegate exception when NullPointerException occurred
-			toggleSpecialInventory(player, null);
-		}
+	public void restoreInventory(CommandSender player) {
+		int index = getCurrentInventoryIndex(((Player)player).getName());
+		loadInventory((Player)player, index);
 	}
 
-	public void toggleInventory(CommandSender player, boolean rotateDirection) throws Exception{
-		String playerName = player.getName();
-
-		int maxIndex = getMaxInventoryIndex(player);
-		int currentIndex = getCurrentInventoryIndex(playerName);
-		int nextIndex = calcNextInventoryIndex(maxIndex, currentIndex, rotateDirection);
-
-		toggleInventory(player, nextIndex);
-	}
-
-	// index equals inventory name
-	public void saveInventory(Player player, String index, boolean isSpecialInventory) throws Exception{
-
-		// preparing
-		PlayerInventory inventory = player.getInventory();
-        Inventory inventoryArmor = InventoryUtils.getArmorInventory(inventory);
-
-        // serialize
-        String serializedInventoryContents = InventoryUtils.inventoryToString(inventory);
-        String serializedInventoryArmor = InventoryUtils.inventoryToString(inventoryArmor);
-        String serializedPotion = PotionUtils.serializePotion(player.getActivePotionEffects());
-
-        // create section name
-        String sectionPathContents;
-        String sectionPathArmor;
-        String sectionPathGameMode;
-        String sectionPathPotion;
-
-        // if special inv
-        if(isSpecialInventory){
-        	sectionPathContents = getSectionPathForSPInvContents(index);
-        	sectionPathArmor = getSectionPathForSPInvArmor(index);
-        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
-        	sectionPathPotion = getSectionPathForSPInvPotion(index);
-        }
-        else{
-        	int tmp = Integer.parseInt(index);
-        	sectionPathContents = getSectionPathForUserContents(tmp);
-        	sectionPathArmor = getSectionPathForUserArmor(tmp);
-        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
-        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
-        }
-
-        // save to config file
-		File inventoryFile = getInventoryFile(player.getName());
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
-
-        fileConfiguration.set(sectionPathContents, serializedInventoryContents);
-        fileConfiguration.set(sectionPathArmor, serializedInventoryArmor);
-        fileConfiguration.set(sectionPathGameMode, player.getGameMode().name());
-        fileConfiguration.set(sectionPathPotion, serializedPotion);
-
-		prepareFile(inventoryFile);
-
-        fileConfiguration.save(inventoryFile);
-
-        return ;
-	}
-
-	private void loadInventory(Player player, String index, boolean isSpecialInventory){
-
-		File inventoryFile = getInventoryFile(player.getName());
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
-
-        String sectionPathContents;
-        String sectionPathArmor;
-        String sectionPathGameMode;
-        String sectionPathPotion;
-
-        // set special inv
-        if(isSpecialInventory){
-        	sectionPathContents = getSectionPathForSPInvContents(index);
-        	sectionPathArmor = getSectionPathForSPInvArmor(index);
-        	sectionPathGameMode = getSectionPathForSPInvGameMode(index);
-        	sectionPathPotion = getSectionPathForSPInvPotion(index);
-        }
-        else{
-        	int tmp = Integer.parseInt(index);
-        	sectionPathContents = getSectionPathForUserContents(tmp);
-        	sectionPathArmor = getSectionPathForUserArmor(tmp);
-        	sectionPathGameMode = getSectionPathForUserInvGameMode(tmp);
-        	sectionPathPotion = getSectionPathForUserInvPotion(tmp);
-        }
-
-        // deserialize
-        String serializedInventoryContents = fileConfiguration.getString(sectionPathContents);
-        String serializedInventoryArmor  = fileConfiguration.getString(sectionPathArmor);
-
-		PlayerInventory inventory = player.getInventory();
-
-		inventory.clear();
-		inventory.setArmorContents(null);
-
-        if(serializedInventoryContents != null){
-        	Inventory deserializedInventoryNormal = InventoryUtils.stringToInventory(serializedInventoryContents);
-
-        	int i=0;
-			for (ItemStack item : deserializedInventoryNormal.getContents()) {
-				i++;
-				if (item == null) {
-					continue;
-				}
-        		inventory.setItem(i-1, item);
-			}
-        }
-
-        if(serializedInventoryArmor != null){
-            Inventory deserialized_inv_armor = InventoryUtils.stringToInventory(serializedInventoryArmor);
-            ItemStack []tmp = deserialized_inv_armor.getContents();
-        	if(tmp != null){
-        		inventory.setArmorContents(tmp);
-        	}
-        }
-
-        // restore Game Mode
-        String gamemode = fileConfiguration.getString(sectionPathGameMode);
-        if(gamemode != null && gamemode.length() > 0){
-        	player.setGameMode(GameMode.valueOf(gamemode));
-        }
-
-        // restore PotionEffect
-        for (PotionEffect effect : player.getActivePotionEffects()){
-            player.removePotionEffect(effect.getType());
-        }
-        // restore
-        String effectsInString = fileConfiguration.getString(sectionPathPotion);
-        try {
-			player.addPotionEffects(PotionUtils.deserializePotion(effectsInString));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return;
+	public void deleteSpecialInventory(File file, String name) throws IOException{
+        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        plugin.getLogger().warning(getSectionPathForSPInvRoot(name));
+		fileConfiguration.set(getSectionPathForSPInvRoot(name), null);
+		fileConfiguration.save(file);
 	}
 
 	private void deleteAllSPInventoryFromUser(String playerName) throws Exception{
@@ -453,6 +472,62 @@ public class InventoryManager {
 		}
 	}
 
+	public void saveSpecialInventory(Player player, String name) throws Exception{
+        saveInventory(player, name, true);
+	}
+
+	private void loadInventory(Player player, int index){
+        loadInventory(player, String.valueOf(index), false);
+	}
+
+	private void loadSpecialInventory(Player player, String name){
+        loadInventory(player, name, true);
+	}
+
+	// --------------------------------------------------------
+	// Section name
+	// --------------------------------------------------------
+
+	public boolean getSpecialInventoryUsingStatus(String playerName){
+        return getPlayersFileConfiguration(playerName).getBoolean("sp_using");
+	}
+
+	public void setSpecialInventoryUsingStatus(String playerName, boolean isUsing) throws IOException{
+		setPlayerConfig(playerName, "sp_using", isUsing);
+	}
+
+	private String getCurrentSpecialInventoryIndex(String playerName){
+        return getPlayersFileConfiguration(playerName).getString("sp_current", "");
+	}
+	private void setCurrentSpecialInventoryIndex(String playerName, String name) throws IOException{
+		setPlayerConfig(playerName, "sp_current", name);
+	}
+
+	public int getCurrentInventoryIndex(String playerName){
+        return getPlayersFileConfiguration(playerName).getInt("current", 1);
+	}
+
+	private void setCurrentInventoryIndex(String playerName, int index) throws IOException{
+		setPlayerConfig(playerName, "current", index);
+	}
+
+	public boolean isFirstUseForToggleInventorySpecial(String playerName){
+        return getPlayersFileConfiguration(playerName).getBoolean("sp_firstuse", true);
+	}
+
+	public void setSpecialInventoryUsingStatusForFirstUse(String playerName, boolean isFirstUse) throws IOException{
+        setPlayerConfig(playerName, "sp_firstuse", isFirstUse);
+	}
+
+	public boolean isEnableGameModeSaving(String playerName){
+        return getPlayersFileConfiguration(playerName).getBoolean("enable_gamemode_toggle", false);
+	}
+
+	public void setGameModeSaving(String playerName, boolean enable) throws IOException{
+        setPlayerConfig(playerName, "enable_gamemode_toggle", enable);
+	}
+
+	//
 	private String getSectionPathForSPInvPotion(String name) {
 		return String.format("%s.potion", getSectionPathForSPInvRoot(name));
 	}
@@ -490,52 +565,4 @@ public class InventoryManager {
 		return String.format("%s.armor", getSectionPathForSPInvRoot(name));
 	}
 
-	public void initializeSPInvFromDefault(String playerName) throws Exception{
-        // delete
-        deleteAllSPInventoryFromUser(playerName);
-
-        // copy
-		File defaultFile = getDefaultSpecialInventoryFile();
-		File playerFile = getInventoryFile(playerName);
-        FileConfiguration defaultFileConfiguration = YamlConfiguration.loadConfiguration(defaultFile);
-        FileConfiguration playerFileConfiguration = YamlConfiguration.loadConfiguration(playerFile);
-
-        String [] defaultSPInvList = getListSpecialInventory(defaultFile);
-
-        if(defaultSPInvList == null){
-			throw new Exception("There are no default special inventories in "
-					+ CONFIG_FILENAME_SPECIAL_INV
-					+ ". Please check it.");
-		}
-
-        for(String name : defaultSPInvList){
-        	playerFileConfiguration.set(getSectionPathForSPInvContents(name), defaultFileConfiguration.get(getSectionPathForSPInvContents(name)));
-        	playerFileConfiguration.set(getSectionPathForSPInvArmor(name), defaultFileConfiguration.get(getSectionPathForSPInvArmor(name)));
-        }
-        playerFileConfiguration.save(playerFile);
-	}
-
-	public void restoreInventory(CommandSender player) {
-		int index = getCurrentInventoryIndex(((Player)player).getName());
-		loadInventory((Player)player, index);
-	}
-
-	public void deleteSpecialInventory(File file, String name) throws IOException{
-        FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        plugin.getLogger().warning(getSectionPathForSPInvRoot(name));
-		fileConfiguration.set(getSectionPathForSPInvRoot(name), null);
-		fileConfiguration.save(file);
-	}
-
-	public void saveSpecialInventory(Player player, String name) throws Exception{
-        saveInventory(player, name, true);
-	}
-
-	private void loadInventory(Player player, int index){
-        loadInventory(player, String.valueOf(index), false);
-	}
-
-	private void loadSpecialInventory(Player player, String name){
-        loadInventory(player, name, true);
-	}
 }

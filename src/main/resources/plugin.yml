@@ -12,6 +12,9 @@ commands:
       /<command> [0-n]
       Example: /<command> - toggle inventory like a ring
       Example: /<command> 1 - toggle inventory index 1
+      Example: /it 1 - toggle inventory (reverse)
+      Advanced: /ti [enable|disable|e|d] gamemode
+      Advanced: /ti enable gamemode - enable with gamemode
   toggleir:
     description: toggle inventory (reverse)
     aliases: [it]

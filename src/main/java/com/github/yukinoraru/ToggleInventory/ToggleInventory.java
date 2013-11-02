@@ -79,6 +79,37 @@ public class ToggleInventory extends JavaPlugin implements Listener {
                 return true;
             }
 
+            // help command
+            if (args.length >= 1 && args[0].length() > 0) {
+				if (args[0].startsWith("h")) {
+					player.sendMessage("USAGE1: /ti - toggle inventory like a ring");
+					player.sendMessage("USAGE2: /it - toggle inventory like a ring (reverse)");
+					player.sendMessage("Advanced: /ti [enable|disable] gamemode - (you can toggle with gamemode)");
+					return true;
+				}
+            }
+
+            // gamemode option
+            if(args.length >= 2 && args[0].length() > 0 && args[1].length() > 0){
+				try {
+					if (args[0].startsWith("e")) {
+						if (args[1].startsWith("g")) {
+							inventoryManager.setGameModeSaving(playerName, true);
+							player.sendMessage("[ToggleInventory] Game mode toggle is enabled.");
+						}
+						return true;
+					} else if (args[0].startsWith("d")) {
+						if (args[1].startsWith("g")) {
+							inventoryManager.setGameModeSaving(playerName, false);
+							player.sendMessage("[ToggleInventory] Game mode toggle is disabled.");
+						}
+						return true;
+					}
+				} catch (IOException e) {
+					outputError("Something went wrong! (gamemode enable option)", player);
+				}
+            }
+
             // toggle inventory (/ti or /it, and /ti [n])
             try {
             	if(inventoryManager.getSpecialInventoryUsingStatus(playerName)){

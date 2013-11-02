@@ -31,6 +31,9 @@ public class PotionUtils {
 	@SuppressWarnings("unchecked")
 	static Collection<PotionEffect> deserializePotion(String effectsInString) throws IOException, ClassNotFoundException{
 		ArrayList<PotionEffect> result = new ArrayList<PotionEffect>();
+		if(effectsInString == null || effectsInString.length() == 0){
+			return result;
+		}
 		for(String effectInSring : effectsInString.split(defaultDelimiter)){
 			if(effectInSring == null || effectInSring.length() == 0){
 				continue;
