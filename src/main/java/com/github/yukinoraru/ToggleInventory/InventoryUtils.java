@@ -8,16 +8,25 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import net.minecraft.server.v1_7_R1.NBTBase;
+import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_7_R1.NBTTagCompound;
+import net.minecraft.server.v1_7_R1.NBTTagList;
 
 public class InventoryUtils
 {
@@ -25,6 +34,7 @@ public class InventoryUtils
 
 	private static Class<?> class_ItemStack;
 	private static Class<?> class_NBTBase;
+	private static Class<?> class_NBTCompressedStreamTools;
 	private static Class<?> class_NBTTagCompound;
 	private static Class<?> class_NBTTagList;
 	private static Class<?> class_CraftInventoryCustom;
@@ -43,6 +53,7 @@ public class InventoryUtils
 
 			class_ItemStack = fixBukkitClass("net.minecraft.server.ItemStack");
 			class_NBTBase = fixBukkitClass("net.minecraft.server.NBTBase");
+			class_NBTCompressedStreamTools = fixBukkitClass("net.minecraft.server.NBTCompressedStreamTools");
 			class_NBTTagCompound = fixBukkitClass("net.minecraft.server.NBTTagCompound");
 			class_NBTTagList = fixBukkitClass("net.minecraft.server.NBTTagList");
 			class_CraftInventoryCustom = fixBukkitClass("org.bukkit.craftbukkit.inventory.CraftInventoryCustom");
@@ -161,30 +172,30 @@ public class InventoryUtils
 
 	public static String inventoryToString(final Inventory inventory) {
 		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		final DataOutputStream dataOutput = new DataOutputStream(outputStream);
+		final OutputStream dataOutput = new DataOutputStream(outputStream);
 		try {
-			final Object itemList = class_NBTTagList.newInstance();
+			final NBTTagList itemList = new NBTTagList();
 			for (int i = 0; i < inventory.getSize(); i++) {
-				final Object outputObject = class_NBTTagCompound.newInstance();
+				final NBTTagCompound outputObject = new NBTTagCompound(); 
 				Object craft = null;
-				final ItemStack is = inventory.getItem(i);
+				final CraftItemStack is = (CraftItemStack) inventory.getItem(i);
 				if (is != null) {
 					craft = getNMSCopy(is);
 				} else {
 					craft = null;
 				}
 				if (craft != null && class_ItemStack.isInstance(craft)) {
-					Method saveMethod = class_ItemStack.getMethod("save", outputObject.getClass());
-					saveMethod.invoke(craft, outputObject);
+					outputObject.setByte("Slot", (byte) i);
+					CraftItemStack.asNMSCopy(is).save(outputObject);
+					itemList.add(outputObject);
 				}
-				Method addMethod = class_NBTTagList.getMethod("add", class_NBTBase);
-				addMethod.invoke(itemList, outputObject);
 			}
 
 			// This bit is kind of ugly and prone to break between versions
 			// Well, moreso than the rest of this, even.
-			Method saveMethod = class_NBTBase.getMethod("a", class_NBTBase, DataOutput.class);
-			saveMethod.invoke(null, itemList, dataOutput);
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.set("Items", itemList);
+			NBTCompressedStreamTools.a(tag, dataOutput);
 		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
@@ -196,30 +207,29 @@ public class InventoryUtils
 		Inventory inventory = null;
 
 		try {
-			final ByteArrayInputStream inputStream = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
-
+			final ByteArrayInputStream dataInput = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
+			final InputStream inputStream = new DataInputStream(dataInput);
+			
 			// More MC internals :(
-			Method loadMethod = class_NBTBase.getMethod("a", DataInput.class);
-			final Object itemList = loadMethod.invoke(null, new DataInputStream(inputStream));
+			final NBTTagCompound itemList = NBTCompressedStreamTools.a(inputStream);
 
-			Method sizeMethod = class_NBTTagList.getMethod("size");
-			Method getMethod = class_NBTTagList.getMethod("get", Integer.TYPE);
-			final int listSize = (Integer)sizeMethod.invoke(itemList);
-
-			Method isEmptyMethod = class_NBTTagCompound.getMethod("isEmpty");
-			Method setItemMethod = class_CraftInventoryCustom.getMethod("setItem", Integer.TYPE, ItemStack.class);
+			NBTTagList newlist = itemList.getList("Items", 10);
+			final int listSize = newlist.size();
 
 			inventory = createInventory(null, listSize);
+			if (itemList.hasKey("Items")) {
+                NBTTagList list = itemList.getList("Items", 10);
 
-			for (int i = 0; i < listSize; i++) {
-				final Object inputObject = getMethod.invoke(itemList, i);
-				if (!(Boolean)isEmptyMethod.invoke(inputObject)) {
-					Method createMethod = class_ItemStack.getMethod("createStack", inputObject.getClass());
-					Object newStack = createMethod.invoke(null, inputObject);
-					Method bukkitCopyMethod = class_CraftItemStack.getMethod("asBukkitCopy", class_ItemStack);
-					Object newCraftStack = bukkitCopyMethod.invoke(null, newStack);
-					setItemMethod.invoke(inventory, i, newCraftStack);
-				}
+                for (int i = 0; i < list.size(); i++) {
+                        NBTTagCompound tag2 = (NBTTagCompound) list.get(i);
+
+                        int slot = tag2.getByte("Slot") & 0xFF;
+                        if (slot < inventory.getSize()) {
+                            net.minecraft.server.v1_7_R1.ItemStack item = net.minecraft.server.v1_7_R1.ItemStack.createStack(tag2);
+                            CraftItemStack is = CraftItemStack.asCraftMirror(item);
+                        	inventory.setItem(slot, is);
+                        }
+                }
 			}
 		} catch (Throwable ex) {
 			ex.printStackTrace();
