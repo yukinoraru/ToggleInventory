@@ -1,5 +1,3 @@
-*.jar
-target/
 bukkit/
 bin/
 *.class
