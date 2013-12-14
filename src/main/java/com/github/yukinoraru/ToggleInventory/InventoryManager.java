@@ -224,7 +224,7 @@ public class InventoryManager {
         return ;
 	}
 
-	private void loadInventory(Player player, String index, boolean isSpecialInventory){
+	private void loadInventory(Player player, String index, boolean isSpecialInventory) throws Exception{
 
 		File inventoryFile = getInventoryFile(player.getName());
         FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(inventoryFile);
@@ -259,26 +259,31 @@ public class InventoryManager {
 		inventory.clear();
 		inventory.setArmorContents(null);
 
-        if(serializedInventoryContents != null){
-        	Inventory deserializedInventoryNormal = InventoryUtils.stringToInventory(serializedInventoryContents);
+		try{
+	        if(serializedInventoryContents != null){
+	        	Inventory deserializedInventoryNormal = InventoryUtils.stringToInventory(serializedInventoryContents);
 
-        	int i=0;
-			for (ItemStack item : deserializedInventoryNormal.getContents()) {
-				i++;
-				if (item == null) {
-					continue;
+	        	int i=0;
+				for (ItemStack item : deserializedInventoryNormal.getContents()) {
+					i++;
+					if (item == null) {
+						continue;
+					}
+	        		inventory.setItem(i-1, item);
 				}
-        		inventory.setItem(i-1, item);
-			}
-        }
+	        }
 
-        if(serializedInventoryArmor != null){
-            Inventory deserialized_inv_armor = InventoryUtils.stringToInventory(serializedInventoryArmor);
-            ItemStack []tmp = deserialized_inv_armor.getContents();
-        	if(tmp != null){
-        		inventory.setArmorContents(tmp);
-        	}
-        }
+	        if(serializedInventoryArmor != null){
+	            Inventory deserialized_inv_armor = InventoryUtils.stringToInventory(serializedInventoryArmor);
+	            ItemStack []tmp = deserialized_inv_armor.getContents();
+	        	if(tmp != null){
+	        		inventory.setArmorContents(tmp);
+	        	}
+	        }
+		}catch(Exception e){
+			inventoryFile.delete(); //
+			throw e;
+		}
 
         // restore Game Mode
         if(isEnableGameModeSaving(player.getName())){
@@ -450,7 +455,7 @@ public class InventoryManager {
         return;
 	}
 
-	public void restoreInventory(CommandSender player) {
+	public void restoreInventory(CommandSender player) throws Exception{
 		int index = getCurrentInventoryIndex(((Player)player).getName());
 		loadInventory((Player)player, index);
 	}
@@ -476,11 +481,11 @@ public class InventoryManager {
         saveInventory(player, name, true);
 	}
 
-	private void loadInventory(Player player, int index){
+	private void loadInventory(Player player, int index) throws Exception{
         loadInventory(player, String.valueOf(index), false);
 	}
 
-	private void loadSpecialInventory(Player player, String name){
+	private void loadSpecialInventory(Player player, String name) throws Exception{
         loadInventory(player, name, true);
 	}
 

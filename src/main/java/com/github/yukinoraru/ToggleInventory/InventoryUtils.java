@@ -4,11 +4,9 @@ package com.github.yukinoraru.ToggleInventory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -28,13 +26,13 @@ import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
 import net.minecraft.server.v1_7_R1.NBTTagCompound;
 import net.minecraft.server.v1_7_R1.NBTTagList;
 
+@SuppressWarnings("unused")
 public class InventoryUtils
 {
 	private static String versionPrefix = "";
 
 	private static Class<?> class_ItemStack;
 	private static Class<?> class_NBTBase;
-	private static Class<?> class_NBTCompressedStreamTools;
 	private static Class<?> class_NBTTagCompound;
 	private static Class<?> class_NBTTagList;
 	private static Class<?> class_CraftInventoryCustom;
@@ -53,7 +51,7 @@ public class InventoryUtils
 
 			class_ItemStack = fixBukkitClass("net.minecraft.server.ItemStack");
 			class_NBTBase = fixBukkitClass("net.minecraft.server.NBTBase");
-			class_NBTCompressedStreamTools = fixBukkitClass("net.minecraft.server.NBTCompressedStreamTools");
+			fixBukkitClass("net.minecraft.server.NBTCompressedStreamTools");
 			class_NBTTagCompound = fixBukkitClass("net.minecraft.server.NBTTagCompound");
 			class_NBTTagList = fixBukkitClass("net.minecraft.server.NBTTagList");
 			class_CraftInventoryCustom = fixBukkitClass("org.bukkit.craftbukkit.inventory.CraftInventoryCustom");
@@ -176,7 +174,7 @@ public class InventoryUtils
 		try {
 			final NBTTagList itemList = new NBTTagList();
 			for (int i = 0; i < inventory.getSize(); i++) {
-				final NBTTagCompound outputObject = new NBTTagCompound(); 
+				final NBTTagCompound outputObject = new NBTTagCompound();
 				Object craft = null;
 				final CraftItemStack is = (CraftItemStack) inventory.getItem(i);
 				if (is != null) {
@@ -203,37 +201,43 @@ public class InventoryUtils
 		return new BigInteger(1, outputStream.toByteArray()).toString(32);
 	}
 
-	public static Inventory stringToInventory(final String data) {
+	public static Inventory stringToInventory(final String data)  throws Exception {
 		Inventory inventory = null;
 
 		try {
-			final ByteArrayInputStream dataInput = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
+			final ByteArrayInputStream dataInput = new ByteArrayInputStream(
+					new BigInteger(data, 32).toByteArray());
 			final InputStream inputStream = new DataInputStream(dataInput);
-			
+
 			// More MC internals :(
-			final NBTTagCompound itemList = NBTCompressedStreamTools.a(inputStream);
+			final NBTTagCompound itemList = NBTCompressedStreamTools
+					.a(inputStream);
 
 			NBTTagList newlist = itemList.getList("Items", 10);
 			final int listSize = newlist.size();
 
 			inventory = createInventory(null, listSize);
 			if (itemList.hasKey("Items")) {
-                NBTTagList list = itemList.getList("Items", 10);
+				NBTTagList list = itemList.getList("Items", 10);
 
-                for (int i = 0; i < list.size(); i++) {
-                        NBTTagCompound tag2 = (NBTTagCompound) list.get(i);
+				for (int i = 0; i < list.size(); i++) {
+					NBTTagCompound tag2 = (NBTTagCompound) list.get(i);
 
-                        int slot = tag2.getByte("Slot") & 0xFF;
-                        if (slot < inventory.getSize()) {
-                            net.minecraft.server.v1_7_R1.ItemStack item = net.minecraft.server.v1_7_R1.ItemStack.createStack(tag2);
-                            CraftItemStack is = CraftItemStack.asCraftMirror(item);
-                        	inventory.setItem(slot, is);
-                        }
-                }
+					int slot = tag2.getByte("Slot") & 0xFF;
+					if (slot < inventory.getSize()) {
+						net.minecraft.server.v1_7_R1.ItemStack item = net.minecraft.server.v1_7_R1.ItemStack
+								.createStack(tag2);
+						CraftItemStack is = CraftItemStack.asCraftMirror(item);
+						inventory.setItem(slot, is);
+					}
+				}
 			}
-		} catch (Throwable ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(
+					"Sorry, your inventory isn't compatible with this version. Clear and create new one.");
 		}
+
 		return inventory;
 	}
 
