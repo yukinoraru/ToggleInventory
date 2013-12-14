@@ -210,28 +210,40 @@ public class InventoryUtils
 			final InputStream inputStream = new DataInputStream(dataInput);
 
 			// More MC internals :(
-			final NBTTagCompound itemList = NBTCompressedStreamTools
+			final NBTTagCompound tagCompound = NBTCompressedStreamTools
 					.a(inputStream);
 
-			NBTTagList newlist = itemList.getList("Items", 10);
-			final int listSize = newlist.size();
+			NBTTagList itemList = tagCompound.getList("Items", 10);
 
-			inventory = createInventory(null, listSize);
-			if (itemList.hasKey("Items")) {
-				NBTTagList list = itemList.getList("Items", 10);
-
-				for (int i = 0; i < list.size(); i++) {
-					NBTTagCompound tag2 = (NBTTagCompound) list.get(i);
-
-					int slot = tag2.getByte("Slot") & 0xFF;
-					if (slot < inventory.getSize()) {
-						net.minecraft.server.v1_7_R1.ItemStack item = net.minecraft.server.v1_7_R1.ItemStack
-								.createStack(tag2);
-						CraftItemStack is = CraftItemStack.asCraftMirror(item);
-						inventory.setItem(slot, is);
-					}
+			//-----------------------------------------------------------------
+			// create inventory
+			//-----------------------------------------------------------------
+			// TODO: fix this monkey patch!
+			// get max slot number = max of inventory
+			int maxSlot = 0;
+			for (int i = 0; i < itemList.size(); i++) {
+				int tmp = itemList.get(i).getByte("Slot") & 0xFF;
+				if(maxSlot < tmp){
+					maxSlot = tmp;
 				}
 			}
+			inventory = createInventory(null, maxSlot+1);
+
+			for (int i = 0; i < itemList.size(); i++) {
+				NBTTagCompound tmpTagCompound = itemList.get(i);
+				int slot = tmpTagCompound.getByte("Slot") & 0xFF;
+				//System.out.println("slot="+slot+" ,inventory.getsize="+inventory.getSize());
+
+				if(slot >= 0 && slot < inventory.getSize()){
+					net.minecraft.server.v1_7_R1.ItemStack itemStack = net.minecraft.server.v1_7_R1.ItemStack
+							.createStack(tmpTagCompound);
+
+					CraftItemStack craftItemStack = CraftItemStack.asCraftMirror(itemStack);
+					inventory.setItem(slot, craftItemStack);
+				}
+			}
+			//-----------------------------------------------------------------
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception(
