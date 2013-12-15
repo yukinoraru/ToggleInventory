@@ -14,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ToggleInventory extends JavaPlugin implements Listener {
 
     protected Logger log;
-    protected UpdateChecker updateChecker;
     protected InventoryManager inventoryManager;
 
     public void onEnable(){
@@ -27,12 +26,24 @@ public class ToggleInventory extends JavaPlugin implements Listener {
     	saveConfig();
 
     	// update check
+    	final int PROJECT_ID = 43601;
     	if(getConfig().getBoolean("update-check", true)){
-	    	this.updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/server-mods/toggleinventory/files.rss");
-	    	if(this.updateChecker.updateNeeded()){
-	    		this.log.info("A new version is available: v." + this.updateChecker.getVersion());
-	    		this.log.info("Get it from: " + this.updateChecker.getLink());
-	    	}
+    		Updater updater = new Updater(this, PROJECT_ID, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
+    		boolean isUpdateAvailable = (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE);
+
+    		if(isUpdateAvailable){
+    			this.log.info("New version is available:" + updater.getLatestName());
+    			this.log.info("Download Link:" + updater.getLatestFileLink());
+        		// execute auto update
+        		if(getConfig().getBoolean("auto-update", false)){
+            		this.log.info("Auto-update is enabled, I'll update to latest version...");
+        			new Updater(this, PROJECT_ID, this.getFile(), Updater.UpdateType.DEFAULT, false);
+        		}
+    		}
+    		else{
+        		this.log.info("This is the latest version!");
+
+    		}
     	}
     	else{
     		this.log.info("Update check was skipped.");
