@@ -59,12 +59,17 @@ public class ToggleInventory extends JavaPlugin implements Listener {
 
     	// Use MCStats:
     	// http://mcstats.org/plugin/ToggleInventory
-    	try {
-			Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (IOException e) {
-			// Failed to submit the stats :-(
-		}
+    	if(!getConfig().getBoolean("disable-mcstats", false)){
+	    	try {
+	    		this.log.info("MCStats enabled. You can disable via config.yml.");
+				Metrics metrics = new Metrics(this);
+				metrics.start();
+			} catch (IOException e) {
+				// Failed to submit the stats :-(
+			}
+    	}else{
+    		this.log.info("MCStats disabled.");
+    	}
     }
 
     //
