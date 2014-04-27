@@ -1,6 +1,6 @@
 [![ToggleInventory](http://dev.bukkit.org/media/images/44/639/ToggleInventory.png)](http://dev.bukkit.org/server-mods/toggleinventory/)
 
-###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.6.*.
+###ToggleInventory is a plugin for multiple inventory on CraftBukkit 1.7.*.
 
 * Demo on Youtube: [ToggleInventory - multiple inventories plugin for CraftBukkit](http://www.youtube.com/watch?&v=ZR1HcI4ro-g)
 
@@ -30,16 +30,10 @@
 3. To update craftbukkit or bukkit lib, you can edit 'pom.xml' from the projects list.
 There is tags named 'dependency' in it like this.
 
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.6.4-R0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.6.4-R0.1-SNAPSHOT</version>
-		</dependency>
+		<properties>
+			<bukkit.version>1.7.8-R0.1-SNAPSHOT</bukkit.version>
+			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		</properties>
 
 
 If you have any problems to build this plugin, feel free to contact.
